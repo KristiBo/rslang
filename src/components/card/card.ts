@@ -1,3 +1,4 @@
+import './cards.css';
 import URL from '../../shared/constants';
 import Img from '../../shared/img';
 import NewElem from '../../shared/newelem';
