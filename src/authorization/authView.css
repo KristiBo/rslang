@@ -1,0 +1,61 @@
+body {
+    background-color: rgb(219, 224, 227);
+    font-family: Arial, Helvetica, sans-serif;
+}
+.sign-in {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 380px;
+    position: absolute;
+    top: 20%;
+    left: calc(50% - 190px);
+}
+.form {
+    display: flex;
+    flex-direction: column;
+}
+.form__title {
+    color: rgb(21, 14, 80);
+    font-size: 36px;
+    letter-spacing: 1px;
+    margin: 20px auto;
+}
+.form__label {
+    color: rgb(54, 53, 58);
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.form__input {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(172, 172, 172);
+    border-radius: 70px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.form__error-message {
+    font-size: 14px;
+    color: rgb(230, 0, 0);
+    margin-bottom: 20px;
+    display: none;
+}
+.button {
+    cursor: pointer;
+    color: rgb(39, 38, 42);
+    background-color: #ffdd64;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 50px;
+    width: 280px;
+    margin: 5px auto;
+    font-size: 18px;
+    font-weight: 700;
+}
+.button-small {
+    background-color: transparent;
+    font-size: 14px;
+}
+.button:hover {
+    border: 1px solid rgb(15, 3, 67);
+}
