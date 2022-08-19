@@ -97,10 +97,10 @@
   box-shadow: 6px 6px 6px #3333, 2px 2px 6px #FFE924D7 inset;
   color: #000000;
 }
-#svg_yellow {
+.icon--yellow {
   fill:#CCCCCC; 
   transition: .3s;
 }
-.card__icon:hover #svg_yellow {
+.card__icon:hover .icon--yellow {
   fill:#E5AA17; 
 }

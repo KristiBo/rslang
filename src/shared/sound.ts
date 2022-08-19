@@ -9,7 +9,7 @@ class Sound extends NewElem<HTMLAudioElement> {
     this.elem.src = src;
   }
 
-  run() {
+  run(): void {
     this.elem.currentTime = 0;
     this.elem.play();
   }

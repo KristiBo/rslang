@@ -6,9 +6,8 @@ import { Word, CardOptions } from '../../shared/types';
 import Button from '../../shared/button';
 import Sound from '../../shared/sound';
 
-// alternative for eslint-disable-next-line @typescript-eslint/no-unused-vars
-type Dummy = NewElem | Img | Button;
-const unused: Dummy[] = [];
+// type for unused variables
+type Unused = NewElem | Img | Button;
 
 class Card extends NewElem {
   // current audio id
@@ -38,15 +37,15 @@ class Card extends NewElem {
     super(node, 'div', `card${cardStyle}`);
 
     const imgBlock = new NewElem(this.elem, 'div', 'card__img-wrapper');
-    unused.push(new Img(imgBlock.elem, 'card__img', `${URL}${word.image}`, word.word));
+    let _: Unused = new Img(imgBlock.elem, 'card__img', `${URL}${word.image}`, word.word);
     const cardCont = new NewElem(this.elem, 'div', 'card__content');
 
     const cardItemWord = new NewElem(cardCont.elem, 'div', 'card__item word-content');
 
     const wordBlock = new NewElem(cardItemWord.elem, 'div', 'word-content__word-wrapper word-wrapper');
-    unused.push(new NewElem(wordBlock.elem, 'span', 'word-wrapper__word', word.word));
-    unused.push(new NewElem(wordBlock.elem, 'span', 'word-wrapper__transcription', word.transcription));
-    unused.push(new NewElem(cardItemWord.elem, 'div', 'word-content__translation', word.wordTranslate));
+    _ = new NewElem(wordBlock.elem, 'span', 'word-wrapper__word', word.word);
+    _ = new NewElem(wordBlock.elem, 'span', 'word-wrapper__transcription', word.transcription);
+    _ = new NewElem(cardItemWord.elem, 'div', 'word-content__translation', word.wordTranslate);
 
     this.speaker = new NewElem(cardItemWord.elem, 'div', 'word-content__audio-block');
     this.speaker.elem.innerHTML = this.speakerSVG();
@@ -57,26 +56,26 @@ class Card extends NewElem {
     this.allAudio.push(new Sound(this.speaker.elem, 'audio-block__audio', `${URL}${word.audioExample}`));
 
     const cardItemMeaning = new NewElem(cardCont.elem, 'div', 'card__item meaning');
-    unused.push(new NewElem(cardItemMeaning.elem, 'div', 'meaning__en', word.textMeaning));
-    unused.push(new NewElem(cardItemMeaning.elem, 'div', 'meaning__ru', word.textMeaningTranslate));
+    _ = new NewElem(cardItemMeaning.elem, 'div', 'meaning__en', word.textMeaning);
+    _ = new NewElem(cardItemMeaning.elem, 'div', 'meaning__ru', word.textMeaningTranslate);
 
     const cardItemExample = new NewElem(cardCont.elem, 'div', 'card__item example');
-    unused.push(new NewElem(cardItemExample.elem, 'div', 'example__en', word.textExample));
-    unused.push(new NewElem(cardItemExample.elem, 'div', 'example__ru', word.textExampleTranslate));
+    _ = new NewElem(cardItemExample.elem, 'div', 'example__en', word.textExample);
+    _ = new NewElem(cardItemExample.elem, 'div', 'example__ru', word.textExampleTranslate);
 
     // known user, show buttons
     if (options) {
       const cardItemBtns = new NewElem(cardCont.elem, 'div', 'card__item card-btns');
-      unused.push(new Button(
+      _ = new Button(
         cardItemBtns.elem,
         'Difficult',
         `btn btn-difficult${options.isDifficult ? ' btn--yellow' : ''}`,
-      ));
-      unused.push(new Button(
+      );
+      _ = new Button(
         cardItemBtns.elem,
         'Studied',
         `btn btn-studied${options.isStudied ? ' btn--yellow' : ''}`,
-      ));
+      );
     } else {
       this.isPlaying = false;
     }
@@ -85,8 +84,11 @@ class Card extends NewElem {
     this.audioId = 0;
     // isPlaying audio now?
     this.isPlaying = false;
-    console.log('0 - this.audioId: ', this.audioId);
+    this.addSpeakerClickListener();
+  }
 
+  // Add click listener on speaker icon
+  addSpeakerClickListener(): void {
     this.speaker.elem.addEventListener('click', () => this.audioPlay());
   }
 
@@ -105,7 +107,7 @@ class Card extends NewElem {
     this.audioId = (this.audioId === 2 ? 0 : this.audioId + 1);
   }
 
-  removeEventListener(): void {
+  removeSpeakerClickListener(): void {
     this.speaker.elem.removeEventListener('click', () => this.audioPlay());
   }
 
@@ -114,7 +116,7 @@ class Card extends NewElem {
     const svg = `
     <svg version="1.1" class="card__icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
       viewBox="0 0 496.159 496.159" >
-    <path id="svg_yellow" d="M496.159,248.085c0-137.023-111.07-248.082-248.076-248.082C111.071,0.003,0,111.063,0,248.085
+    <path class="icon--yellow" d="M496.159,248.085c0-137.023-111.07-248.082-248.076-248.082C111.071,0.003,0,111.063,0,248.085
       c0,137.001,111.07,248.07,248.083,248.07C385.089,496.155,496.159,385.086,496.159,248.085z"/>
     <g>
       <path style="fill:#FFFFFF;" d="M247.711,125.252c-3.41-1.851-7.559-1.688-10.813,0.426l-95.137,61.789h-35.164
