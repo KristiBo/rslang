@@ -1,5 +1,7 @@
+import './basic.css';
 import AuthPage from '../authPage/authPage';
-import BaseComponent from '../baseComponent/baseComponent';
+import ErrorPage from '../errorPage/errorPage';
+import Footer from '../footer/footer';
 import GamesPage from '../gamesPage/gamesPage';
 import Header from '../header/header';
 import HomePage from '../homePage/homePage';
@@ -19,6 +21,10 @@ class App {
 
   statisticPage: StatisticPage;
 
+  errorPage: ErrorPage;
+
+  footer: Footer;
+
   constructor() {
     this.header = new Header();
     this.homePage = new HomePage();
@@ -26,34 +32,33 @@ class App {
     this.textbookPage = new TextbookPage();
     this.gamesPage = new GamesPage();
     this.statisticPage = new StatisticPage();
+    this.errorPage = new ErrorPage();
+    this.footer = new Footer();
   }
 
   renderPage(pageId: string): void {
-    let currentPage: BaseComponent | null = null;
     const main: HTMLElement | null = document.querySelector('main');
     if (main) {
       main.remove();
     }
-    // eslint-disable-next-line default-case
     switch (pageId) {
       case 'home':
-        currentPage = this.homePage;
+        this.homePage.create();
         break;
       case 'authorization':
-        currentPage = this.authPage;
+        this.authPage.create();
         break;
       case 'textbook':
-        currentPage = this.textbookPage;
+        this.textbookPage.create();
         break;
       case 'games':
-        currentPage = this.gamesPage;
+        this.gamesPage.create();
         break;
       case 'statistic':
-        currentPage = this.statisticPage;
+        this.statisticPage.create();
         break;
-    }
-    if (currentPage) {
-      currentPage.create();
+      default:
+        this.errorPage.create();
     }
   }
 
@@ -68,6 +73,7 @@ class App {
     this.header.create();
     this.homePage.create();
     this.changeHash();
+    this.footer.create();
   }
 }
 

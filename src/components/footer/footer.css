@@ -1,0 +1,28 @@
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.footer__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  height: 100%;
+  padding: 10px 0;
+}
+.github {
+  display: flex;
+  gap: 20px;
+}
+.github__link:hover {
+  color: #d2691e;
+}
+.rs__link:hover {
+  opacity: 0.7;
+}
+.rs__logo {
+  width: 94px;
+  height: 35px;
+}

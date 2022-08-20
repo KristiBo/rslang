@@ -3,17 +3,18 @@ class BaseComponent {
 
   inner!: string;
 
-  constructor(tagName: string, className: string, idName: string) {
+  constructor(tagName: string, className: string[], idName: string) {
     this.container = document.createElement(tagName);
-    this.container.classList.add(className);
+    this.container.classList.add(className.join(','));
     this.container.id = idName;
   }
 
   create(): void {
-    if (this.container) {
-      document.body.append(this.container);
-      this.container.innerHTML = this.inner;
+    const header = document.querySelector('header');
+    if (header) {
+      header.after(this.container);
     }
+    this.container.innerHTML = this.inner;
   }
 }
 
