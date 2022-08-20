@@ -1,5 +1,8 @@
 import URL from './constants';
-import { Word, ReqResponse } from './types/index';
+import { showErrMessage } from '../components/auth/authHelpers';
+import {
+  Word, ReqResponse, User, Auth, UserAuth,
+} from './types/index';
 
 class Api {
   // get word list
@@ -26,6 +29,60 @@ class Api {
       return [data, null];
     } catch (error: unknown) {
       return [null, error];
+    }
+  }
+
+  async getUser(user: Auth): Promise<UserAuth> {
+    try {
+      const { userId, token } = user;
+      const rawResponse = await fetch(`${URL}/users/${userId}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const content = await rawResponse.json();
+      return content;
+    } catch (err) {
+      showErrMessage('Error: User not found');
+      throw new Error(`Error: ${err}`);
+    }
+  }
+
+  async createUser(user: User): Promise<UserAuth | undefined> {
+    try {
+      const rawResponse = await fetch(`${URL}/users`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
+      const content = await rawResponse.json();
+      return content;
+    } catch (err: unknown) {
+      showErrMessage('Error: User already exist');
+      throw new Error(`Error: ${err}`);
+    }
+  }
+
+  async loginUser(user: User): Promise<Auth> {
+    try {
+      const rawResponse = await fetch(`${URL}/signin`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
+      const content = await rawResponse.json();
+      return content;
+    } catch (err) {
+      showErrMessage('Error: Incorrect email or password');
+      throw new Error(`${err}`);
     }
   }
 }
