@@ -1,7 +1,7 @@
 import URL from './constants';
 import { showErrMessage } from '../components/auth/authHelpers';
 import {
-  Word, ReqResponse, User, Auth, UserAuth,
+  Word, ReqResponse, TUser, TAuth, TUserAuth,
 } from './types/index';
 
 class Api {
@@ -32,10 +32,10 @@ class Api {
     }
   }
 
-  async getUser(user: Auth): Promise<UserAuth> {
+  async getUser(user: TAuth): Promise<TUserAuth> {
     try {
       const { userId, token } = user;
-      const rawResponse = await fetch(`${URL}/users/${userId}`, {
+      const rawResponse = await fetch(`${URL}users/${userId}`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -50,9 +50,9 @@ class Api {
     }
   }
 
-  async createUser(user: User): Promise<UserAuth | undefined> {
+  async createUser(user: TUser): Promise<TUserAuth | undefined> {
     try {
-      const rawResponse = await fetch(`${URL}/users`, {
+      const rawResponse = await fetch(`${URL}users`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -61,6 +61,7 @@ class Api {
         body: JSON.stringify(user),
       });
       const content = await rawResponse.json();
+      console.log('createUser', content);
       return content;
     } catch (err: unknown) {
       showErrMessage('Error: User already exist');
@@ -68,9 +69,9 @@ class Api {
     }
   }
 
-  async loginUser(user: User): Promise<Auth> {
+  async loginUser(user: TUser): Promise<TAuth> {
     try {
-      const rawResponse = await fetch(`${URL}/signin`, {
+      const rawResponse = await fetch(`${URL}signin`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -79,6 +80,7 @@ class Api {
         body: JSON.stringify(user),
       });
       const content = await rawResponse.json();
+      console.log('loginUser', content);
       return content;
     } catch (err) {
       showErrMessage('Error: Incorrect email or password');

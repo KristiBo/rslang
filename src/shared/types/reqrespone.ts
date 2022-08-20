@@ -1,18 +1,18 @@
 type Maybe<T> = T | null;
 type ReqResponse<T> = [Maybe<T>, Maybe<unknown>];
 
-type User = {
+type TUser = {
   name?: string,
   email: string,
   password?: string,
 };
 
-type UserAuth = {
+type TUserAuth = {
   id: string,
   email: string,
 };
 
-type Auth = {
+type TAuth = {
   message?: string,
   token: string,
   refreshToken?: string,
@@ -21,5 +21,5 @@ type Auth = {
 };
 
 export {
-  ReqResponse, User, UserAuth, Auth,
+  ReqResponse, TUser, TUserAuth, TAuth,
 };

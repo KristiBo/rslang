@@ -1,16 +1,14 @@
 import './auth.css';
 import state from '../../shared/state';
 import Api from '../../shared/api';
+import { TAuth } from '../../shared/types';
 import { validateEmail, validatePassword, showErrMessage } from './authHelpers';
 
 class Auth {
   api: Api;
 
-  errMsg: HTMLElement;
-
   constructor() {
     this.api = new Api();
-    this.errMsg = document.getElementById('form__error') as HTMLElement;
   }
 
   renderAuthPage(): string {
@@ -35,7 +33,7 @@ class Auth {
     form?.addEventListener('submit', (e) => {
       this.submit(e);
     });
-    const changeFormBtn = document.getElementById('form__change-btn');
+    const changeFormBtn = document.getElementById('form__change-btn') as HTMLButtonElement;
     changeFormBtn?.addEventListener('click', this.changeFormAuth);
   }
 
@@ -45,38 +43,63 @@ class Auth {
     const list = target.elements;
     const email = (list[0] as HTMLInputElement).value;
     const password = (list[1] as HTMLInputElement).value;
+
     const validEmail = validateEmail(email);
     const validPass = validatePassword(password);
+
     const input = document.querySelectorAll('.form__input');
+    const errMsg = document.getElementById('form__error') as HTMLElement;
     input.forEach((elem) => {
       elem.addEventListener('focusin', () => {
-        this.errMsg.style.display = 'none';
+        errMsg.style.display = 'none';
       });
     });
+
     if (!validPass) {
       showErrMessage('Password must contain at least 8 characters, at least one uppercase letter, one uppercase letter, one number and one special character from "+-_@$!%*?&amp;#.,;:[]{}].');
     }
     if (!validEmail) {
       showErrMessage('Incorrect Email');
     }
-    if (validEmail && validPass && state.isRegistrationPage) {
-      this.api.createUser({ email, password });
-    } else {
-      this.api.loginUser({ email, password });
+
+    if (validEmail && validPass) {
+      if (state.isRegistrationPage) {
+        this.api.createUser({ email, password })
+          .then(() => this.api.loginUser({ email, password })
+            .then((result) => this.setToLocalStorage(result)));
+      } else {
+        this.api.loginUser({ email, password })
+          .then((result) => this.setToLocalStorage(result));
+      }
     }
   }
 
+  setToLocalStorage(content: TAuth): void {
+    localStorage.setItem('token', JSON.stringify(content.token));
+    localStorage.setItem('message', JSON.stringify(content.message));
+    localStorage.setItem('userId', JSON.stringify(content.userId));
+  }
+
   changeFormAuth() {
+    const errMsg = document.getElementById('form__error') as HTMLElement;
+    errMsg.style.display = 'none';
     if (state.isRegistrationPage) {
       state.isRegistrationPage = false;
     } else {
       state.isRegistrationPage = true;
     }
+
     const title = document.getElementById('form__title') as HTMLElement;
+    const button = document.getElementById('form__submit') as HTMLInputElement;
+    const changeFormBtn = document.getElementById('form__change-btn') as HTMLButtonElement;
     if (state.isRegistrationPage) {
       title.innerText = 'Registration';
+      button.value = 'Sign up';
+      changeFormBtn.innerText = 'Do you have an account? Sign In';
     } else {
       title.innerText = 'Login';
+      button.value = 'Sign in';
+      changeFormBtn.innerText = "Don't have an account? Sign Up";
     }
   }
 }
