@@ -61,7 +61,6 @@ class Api {
         body: JSON.stringify(user),
       });
       const content = await rawResponse.json();
-      console.log('createUser', content);
       return content;
     } catch (err: unknown) {
       showErrMessage('Error: User already exist');
@@ -80,10 +79,27 @@ class Api {
         body: JSON.stringify(user),
       });
       const content = await rawResponse.json();
-      console.log('loginUser', content);
       return content;
     } catch (err) {
       showErrMessage('Error: Incorrect email or password');
+      throw new Error(`${err}`);
+    }
+  }
+
+  async getNewToken(userId: string | undefined, refreshToken: string | undefined): Promise<void> {
+    console.log(123, userId);
+    try {
+      const rawResponse = await fetch(`${URL}users/${userId}/tokens`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+          Accept: 'application/json',
+        },
+      });
+      const content = await rawResponse.json();
+      localStorage.setItem('token', JSON.stringify(content.token));
+      localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
+    } catch (err) {
       throw new Error(`${err}`);
     }
   }

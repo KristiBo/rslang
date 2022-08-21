@@ -78,6 +78,14 @@ class Auth {
     localStorage.setItem('token', JSON.stringify(content.token));
     localStorage.setItem('message', JSON.stringify(content.message));
     localStorage.setItem('userId', JSON.stringify(content.userId));
+    localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
+  }
+
+  removeFromLocalStorage(): void {
+    localStorage.setItem('token', '');
+    localStorage.setItem('message', 'Unauthorizated');
+    localStorage.setItem('userId', '');
+    localStorage.setItem('refreshToken', '');
   }
 
   changeFormAuth() {
