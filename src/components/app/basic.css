@@ -8,7 +8,7 @@ body {
   flex-direction: column;
   margin: 0 auto;
   height: 100vh;
-  font-size: 20px;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 body::-webkit-scrollbar {
   width: 5px;
@@ -17,6 +17,9 @@ body::-webkit-scrollbar {
 body::-webkit-scrollbar-thumb {
   background-color: #bec046;
 }
+body.lock {
+  overflow: hidden;
+}
 ul {
   margin: 0;
   padding: 0;
@@ -24,6 +27,7 @@ ul {
 }
 a {
   text-decoration: none;
+  font: inherit;
   color: inherit;
   transition: 0.5s;
   cursor: pointer;

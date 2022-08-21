@@ -1,0 +1,118 @@
+.header {
+  box-shadow: 0px 5px 10px 0px #c7c7c7;
+}
+.header__container {
+  margin: 10px auto;
+}
+.header__logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.logo__title {
+  margin: 0;
+}
+.logo__img {
+  width: 50px;
+  height: 50px;
+  transition: 0.5s;
+}
+.logo__img:hover {
+  filter: drop-shadow(0 0 5px #605872);
+}
+.nav__list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 2px;
+  gap: 36px;
+  font-size: 20px;
+}
+.nav__link:hover {
+  color: #d2691e;
+}
+.header__button {
+  width: 100px;
+  background-color: transparent;
+  border: 2px solid #d2691e;
+  border-radius: 10px;
+  font-size: 20px;
+}
+.burger-menu {
+  display: none;
+  width: 30px;
+  height: 22px;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.burger-menu span,
+.burger-menu::before,
+.burger-menu::after {
+  left: 0;
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  transition: 0.5s;
+  background-color: #d2691e;
+}
+.burger-menu::before,
+.burger-menu::after {
+  content: "";
+}
+.burger-menu::before {
+  top: 0;
+}
+.burger-menu::after {
+  bottom: 0;
+}
+.burger-menu span {
+  top: calc(50% - 1px);
+  transform: scale(1) translate(0px -50%);
+}
+.burger-menu.open span {
+  transform: scale(0);
+  transition: 0.5s;
+}
+.burger-menu.open::before {
+  top: 50%;
+  transform: rotate(-45deg) translate(5%);
+}
+.burger-menu.open::after {
+  bottom: 50%;
+  transform: rotate(45deg) translate(5%);
+}
+@media (max-width: 768px) {
+  .nav {
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    align-items: start;
+    margin: 0;
+    padding: 100px;
+    top: 0;
+    right: -100%;
+    width: 320px;
+    height: 100%;
+    background-color: #c7c7c7;
+    transition: 0.5s ease-in-out;
+    overflow: auto;
+  }
+  .nav.open {
+    right: 0;
+    z-index: 5;
+  }
+  .nav__list {
+    flex-direction: column;
+    gap: 40px;
+  }
+  .nav__link {
+    font-size: 32px;
+    line-height: 51px;
+  }
+  .burger-menu {
+    display: block;
+    position: relative;
+    z-index: 10;
+  }
+}
