@@ -1,3 +1,5 @@
+import { Word } from './words';
+
 type Maybe<T> = T | null;
 type ReqResponse<T> = [Maybe<T>, Maybe<unknown>];
 
@@ -9,11 +11,24 @@ interface signinResponse {
   name: string;
 }
 
-interface usersWordsResponse {
-  id: string;
+interface UsersWordData {
   difficulty: string;
-  wordId: string;
   optional?: object; // TODO: need to describe
 }
 
-export { ReqResponse, signinResponse, usersWordsResponse };
+interface UsersWordsResponse extends UsersWordData {
+  id: string;
+  wordId: string;
+}
+
+interface PaginatedResults extends Word {
+  _id: string;
+  userWord?: UsersWordData;
+}
+
+interface UsersAggrWordsResponse {
+  paginatedResults: PaginatedResults[];
+  totalCount: { count: number };
+}
+
+export { ReqResponse, signinResponse, UsersWordsResponse, UsersAggrWordsResponse, UsersWordData };

@@ -1,10 +1,19 @@
 import URL from './constants';
 import {
-  Word, ReqResponse, ReqData, signinResponse, usersWordsResponse,
+  Word,
+  ReqResponse,
+  ReqData,
+  signinResponse,
+  UsersWordsResponse,
+  UsrAggrWrdsReq,
+  UsersAggrWordsResponse,
+  UsersWordData,
 } from './types/index';
 
 class Api {
-  token = '';
+  token = ''; // JWT token for requests with authorization
+
+  userId = ''; // user id like '62ffed00299cea0016064168'
 
   // common request
   // req: ReqData - {url: str, method: 'GET' etc, auth?: bool, body?: str}
@@ -12,14 +21,21 @@ class Api {
   // return: [T, null] | [null, Error]
   async request<T>(req: ReqData): Promise<ReqResponse<T>> {
     const headers: HeadersInit = { Accept: 'application/json' };
-    if (req.auth) headers.Authorization = `Bearer ${this.token}`;
+    if (req.auth) {
+      // TODO: add token expire check and reget if needed
+      headers.Authorization = `Bearer ${this.token}`;
+    }
     if (req.body) headers['Content-Type'] = 'application/json';
     const { method } = req;
     const options: RequestInit = { headers, method };
     if (req.body) options.body = req.body;
     try {
       const response = await fetch(req.url, options);
-      if (response.ok) {
+      // console.log('response:', response);
+      if (response.status === 204) {
+        return [null, null];
+      }
+      if (response.status === 200) {
         const data = await response.json();
         return [data, null];
       }
@@ -28,6 +44,8 @@ class Api {
       return [null, error];
     }
   }
+
+  // ===== Words requests =====
 
   // get word list
   // group: 0..5 -- difficulty group
@@ -41,7 +59,7 @@ class Api {
   }
 
   // get word by id
-  // id: word's id like '5e9f5ee35eb9e72bc21af4a0'
+  // id: word id like '5e9f5ee35eb9e72bc21af4a0'
   // return: [Word, null] | [null, Error]
   async getWord(id: string): Promise<ReqResponse<Word>> {
     const url = `${URL}words/${id}`;
@@ -50,88 +68,134 @@ class Api {
     return result;
   }
 
-  // get word by id
-  // id: user's id like '62ffed00299cea0016064168'
+  // ===== Users/Words requests =====
+
+  // get all user words
   // return: [Word[], null] | [null, Error]
-  async getUsersWords(id: string): Promise<ReqResponse<Array<Word>>> {
-    const url = `${URL}users/${id}/words`;
+  async getUsersWords(): Promise<ReqResponse<Array<Word>>> {
+    const url = `${URL}users/${this.userId}/words`;
     const method = 'GET';
     const auth = true;
     const result = await this.request<Array<Word>>({ url, method, auth });
     return result;
   }
 
-  // add word to user's list
-  // id: user's id like '62ffed00299cea0016064168'
-  // wordId: word's id like '5e9f5ee35eb9e72bc21af4a0'
-  // difficulty: word's difficulty like 'hard', 'weak' etc
+  // add word to user words
+  // wordId: word id like '5e9f5ee35eb9e72bc21af4a0'
+  // difficulty: word difficulty like 'hard', 'weak' etc
   // optional: object with additional caustom data // TODO: need to describe
   // return: [Word[], null] | [null, Error]
   // Errors:
   // 400 - Bad request
   // 401 - Access token is missing or invalid
   // 417 - such user word already exists
-  async postUsersWord(id: string, wordId: string, difficulty = 'hard', optional: object = {}): Promise<ReqResponse<string>> {
-    const url = `${URL}users/${id}/words/${wordId}`;
+  async postUsersWord(wordId: string, wordData: UsersWordData): Promise<ReqResponse<string>> {
+    const url = `${URL}users/${this.userId}/words/${wordId}`;
     const method = 'POST';
     const auth = true;
-    const body = JSON.stringify({ difficulty, optional });
+    const body = JSON.stringify(wordData);
     const result = await this.request<string>({
       url, method, auth, body,
     });
     return result;
   }
 
-  // get word's data from user's list
-  // id: user's id like '62ffed00299cea0016064168'
-  // wordId: word's id like '5e9f5ee35eb9e72bc21af4a0'
+  // get a user word by id
+  // id: user id like '62ffed00299cea0016064168'
+  // wordId: word id like '5e9f5ee35eb9e72bc21af4a0'
   // return:
   // return: [usersWordsResponse, null] | [null, Error]
-  async getUsersWordById(id: string, wordId: string): Promise<ReqResponse<usersWordsResponse>> {
-    const url = `${URL}users/${id}/words/${wordId}`;
+  async getUsersWordById(wordId: string): Promise<ReqResponse<UsersWordsResponse>> {
+    const url = `${URL}users/${this.userId}/words/${wordId}`;
     const method = 'GET';
     const auth = true;
-    const result = await this.request<usersWordsResponse>({
+    const result = await this.request<UsersWordsResponse>({
       url, method, auth,
     });
     return result;
   }
 
-  // update word in user's list
-  // id: user's id like '62ffed00299cea0016064168'
-  // wordId: word's id like '5e9f5ee35eb9e72bc21af4a0'
-  // difficulty: word's difficulty like 'hard', 'weak' etc
+  // update word in user words
+  // wordId: word id like '5e9f5ee35eb9e72bc21af4a0'
+  // difficulty: word difficulty like 'hard', 'weak' etc
   // optional: object with additional caustom data // TODO: need to describe
   // return: [usersWordsResponse, null] | [null, Error]
   // Errors:
   // 400 - Bad request
   // 401 - Access token is missing or invalid
-  async updateUsersWord(id: string, wordId: string, difficulty = 'hard', optional: object = {}): Promise<ReqResponse<usersWordsResponse>> {
-    const url = `${URL}users/${id}/words/${wordId}`;
+
+  async updateUsersWord(
+    wordId: string,
+    wordData: UsersWordData,
+  ):
+    Promise<ReqResponse<UsersWordsResponse>> {
+    const url = `${URL}users/${this.userId}/words/${wordId}`;
     const method = 'PUT';
     const auth = true;
-    const body = JSON.stringify({ difficulty, optional });
-    const result = await this.request<usersWordsResponse>({
+    const body = JSON.stringify(wordData);
+    const result = await this.request<UsersWordsResponse>({
       url, method, auth, body,
     });
     return result;
   }
 
-  // add word to user's list
-  // id: user's id like '62ffed00299cea0016064168'
-  // wordId: word's id like '5e9f5ee35eb9e72bc21af4a0'
-  // return: [Word[], null] | [null, Error]
+  // delete word from user words
+  // wordId: word id like '5e9f5ee35eb9e72bc21af4a0'
+  // return: [null, null] | [null, Error]
   // Errors:
   // 401 - Access token is missing or invalid
-  async deleteUsersWord(id: string, wordId: string): Promise<ReqResponse<string>> {
-    const url = `${URL}users/${id}/words/${wordId}`;
+  async deleteUsersWord(wordId: string): Promise<ReqResponse<null>> {
+    const url = `${URL}users/${this.userId}/words/${wordId}`;
     const method = 'DELETE';
     const auth = true;
-    const result = await this.request<string>({
+    const result = await this.request<null>({
       url, method, auth,
     });
     return result;
   }
+
+  // ===== Users/AggregatedWords requests =====
+
+  // gets all user aggregated word
+  // params: UsrAggrWrdsReq
+  // === about UsrAggrWrdsReq.filter:
+  // Filter by aggreagted word fields.
+  // It should be a stringified object which meet MongoDB Query object conditions.
+  // Get all words that have difficulte="hard AND optional.key="value
+  // {"$and":[{"userWord.difficulty":"hard", "userWord.optional.key":"value"}]}
+  // Get all words that have difficulty equal="easy" OR do not have the linked userWord
+  // {"$or":[{"userWord.difficulty":"easy"},{"userWord":null}]}
+  // Get all words that have BOTH
+  // difficulty equal = "easy" AND optional.repeat = true, OR do not have the linked userWord
+  // {"$or":[{"$and":[{"userWord.difficulty":"easy", "userWord.optional.repeat":true}]}
+  // ,{ "userWord": null }]}
+  // ===
+  // return: [UsersAggrWordsResponse, null] | [null, Error]
+  async getUsrAggrWords(params: UsrAggrWrdsReq): Promise<ReqResponse<UsersAggrWordsResponse>> {
+    const url = `${URL}users/${params.id}/aggregatedWords`;
+    const method = 'GET';
+    const auth = true;
+    const body = JSON.stringify(params);
+    const result = await this.request<UsersAggrWordsResponse>({
+      url, method, auth, body,
+    });
+    return result;
+  }
+
+  // gets a user aggregated word by id
+  // wordId: word id like '5e9f5ee35eb9e72bc21af4a0'
+  // return: [UsersWordData, null] | [null, Error]
+  async getUsrAggrWordById(wordId: string): Promise<ReqResponse<UsersWordData>> {
+    const url = `${URL}users/${this.userId}/aggregatedWords/${wordId}`;
+    const method = 'GET';
+    const auth = true;
+    const result = await this.request<UsersWordData>({
+      url, method, auth,
+    });
+    return result;
+  }
+
+  // ===== Sign In request =====
 
   // sign in
   // email, password: string
@@ -144,9 +208,16 @@ class Api {
     return result;
   }
 
+  // ===== Setters =====
+
   // this.token setter
   setToken(token: string): void {
     this.token = token;
+  }
+
+  // this.userId setter
+  setUserId(id: string): void {
+    this.userId = id;
   }
 }
 
