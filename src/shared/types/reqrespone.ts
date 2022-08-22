@@ -31,4 +31,22 @@ interface UsersAggrWordsResponse {
   totalCount: { count: number };
 }
 
-export { ReqResponse, signinResponse, UsersWordsResponse, UsersAggrWordsResponse, UsersWordData };
+interface Statistics {
+  learnedWords: number;
+  optional?: object; // TODO: need to describe
+}
+
+interface Settings {
+  wordsPerDay: number;
+  optional?: object; // TODO: need to describe
+}
+
+export {
+  ReqResponse,
+  signinResponse,
+  UsersWordsResponse,
+  UsersAggrWordsResponse,
+  UsersWordData,
+  Statistics,
+  Settings,
+};

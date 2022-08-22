@@ -8,6 +8,8 @@ import {
   UsrAggrWrdsReq,
   UsersAggrWordsResponse,
   UsersWordData,
+  Statistics,
+  Settings,
 } from './types/index';
 
 class Api {
@@ -123,7 +125,6 @@ class Api {
   // Errors:
   // 400 - Bad request
   // 401 - Access token is missing or invalid
-
   async updateUsersWord(
     wordId: string,
     wordData: UsersWordData,
@@ -191,6 +192,62 @@ class Api {
     const auth = true;
     const result = await this.request<UsersWordData>({
       url, method, auth,
+    });
+    return result;
+  }
+
+  // ===== Users Statistics requests =====
+
+  // Gets statistics
+  // return: [Statistics, null] | [null, Error]
+  async getUsersStats(): Promise<ReqResponse<Statistics>> {
+    const url = `${URL}users/${this.userId}/statistics`;
+    const method = 'GET';
+    const auth = true;
+    const result = await this.request<Statistics>({
+      url, method, auth,
+    });
+    return result;
+  }
+
+  // Upserts new statistics
+  // stat: Statistics <- { "learnedWords": number, "optional": {} }
+  // return: [Statistics, null] | [null, Error]
+  async updateUsersStats(stat: Statistics): Promise<ReqResponse<Statistics>> {
+    const url = `${URL}users/${this.userId}/statistics`;
+    const method = 'PUT';
+    const auth = true;
+    const body = JSON.stringify(stat);
+    const result = await this.request<Statistics>({
+      url, method, auth, body,
+    });
+    return result;
+  }
+
+  // ===== Users Settings requests =====
+
+  // Gets settings
+  // return: [Settings, null] | [null, Error]
+  async getUsersSettings(): Promise<ReqResponse<Settings>> {
+    const url = `${URL}users/${this.userId}/settings`;
+    const method = 'GET';
+    const auth = true;
+    const result = await this.request<Settings>({
+      url, method, auth,
+    });
+    return result;
+  }
+
+  // Upserts settings
+  // stat: Statistics <- { "wordsPerDay": number, "optional": {} }
+  // return: [Settings, null] | [null, Error]
+  async updateUsersSettings(data: Settings): Promise<ReqResponse<Settings>> {
+    const url = `${URL}users/${this.userId}/settings`;
+    const method = 'PUT';
+    const auth = true;
+    const body = JSON.stringify(data);
+    const result = await this.request<Settings>({
+      url, method, auth, body,
     });
     return result;
   }
