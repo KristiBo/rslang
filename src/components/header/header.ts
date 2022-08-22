@@ -13,7 +13,7 @@ class Header extends BaseComponent {
           <nav class="nav">
             <ul class="nav__list">
               <li class="nav__item">
-                <a href="#/home" class="nav__link nav__link_home">Главная</a>
+                <a href="#/home" class="nav__link nav__link_home active">Главная</a>
               </li>
               <li class="nav__item">
                 <a href="#/textbook" class="nav__link nav__link_book">Учебник</a>
@@ -43,6 +43,7 @@ class Header extends BaseComponent {
     this.container.innerHTML = this.inner;
   }
 
+  // Сделано для демонстации изменения цвета, не забыть переделать под локалсторедж
   addListeners(): void {
     const menuLinks: NodeListOf<HTMLElement> = document.querySelectorAll('.nav__link');
     menuLinks.forEach((el) => el.addEventListener('click', () => {
