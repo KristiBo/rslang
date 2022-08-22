@@ -1,7 +1,8 @@
 import './auth.css';
+import isEmail from 'validator/lib/isEmail';
+import isStrongPassword from 'validator/lib/isStrongPassword';
 import Api from '../../shared/api';
 import { TAuth } from '../../shared/types';
-import { isValidEmail, isValidPassword } from './authHelpers';
 
 class Auth {
   api: Api;
@@ -53,15 +54,14 @@ class Auth {
       });
     });
 
-    if (!isValidPassword(password)) {
+    if (!isStrongPassword(password)) {
       this.showErrMessage('Password must contain at least 8 characters, at least one uppercase letter, one uppercase letter, one number and one special character from "+-_@$!%*?&amp;#.,;:[]{}].');
     }
-    if (!isValidEmail(email)) {
+    if (!isEmail(email)) {
       this.showErrMessage('Incorrect Email');
     }
-    console.log(12345, this.isRegistrationPage);
-    if (isValidEmail(email) && isValidPassword(password)) {
-      if (this.isRegistrationPage) {
+    if (isEmail(email) && isStrongPassword(password)) {
+      if (!this.isRegistrationPage) {
         this.api.createUser({ email, password })
           .then(() => this.api.loginUser({ email, password })
             .then((result) => this.setToLocalStorage(result)))
