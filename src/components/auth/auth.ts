@@ -36,7 +36,7 @@ class Auth {
       this.submitForm(e);
     });
     const changeFormBtn = document.getElementById('form__change-btn') as HTMLButtonElement;
-    changeFormBtn?.addEventListener('click', this.changeFormAuth);
+    changeFormBtn?.addEventListener('click', () => this.changeFormAuth());
   }
 
   submitForm(e: Event): void {
@@ -61,7 +61,7 @@ class Auth {
       this.showErrMessage('Incorrect Email');
     }
     if (isEmail(email) && isStrongPassword(password)) {
-      if (!this.isRegistrationPage) {
+      if (this.isRegistrationPage) {
         this.api.createUser({ email, password })
           .then(() => this.api.loginUser({ email, password })
             .then((result) => this.setToLocalStorage(result)))
@@ -96,7 +96,6 @@ class Auth {
   }
 
   changeFormAuth(): void {
-    console.log(9887765, this.isRegistrationPage);
     const errMsg = document.getElementById('form__error') as HTMLElement;
     errMsg.style.display = 'none';
     this.isRegistrationPage = !this.isRegistrationPage;
