@@ -6,29 +6,29 @@ class Header extends BaseComponent {
         <div class="container header__container">
           <div class="header__logo logo">
             <a href="#/home" class="logo__link">
-              <img src="./assets/icons/logo.svg" alt="logo" class="logo__img">
+              <img src="./assets/icons/logo.png" alt="logo" class="logo__img">
             </a>          
             <h1 class="logo__title">RS Lang</h1>
           </div>
           <nav class="nav">
             <ul class="nav__list">
               <li class="nav__item">
-                <a href="#/home" class="nav__link">Главная</a>
+                <a href="#/home" class="nav__link nav__link_home">Главная</a>
               </li>
               <li class="nav__item">
-                <a href="#/textbook" class="nav__link">Учебник</a>
+                <a href="#/textbook" class="nav__link nav__link_book">Учебник</a>
               </li>
               <li class="nav__item">
-                <a href="#/games" class="nav__link">Игры</a>
+                <a href="#/games" class="nav__link nav__link_games">Игры</a>
               </li>
               <li class="nav__item">
-                <a href="#/statistic" class="nav__link">Статистика</a>
+                <a href="#/statistic" class="nav__link nav__link_statistic">Статистика</a>
+              </li>
+              <li class="nav__item">
+                <a href="#/authorization" class="nav__link header__button">Войти</a>
               </li>
             </ul>
           </nav>
-          <button class="header__button">
-          <a href="#/authorization" class="nav__link">Войти</a>
-          </button>
           <div class="burger-menu">
             <span></span>
           </div>
@@ -41,6 +41,14 @@ class Header extends BaseComponent {
   create(): void {
     document.body.append(this.container);
     this.container.innerHTML = this.inner;
+  }
+
+  addListeners(): void {
+    const menuLinks: NodeListOf<HTMLElement> = document.querySelectorAll('.nav__link');
+    menuLinks.forEach((el) => el.addEventListener('click', () => {
+      menuLinks.forEach((elem) => elem.classList.remove('active'));
+      el.classList.add('active');
+    }));
   }
 }
 

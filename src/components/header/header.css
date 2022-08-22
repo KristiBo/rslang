@@ -1,5 +1,8 @@
 .header {
-  box-shadow: 0px 5px 10px 0px #c7c7c7;
+  position: fixed;
+  width: 100%;
+  background-color: #ebebeb;
+  box-shadow: 0 5px 10px 0 #c7c7c7;
 }
 .header__container {
   margin: 10px auto;
@@ -15,11 +18,10 @@
 }
 .logo__img {
   width: 50px;
-  height: 50px;
   transition: 0.5s;
 }
 .logo__img:hover {
-  filter: drop-shadow(0 0 5px #605872);
+  filter: drop-shadow(0 0 3px #605872);
 }
 .nav__list {
   display: flex;
@@ -29,15 +31,27 @@
   gap: 36px;
   font-size: 20px;
 }
+.nav__link {
+  background-position: center left;
+  background-repeat: no-repeat;
+  background-size: auto 35px;
+}
 .nav__link:hover {
-  color: #d2691e;
+  color: #4b3683;
+  filter: drop-shadow(0 0 3px #605872);
+}
+.nav__link.active {
+  color: #4b3683;
 }
 .header__button {
-  width: 100px;
-  background-color: transparent;
-  border: 2px solid #d2691e;
-  border-radius: 10px;
+  padding: 3px 5px 3px 40px;
+  width: 95px;
   font-size: 20px;
+  text-align: end;
+  background-image: url(../../assets/icons/login.png);
+  background-size: auto 30px;
+  border: 2px solid #8359ba;
+  border-radius: 10px;
 }
 .burger-menu {
   display: none;
@@ -54,7 +68,7 @@
   height: 2px;
   width: 100%;
   transition: 0.5s;
-  background-color: #d2691e;
+  background-color: #4b3683;
 }
 .burger-menu::before,
 .burger-menu::after {
@@ -83,36 +97,55 @@
   transform: rotate(45deg) translate(5%);
 }
 @media (max-width: 768px) {
+  .logo__title {
+    font-size: 28px;
+  }
   .nav {
     display: flex;
     position: fixed;
     justify-content: center;
     align-items: start;
-    margin: 0;
-    padding: 100px;
+    padding: 80px;
     top: 0;
     right: -100%;
     width: 320px;
     height: 100%;
-    background-color: #c7c7c7;
+    background-color: #ebebeb;
     transition: 0.5s ease-in-out;
     overflow: auto;
   }
   .nav.open {
     right: 0;
     z-index: 5;
+    box-shadow: -5px 0 10px 0 #c7c7c7;
   }
   .nav__list {
     flex-direction: column;
+    align-items: flex-start;
     gap: 40px;
   }
   .nav__link {
+    padding: 10px 0 10px 40px;
     font-size: 32px;
-    line-height: 51px;
+  }
+  .nav__link_home {
+    background-image: url(../../assets/icons/homepage.png);
+  }
+  .nav__link_book {
+    background-image: url(../../assets/icons/book.png);
+  }
+  .nav__link_games {
+    background-image: url(../../assets/icons/games.png);
+  }
+  .nav__link_statistic {
+    background-image: url(../../assets/icons/statistic.png);
   }
   .burger-menu {
     display: block;
     position: relative;
     z-index: 10;
+  }
+  .header__button {
+    border: none;
   }
 }

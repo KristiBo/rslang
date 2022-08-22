@@ -66,7 +66,7 @@ class App {
     }
   }
 
-  changeHash() {
+  changeHash(): void {
     window.addEventListener('hashchange', () => {
       const hash = window.location.hash.substring(2);
       this.renderPage(hash);
@@ -78,6 +78,7 @@ class App {
     this.homePage.create();
     this.changeHash();
     this.footer.create();
+    this.header.addListeners();
     this.burgerMenu.addListeners();
   }
 }

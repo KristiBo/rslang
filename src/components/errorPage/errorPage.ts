@@ -1,10 +1,13 @@
+import './ErrorPage.css';
 import BaseComponent from '../baseComponent/baseComponent';
 
 class ErrorPage extends BaseComponent {
-  inner = '<h2 class="main__title">Сраница не найдена!</h2>';
+  inner = `<div class="container error-page">
+              <h2 class="error-page__title">Страница не найдена!</h2>
+            </div>`;
 
   constructor() {
-    super('main', ['main'], 'home');
+    super('main', ['main'], 'error');
   }
 }
 

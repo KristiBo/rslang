@@ -1,5 +1,5 @@
 class BurgerMenu {
-  addListeners() {
+  addListeners(): void {
     const iconBurger: HTMLElement | null = document.querySelector('.burger-menu');
     const menuLinks: NodeListOf<HTMLElement> = document.querySelectorAll('.nav__link');
     if (iconBurger) {
@@ -8,7 +8,7 @@ class BurgerMenu {
     menuLinks.forEach((el) => el.addEventListener('click', this.close));
   }
 
-  open() {
+  open(): void {
     const iconBurger: HTMLElement | null = document.querySelector('.burger-menu');
     const menuBurger: HTMLElement | null = document.querySelector('.nav');
     document.body.classList.toggle('lock');
@@ -18,7 +18,7 @@ class BurgerMenu {
     }
   }
 
-  close() {
+  close(): void {
     const iconBurger: HTMLElement | null = document.querySelector('.burger-menu');
     const menuBurger: HTMLElement | null = document.querySelector('.nav');
     document.body.classList.remove('lock');
