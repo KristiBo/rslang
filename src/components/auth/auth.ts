@@ -1,11 +1,12 @@
 import './auth.css';
-import state from '../../shared/state';
 import Api from '../../shared/api';
 import { TAuth } from '../../shared/types';
-import { validateEmail, validatePassword, showErrMessage } from './authHelpers';
+import { isValidEmail, isValidPassword } from './authHelpers';
 
 class Auth {
   api: Api;
+
+  isRegistrationPage = false;
 
   constructor() {
     this.api = new Api();
@@ -28,24 +29,21 @@ class Auth {
     return html;
   }
 
-  listener(): void {
+  addListeners(): void {
     const form = document.getElementById('form');
     form?.addEventListener('submit', (e) => {
-      this.submit(e);
+      this.submitForm(e);
     });
     const changeFormBtn = document.getElementById('form__change-btn') as HTMLButtonElement;
     changeFormBtn?.addEventListener('click', this.changeFormAuth);
   }
 
-  submit(e: Event) {
+  submitForm(e: Event): void {
     e.preventDefault();
     const target = e.target as HTMLFormElement;
-    const list = target.elements;
-    const email = (list[0] as HTMLInputElement).value;
-    const password = (list[1] as HTMLInputElement).value;
-
-    const validEmail = validateEmail(email);
-    const validPass = validatePassword(password);
+    const formInputs = target.elements;
+    const email = (formInputs[0] as HTMLInputElement).value;
+    const password = (formInputs[1] as HTMLInputElement).value;
 
     const input = document.querySelectorAll('.form__input');
     const errMsg = document.getElementById('form__error') as HTMLElement;
@@ -55,52 +53,58 @@ class Auth {
       });
     });
 
-    if (!validPass) {
-      showErrMessage('Password must contain at least 8 characters, at least one uppercase letter, one uppercase letter, one number and one special character from "+-_@$!%*?&amp;#.,;:[]{}].');
+    if (!isValidPassword(password)) {
+      this.showErrMessage('Password must contain at least 8 characters, at least one uppercase letter, one uppercase letter, one number and one special character from "+-_@$!%*?&amp;#.,;:[]{}].');
     }
-    if (!validEmail) {
-      showErrMessage('Incorrect Email');
+    if (!isValidEmail(email)) {
+      this.showErrMessage('Incorrect Email');
     }
-
-    if (validEmail && validPass) {
-      if (state.isRegistrationPage) {
+    console.log(12345, this.isRegistrationPage);
+    if (isValidEmail(email) && isValidPassword(password)) {
+      if (this.isRegistrationPage) {
         this.api.createUser({ email, password })
           .then(() => this.api.loginUser({ email, password })
-            .then((result) => this.setToLocalStorage(result)));
+            .then((result) => this.setToLocalStorage(result)))
+          .catch((err) => {
+            this.showErrMessage('Error: User already exist');
+            throw new Error(`Create user: ${err}`);
+          });
       } else {
         this.api.loginUser({ email, password })
-          .then((result) => this.setToLocalStorage(result));
+          .then((result) => this.setToLocalStorage(result))
+          .catch((err) => {
+            this.showErrMessage('Error: Incorrect email or password');
+            throw new Error(`Login user: ${err}`);
+          });
       }
     }
   }
 
   setToLocalStorage(content: TAuth): void {
+    const time = new Date();
+    localStorage.setItem('time', JSON.stringify(time));
     localStorage.setItem('token', JSON.stringify(content.token));
-    localStorage.setItem('message', JSON.stringify(content.message));
     localStorage.setItem('userId', JSON.stringify(content.userId));
     localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
   }
 
   removeFromLocalStorage(): void {
+    localStorage.setItem('time', '');
     localStorage.setItem('token', '');
-    localStorage.setItem('message', 'Unauthorizated');
     localStorage.setItem('userId', '');
     localStorage.setItem('refreshToken', '');
   }
 
-  changeFormAuth() {
+  changeFormAuth(): void {
+    console.log(9887765, this.isRegistrationPage);
     const errMsg = document.getElementById('form__error') as HTMLElement;
     errMsg.style.display = 'none';
-    if (state.isRegistrationPage) {
-      state.isRegistrationPage = false;
-    } else {
-      state.isRegistrationPage = true;
-    }
+    this.isRegistrationPage = !this.isRegistrationPage;
 
     const title = document.getElementById('form__title') as HTMLElement;
     const button = document.getElementById('form__submit') as HTMLInputElement;
     const changeFormBtn = document.getElementById('form__change-btn') as HTMLButtonElement;
-    if (state.isRegistrationPage) {
+    if (this.isRegistrationPage) {
       title.innerText = 'Registration';
       button.value = 'Sign up';
       changeFormBtn.innerText = 'Do you have an account? Sign In';
@@ -109,6 +113,12 @@ class Auth {
       button.value = 'Sign in';
       changeFormBtn.innerText = "Don't have an account? Sign Up";
     }
+  }
+
+  showErrMessage(text: string): void {
+    const elem = document.getElementById('form__error') as HTMLElement;
+    elem.innerText = text;
+    elem.style.display = 'block';
   }
 }
 

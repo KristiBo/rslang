@@ -1,5 +1,4 @@
 import URL from './constants';
-import { showErrMessage } from '../components/auth/authHelpers';
 import {
   Word, ReqResponse, TUser, TAuth, TUserAuth,
 } from './types/index';
@@ -45,7 +44,6 @@ class Api {
       const content = await rawResponse.json();
       return content;
     } catch (err) {
-      showErrMessage('Error: User not found');
       throw new Error(`Error: ${err}`);
     }
   }
@@ -63,7 +61,6 @@ class Api {
       const content = await rawResponse.json();
       return content;
     } catch (err: unknown) {
-      showErrMessage('Error: User already exist');
       throw new Error(`Error: ${err}`);
     }
   }
@@ -81,13 +78,11 @@ class Api {
       const content = await rawResponse.json();
       return content;
     } catch (err) {
-      showErrMessage('Error: Incorrect email or password');
       throw new Error(`${err}`);
     }
   }
 
-  async getNewToken(userId: string | undefined, refreshToken: string | undefined): Promise<void> {
-    console.log(123, userId);
+  async getNewToken(userId?: string, refreshToken?: string): Promise<void> {
     try {
       const rawResponse = await fetch(`${URL}users/${userId}/tokens`, {
         method: 'GET',

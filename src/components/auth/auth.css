@@ -1,7 +1,3 @@
-body {
-    background-color: rgb(219, 224, 227);
-    font-family: Arial, Helvetica, sans-serif;
-}
 .sign-in {
     display: flex;
     flex-direction: column;
@@ -11,38 +7,44 @@ body {
     top: 20%;
     left: calc(50% - 190px);
 }
+
 .form {
     display: flex;
     flex-direction: column;
 }
+
 .form__title {
-    color: rgb(21, 14, 80);
+    color: #150e50;
     font-size: 36px;
     letter-spacing: 1px;
     margin: 20px auto;
 }
+
 .form__label {
-    color: rgb(54, 53, 58);
+    color: #36353a;
     font-size: 22px;
     font-weight: 700;
     margin-bottom: 10px;
 }
+
 .form__input {
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgb(172, 172, 172);
+    background-color: #ffffff;
+    border: 1px solid #acacac;
     border-radius: 70px;
     padding: 10px;
     margin-bottom: 20px;
 }
+
 .form__error-message {
     font-size: 14px;
-    color: rgb(230, 0, 0);
+    color: #e60000;
     margin-bottom: 20px;
     display: none;
 }
+
 .button {
     cursor: pointer;
-    color: rgb(39, 38, 42);
+    color: #27262a;
     background-color: #ffdd64;
     padding: 10px;
     border: 1px solid transparent;
@@ -52,10 +54,12 @@ body {
     font-size: 18px;
     font-weight: 700;
 }
+
 .button-small {
     background-color: transparent;
     font-size: 14px;
 }
+
 .button:hover {
-    border: 1px solid rgb(15, 3, 67);
+    border: 1px solid #0f0343;
 }
