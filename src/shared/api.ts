@@ -10,6 +10,9 @@ import {
   UsersWordData,
   Statistics,
   Settings,
+  TUser,
+  TAuth,
+  TUserAuth,
 } from './types/index';
 
 class Api {
@@ -274,6 +277,74 @@ class Api {
   // this.userId setter
   setUserId(id: string): void {
     this.userId = id;
+  }
+
+  async getUser(user: TAuth): Promise<TUserAuth> {
+    try {
+      const { userId, token } = user;
+      const rawResponse = await fetch(`${URL}users/${userId}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const content = await rawResponse.json();
+      return content;
+    } catch (err) {
+      throw new Error(`Error: ${err}`);
+    }
+  }
+
+  async createUser(user: TUser): Promise<TUserAuth | undefined> {
+    try {
+      const rawResponse = await fetch(`${URL}users`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
+      const content = await rawResponse.json();
+      return content;
+    } catch (err: unknown) {
+      throw new Error(`Error: ${err}`);
+    }
+  }
+
+  async loginUser(user: TUser): Promise<TAuth> {
+    try {
+      const rawResponse = await fetch(`${URL}signin`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
+      const content = await rawResponse.json();
+      return content;
+    } catch (err) {
+      throw new Error(`${err}`);
+    }
+  }
+
+  async getNewToken(userId?: string, refreshToken?: string): Promise<void> {
+    try {
+      const rawResponse = await fetch(`${URL}users/${userId}/tokens`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+          Accept: 'application/json',
+        },
+      });
+      const content = await rawResponse.json();
+      localStorage.setItem('token', JSON.stringify(content.token));
+      localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
+    } catch (err) {
+      throw new Error(`${err}`);
+    }
   }
 }
 
