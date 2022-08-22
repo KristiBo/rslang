@@ -60,7 +60,6 @@ type TAuth = {
   name?: string,
 };
 
-
 export {
   ReqResponse,
   signinResponse,
@@ -72,4 +71,5 @@ export {
   TUser,
   TUserAuth,
   TAuth,
+  Maybe,
 };
