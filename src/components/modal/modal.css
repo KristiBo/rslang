@@ -1,0 +1,23 @@
+.modal__shadow {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #9905;
+}
+.modal__window {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 25px;
+  width: 500px;
+  height: 450px;
+  box-shadow: 10px 10px 10px #3333;
+}

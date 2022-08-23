@@ -42,6 +42,7 @@ p {
   flex: 1 1 auto;
   margin: 75px auto 0;
   width: 100%;
+  background: #eee;
 }
 .container {
   display: flex;

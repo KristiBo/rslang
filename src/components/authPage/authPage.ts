@@ -1,10 +1,14 @@
-import BaseComponent from '../baseComponent/baseComponent';
+import Auth from '../auth/auth';
+import Modal from '../modal/modal';
 
-class AuthPage extends BaseComponent {
-  inner = '<h2 class="main__title">Авторизация</h2>';
+class AuthPage {
+  modal: Modal | undefined;
 
-  constructor() {
-    super('main', ['main'], 'authorization');
+  create(): void {
+    this.modal = new Modal();
+    const auth = new Auth();
+    this.modal.content.elem.innerHTML = auth.renderAuthPage();
+    auth.addListeners();
   }
 }
 
