@@ -1,4 +1,4 @@
-import App from './components/app/app';
+import App from './app';
 
 const app = new App();
-app.create();
+app.start();

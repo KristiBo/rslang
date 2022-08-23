@@ -1,3 +1,4 @@
+import { Word } from '../../shared/types';
 import './basic.css';
 import AuthPage from '../authPage/authPage';
 import ErrorPage from '../errorPage/errorPage';
@@ -9,7 +10,7 @@ import StatisticPage from '../statisticPage/statisticPage';
 import TextbookPage from '../textbookPage/textbookPage';
 import BurgerMenu from '../header/burgerMenu';
 
-class App {
+class AppView {
   header: Header;
 
   homePage: HomePage;
@@ -32,28 +33,29 @@ class App {
     this.header = new Header();
     this.homePage = new HomePage();
     this.authPage = new AuthPage();
-    this.textbookPage = new TextbookPage();
     this.gamesPage = new GamesPage();
+    this.textbookPage = new TextbookPage();
     this.statisticPage = new StatisticPage();
     this.errorPage = new ErrorPage();
     this.footer = new Footer();
     this.burgerMenu = new BurgerMenu();
   }
 
-  renderPage(pageId: string): void {
+  renderPage(pageId: string, data?: Word[], userState?: boolean): void {
     const main: HTMLElement | null = document.querySelector('main');
-    if (main) {
+    // don't remove main for auth
+    if (main && pageId !== 'authorization') {
       main.remove();
     }
     switch (pageId) {
       case 'home':
         this.homePage.create();
         break;
-      case 'authorization':
-        this.authPage.create();
-        break;
       case 'textbook':
         this.textbookPage.create();
+        if (data) {
+          this.textbookPage.drawCards(data, userState);
+        }
         break;
       case 'games':
         this.gamesPage.create();
@@ -66,21 +68,12 @@ class App {
     }
   }
 
-  changeHash(): void {
-    window.addEventListener('hashchange', () => {
-      const hash = window.location.hash.substring(2);
-      this.renderPage(hash);
-    });
-  }
-
   create(): void {
     this.header.create();
     this.homePage.create();
-    this.changeHash();
     this.footer.create();
-    this.header.addListeners();
     this.burgerMenu.addListeners();
   }
 }
 
-export default App;
+export default AppView;

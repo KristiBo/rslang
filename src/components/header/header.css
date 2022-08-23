@@ -1,6 +1,7 @@
 .header {
   position: fixed;
   width: 100%;
+  z-index: 5;
   background-color: #ebebeb;
   box-shadow: 0 5px 10px 0 #c7c7c7;
 }
@@ -52,6 +53,9 @@
   background-size: auto 30px;
   border: 2px solid #8359ba;
   border-radius: 10px;
+}
+.logged-in {
+  background-image: url(../../assets/icons/logout.png);
 }
 .burger-menu {
   display: none;

@@ -32,10 +32,8 @@ class Auth {
 
   addListeners(): void {
     const form = document.getElementById('form');
-    form?.addEventListener('submit', (e) => {
-      this.submitForm(e);
-    });
-    const changeFormBtn = document.getElementById('form__change-btn') as HTMLButtonElement;
+    form?.addEventListener('submit', (e) => this.submitForm(e));
+    const changeFormBtn = <HTMLButtonElement>document.getElementById('form__change-btn');
     changeFormBtn?.addEventListener('click', () => this.changeFormAuth());
   }
 
@@ -64,14 +62,14 @@ class Auth {
       if (this.isRegistrationPage) {
         this.api.createUser({ email, password })
           .then(() => this.api.loginUser({ email, password })
-            .then((result) => this.setToLocalStorage(result)))
+            .then((result) => this.dispatchLoginEvent(result)))
           .catch((err) => {
             this.showErrMessage('Error: User already exist');
             throw new Error(`Create user: ${err}`);
           });
       } else {
         this.api.loginUser({ email, password })
-          .then((result) => this.setToLocalStorage(result))
+          .then((result) => this.dispatchLoginEvent(result))
           .catch((err) => {
             this.showErrMessage('Error: Incorrect email or password');
             throw new Error(`Login user: ${err}`);
@@ -80,19 +78,9 @@ class Auth {
     }
   }
 
-  setToLocalStorage(content: TAuth): void {
-    const time = new Date();
-    localStorage.setItem('time', JSON.stringify(time));
-    localStorage.setItem('token', JSON.stringify(content.token));
-    localStorage.setItem('userId', JSON.stringify(content.userId));
-    localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
-  }
-
-  removeFromLocalStorage(): void {
-    localStorage.setItem('time', '');
-    localStorage.setItem('token', '');
-    localStorage.setItem('userId', '');
-    localStorage.setItem('refreshToken', '');
+  dispatchLoginEvent(authData: TAuth): void {
+    const event = new CustomEvent('userLogin', { detail: { authData } });
+    document.dispatchEvent(event);
   }
 
   changeFormAuth(): void {

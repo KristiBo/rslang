@@ -25,7 +25,7 @@ class Header extends BaseComponent {
                 <a href="#/statistic" class="nav__link nav__link_statistic">Статистика</a>
               </li>
               <li class="nav__item">
-                <a href="#/authorization" class="nav__link header__button">Войти</a>
+                <a href="#/authorization" class="nav__link header__button nav__link_auth">Войти</a>
               </li>
             </ul>
           </nav>
@@ -44,11 +44,20 @@ class Header extends BaseComponent {
   }
 
   // Сделано для демонстации изменения цвета, не забыть переделать под локалсторедж
-  addListeners(): void {
+  addListeners(callback?: () => void): void {
     const menuLinks: NodeListOf<HTMLElement> = document.querySelectorAll('.nav__link');
-    menuLinks.forEach((el) => el.addEventListener('click', () => {
+    menuLinks.forEach((el) => el.addEventListener('click', (event: Event) => {
+      // if click on auth
+      const target = <HTMLElement>event.target;
+      if (target.classList.contains('nav__link_auth') && callback) {
+        event.preventDefault();
+        callback();
+      }
+
       menuLinks.forEach((elem) => elem.classList.remove('active'));
       el.classList.add('active');
+      let result: void;
+      return result;
     }));
   }
 }
