@@ -22,16 +22,12 @@ class App {
   // show auth form
   showAuth(): void {
     const linkAuth = <HTMLAnchorElement>document.querySelector('.nav__link_auth');
-    if (linkAuth) {
-      if (this.model.isRegisteredUser) {
-        linkAuth.classList.remove('logged-in');
-        linkAuth.textContent = 'Войти';
-        this.model.removeFromLocalStorage();
-      } else {
-        this.view.authPage.create();
-        linkAuth.classList.add('logged-in');
-        linkAuth.textContent = 'Выйти';
-      }
+    if (linkAuth && this.model.isRegisteredUser) {
+      linkAuth.classList.remove('logged-in');
+      linkAuth.textContent = 'Войти';
+      this.model.removeFromLocalStorage();
+    } else {
+      this.view.authPage.create();
     }
   }
 
