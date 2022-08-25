@@ -1,4 +1,4 @@
-import { TAuth } from './shared/types';
+import { Word, TAuth } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
 
@@ -17,6 +17,7 @@ class App {
     this.view.header.addListeners(() => this.showAuth());
     this.initOnHashChange();
     this.initLoginListener();
+    this.initStartSprintListener();
   }
 
   // show auth form
@@ -33,6 +34,24 @@ class App {
 
   initLoginListener(): void {
     document.addEventListener('userLogin', (event: Event) => this.onUserLogged(event));
+  }
+
+  initStartSprintListener(): void {
+    document.addEventListener('startSprint', (event: Event) => this.onStartSprint(event));
+  }
+
+  async onStartSprint(event: Event): Promise<void> {
+    const startFrom = <{ runFrom: string }>(<CustomEvent>event).detail;
+    console.log('startFrom: ', startFrom);
+    const dict: Word[] = [];
+    const _ = [0, 1, 2].map(async (i) => {
+      const [words, error] = await this.model.api.getWords(0, i);
+      if (error) console.log(error);
+      if (words) dict.push(...words);
+    });
+    if (dict) {
+      this.view.gamesPage.drawSprint(dict);
+    }
   }
 
   onUserLogged(event: Event): void {
@@ -57,7 +76,7 @@ class App {
       }
     } else {
       // TODO: prepare some data if needed for page
-      this.view.renderPage(hash);
+      this.view.renderPage(hash, [], this.model.isRegisteredUser);
     }
   }
 

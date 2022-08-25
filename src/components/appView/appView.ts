@@ -33,7 +33,7 @@ class AppView {
     this.header = new Header();
     this.homePage = new HomePage();
     this.authPage = new AuthPage();
-    this.gamesPage = new GamesPage();
+    this.gamesPage = new GamesPage(false);
     this.textbookPage = new TextbookPage();
     this.statisticPage = new StatisticPage();
     this.errorPage = new ErrorPage();
@@ -59,6 +59,7 @@ class AppView {
         break;
       case 'games':
         this.gamesPage.create();
+        this.gamesPage.initListeners();
         break;
       case 'statistic':
         this.statisticPage.create();
