@@ -1,4 +1,4 @@
-import './ErrorPage.css';
+import './errorPage.css';
 import BaseComponent from '../baseComponent/baseComponent';
 
 class ErrorPage extends BaseComponent {

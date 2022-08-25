@@ -9,6 +9,7 @@ body {
   margin: 0 auto;
   height: 100vh;
   font-family: 'Roboto Condensed', sans-serif;
+  color: #27262a;
 }
 body::-webkit-scrollbar {
   width: 5px;
@@ -42,13 +43,13 @@ p {
   flex: 1 1 auto;
   margin: 75px auto 0;
   width: 100%;
-  background: #eee;
+  background: #ebebeb;
 }
 .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
-  max-width: 1920px;
-  width: 95%;
+  max-width: 1440px;
+  width: 97%;
 }

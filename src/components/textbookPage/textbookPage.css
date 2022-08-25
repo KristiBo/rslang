@@ -1,0 +1,69 @@
+.textbook {
+  flex-direction: column;
+  padding: 20px 0;
+  gap: 30px;
+}
+.textbook__cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.textbook__pagination-buttons,
+.textbook__english-lvl {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.textbook__button {
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 10px;
+  font: inherit;
+  text-align: center;
+  color: #27262a;
+  background-color: transparent;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.textbook__button:hover {
+  background-color: #8359ba;
+}
+
+.button_colored {
+  background-color: #8359ba;
+}
+
+.button_transparent,
+.button_level {
+  border: 2px solid #8359ba;
+}
+
+.button_transparent:hover,
+.button_level:hover {
+  border: 2px solid #4b3683;
+}
+
+.button_level.active {
+  background-color: #4b3683;
+}
+
+.button_number {
+  border: 2px solid #4b3683;
+  cursor: default;
+}
+.button_number:hover {
+  background-color: transparent;
+}
+
+.button_transparent:disabled {
+  color: #cdcdcd;
+  border-color: #cdcdcd;
+  pointer-events: none;
+}

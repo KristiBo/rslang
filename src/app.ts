@@ -1,6 +1,7 @@
 import { TAuth } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
+import Pagination from './components/textbookPage/pagination';
 
 class App {
   model: Model;
@@ -54,6 +55,8 @@ class App {
       if (error) console.log(error); // TODO: remake it
       if (words) {
         this.view.renderPage(hash, words, this.model.isRegisteredUser);
+        const pagination = new Pagination();
+        pagination.addListenersToBtns();
       }
     } else {
       // TODO: prepare some data if needed for page
