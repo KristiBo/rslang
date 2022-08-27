@@ -16,7 +16,7 @@ class Footer extends BaseComponent {
         </div>`;
 
   constructor() {
-    super('footer', ['footer'], 'footer');
+    super('footer', 'footer', 'footer');
   }
 
   create(): void {

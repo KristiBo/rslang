@@ -9,6 +9,7 @@ import HomePage from '../homePage/homePage';
 import StatisticPage from '../statisticPage/statisticPage';
 import TextbookPage from '../textbookPage/textbookPage';
 import BurgerMenu from '../header/burgerMenu';
+import Pagination from '../textbookPage/pagination';
 
 class AppView {
   header: Header;
@@ -29,6 +30,8 @@ class AppView {
 
   burgerMenu: BurgerMenu;
 
+  pagination: Pagination;
+
   constructor() {
     this.header = new Header();
     this.homePage = new HomePage();
@@ -39,6 +42,7 @@ class AppView {
     this.errorPage = new ErrorPage();
     this.footer = new Footer();
     this.burgerMenu = new BurgerMenu();
+    this.pagination = new Pagination();
   }
 
   renderPage(pageId: string, data?: Word[], userState?: boolean): void {
@@ -53,6 +57,7 @@ class AppView {
         break;
       case 'textbook':
         this.textbookPage.create();
+        this.pagination.addListenersToBtns();
         if (data) {
           this.textbookPage.drawCards(data, userState);
         }

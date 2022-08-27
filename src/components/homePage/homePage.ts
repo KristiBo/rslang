@@ -4,7 +4,7 @@ class HomePage extends BaseComponent {
   inner = '<h2 class="main__title">Главная страница</h2>';
 
   constructor() {
-    super('main', ['main'], 'home');
+    super('main', 'main', 'home');
   }
 }
 

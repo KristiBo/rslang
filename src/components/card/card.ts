@@ -1,5 +1,5 @@
 import './cards.css';
-import URL from '../../shared/constants';
+import { URL } from '../../shared/constants';
 import Img from '../../shared/img';
 import NewElem from '../../shared/newelem';
 import { Word, CardOptions } from '../../shared/types';

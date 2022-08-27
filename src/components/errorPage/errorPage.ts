@@ -7,7 +7,7 @@ class ErrorPage extends BaseComponent {
             </div>`;
 
   constructor() {
-    super('main', ['main'], 'error');
+    super('main', 'main', 'error');
   }
 }
 

@@ -3,9 +3,11 @@ class BaseComponent {
 
   inner!: string;
 
-  constructor(tagName: string, className: string[], idName: string) {
+  constructor(tagName: string, className: string, idName: string) {
     this.container = document.createElement(tagName);
-    this.container.classList.add(className.join(','));
+    let tempClass: string[] = [];
+    if (/\s/.test(className)) tempClass = className.split(' ');
+    this.container.classList.add(...(tempClass.length ? tempClass : [className]));
     this.container.id = idName;
   }
 

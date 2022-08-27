@@ -7,7 +7,7 @@ class Header extends BaseComponent {
           <div class="header__logo logo">
             <a href="#/home" class="logo__link">
               <img src="./assets/icons/logo.png" alt="logo" class="logo__img">
-            </a>          
+            </a>
             <h1 class="logo__title">RS Lang</h1>
           </div>
           <nav class="nav">
@@ -35,7 +35,7 @@ class Header extends BaseComponent {
         </div>`;
 
   constructor() {
-    super('header', ['header'], 'header-container');
+    super('header', 'header', 'header-container');
   }
 
   create(): void {

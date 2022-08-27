@@ -1,8 +1,11 @@
 import Model from '../model/model';
 import TextbookPage from './textbookPage';
-
-const INITIAL_PAGE_NR = 1;
-const LAST_PAGE_NR = 30;
+import {
+  INITIAL_PAGE_NR,
+  LAST_PAGE_NR,
+  englishLevels,
+  pageColors,
+} from '../../shared/constants';
 
 class Pagination {
   pageNr: number;
@@ -15,7 +18,7 @@ class Pagination {
 
   constructor() {
     this.pageNr = INITIAL_PAGE_NR;
-    this.groupNr = INITIAL_PAGE_NR;
+    this.groupNr = 0;
     this.model = new Model();
     this.book = new TextbookPage();
   }
@@ -29,7 +32,7 @@ class Pagination {
     const levelBtns = document.querySelectorAll('.button_level');
     levelBtns.forEach((el) => {
       el.addEventListener('click', () => {
-        this.groupNr = Number(el.innerHTML);
+        this.groupNr = englishLevels.indexOf(el.innerHTML);
         cards.innerHTML = '';
         this.changeWords();
         levelBtns.forEach((elem) => elem.classList.remove('active'));
@@ -76,12 +79,29 @@ class Pagination {
   }
 
   async changeWords(): Promise<void> {
-    const page = this.pageNr - 1;
-    const group = this.groupNr - 1;
-    const [words] = await this.model.api.getWords(group, page);
+    // const page = this.pageNr - 1;
+    // const group = this.groupNr;
+    const [words] = await this.model.api.getWords(this.getGroupNr(), this.getPageNr());
     if (words) {
       this.book.drawCards(words);
+      this.changeBcgColor();
     }
+  }
+
+  getGroupNr(): number {
+    const group = this.groupNr;
+    return group;
+  }
+
+  getPageNr(): number {
+    const page = this.pageNr - 1;
+    return page;
+  }
+
+  changeBcgColor(): void {
+    const textbook = document.getElementById('textbook') as HTMLElement;
+    const color = pageColors[this.groupNr];
+    textbook.style.backgroundColor = color;
   }
 
   addNewWords(): void {
@@ -109,7 +129,9 @@ class Pagination {
   goToNextPage(): void {
     this.pageNr += 1;
     this.changePageNumber();
-    if (this.pageNr >= LAST_PAGE_NR) this.getDisabledNextBtn();
+    if (this.pageNr >= LAST_PAGE_NR) {
+      this.getDisabledNextBtn();
+    }
     this.getActivePrevBtn();
     this.addNewWords();
   }
@@ -117,7 +139,9 @@ class Pagination {
   goToPrevPage(): void {
     this.pageNr -= 1;
     this.changePageNumber();
-    if (this.pageNr <= INITIAL_PAGE_NR) this.getDisabledPrevBtn();
+    if (this.pageNr <= INITIAL_PAGE_NR) {
+      this.getDisabledPrevBtn();
+    }
     this.getActiveNextBtn();
     this.addNewWords();
   }
