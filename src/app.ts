@@ -1,4 +1,4 @@
-import { Word, TAuth } from './shared/types';
+import { Word, TAuth, SprintWord } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
 
@@ -18,6 +18,7 @@ class App {
     this.initOnHashChange();
     this.initLoginListener();
     this.initStartSprintListener();
+    this.initGameStatListener();
   }
 
   // show auth form
@@ -40,15 +41,26 @@ class App {
     document.addEventListener('startSprint', (event: Event) => this.onStartSprint(event));
   }
 
+  initGameStatListener(): void {
+    document.addEventListener('gameStatistic', (event: Event) => this.onGameStat(event));
+  }
+
+  async onGameStat(event: Event): Promise<void> {
+    const { game, words } = <{ game: string, words: SprintWord[] }>(<CustomEvent>event).detail;
+    console.log('GameStat from: ', game);
+    console.log('GameStat words: ', words);
+  }
+
   async onStartSprint(event: Event): Promise<void> {
     const startFrom = <{ runFrom: string }>(<CustomEvent>event).detail;
     console.log('startFrom: ', startFrom);
     const dict: Word[] = [];
-    const _ = [0, 1, 2].map(async (i) => {
+    const promises = ([0, 1, 2].map(async (i) => {
       const [words, error] = await this.model.api.getWords(0, i);
       if (error) console.log(error);
       if (words) dict.push(...words);
-    });
+    }));
+    await Promise.all(promises);
     if (dict) {
       this.view.gamesPage.drawSprint(dict);
     }

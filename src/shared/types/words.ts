@@ -15,9 +15,14 @@ interface Word {
   textExampleTranslate: string;
 }
 
+type SprintWord = Word & {
+  wrong?: string;
+  answer?: boolean;
+};
+
 interface CardOptions {
   isDifficult: boolean;
   isStudied: boolean;
 }
 
-export { Word, CardOptions };
+export { Word, CardOptions, SprintWord };

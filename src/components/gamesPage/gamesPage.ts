@@ -40,8 +40,9 @@ class GamesPage extends BaseComponent {
   }
 
   drawSprint(words: Word[]): void {
-    const container = <HTMLElement>document.querySelector('.game__container');
-    const _ = new Sprint(container, words);
+    this.container.innerHTML = '';
+    const sprint = new Sprint(this.container);
+    sprint.setWords(words);
   }
 
   setUserState(userState: boolean): void {
