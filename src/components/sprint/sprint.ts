@@ -229,7 +229,12 @@ class Sprint extends NewElem {
   private initReplayListener(elem: HTMLElement): void {
     elem.addEventListener('click', () => {
       this.sound.click.run();
-      const reWords = <Array<Omit<SprintWord, 'answer' | 'wrong'>>>(this.words);
+      const reWords = this.words.map((item) => {
+        const word = item;
+        word.answer = undefined;
+        word.wrong = undefined;
+        return word;
+      });
       this.setWords(reWords);
       this.initValues();
       this.gameDiv.classList.remove('nogap');

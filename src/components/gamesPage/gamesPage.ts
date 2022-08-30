@@ -19,7 +19,6 @@ class GamesPage extends BaseComponent {
   }
 
   drawSprint(words: Word[]): void {
-    console.log('s');
     this.container.innerHTML = '';
     const sprint = new Sprint(this.container);
     sprint.setWords(words);
