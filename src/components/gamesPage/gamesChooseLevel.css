@@ -1,0 +1,29 @@
+.game__lvl-content {
+  display: flex;
+  gap: 20px;
+}
+.lvl-content__link {
+  width: 2.5rem;
+  min-width: 0;
+}
+.game__lvl-header {
+  font-size: 1.2rem;
+}
+.link_1 {
+  background-color: #ffd;
+}
+.link_2 {
+  background-color: #dff;
+}
+.link_3 {
+  background-color: #cdf;
+}
+.link_4 {
+  background-color: #ddf;
+}
+.link_5 {
+  background-color: #fdc;
+}
+.link_6 {
+  background-color: #fcc;
+}

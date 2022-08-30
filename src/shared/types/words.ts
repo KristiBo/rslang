@@ -15,9 +15,18 @@ interface Word {
   textExampleTranslate: string;
 }
 
+type SprintWord = Word & {
+  wrong?: string;
+  answer?: boolean;
+};
+
 interface CardOptions {
   isDifficult: boolean;
   isStudied: boolean;
 }
 
-export { Word, CardOptions };
+type TxtBkReference = Pick<Word, 'group' | 'page'>;
+
+export {
+  Word, CardOptions, SprintWord, TxtBkReference,
+};
