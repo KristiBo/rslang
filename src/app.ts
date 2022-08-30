@@ -1,5 +1,5 @@
 import {
-  Word, TAuth, SprintWord, PAGE,
+  Word, TAuth, SprintWord, PAGE, TxtBkReference,
 } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
@@ -40,7 +40,7 @@ class App {
   }
 
   initStartSprintListener(): void {
-    document.addEventListener('startSprint', (event: Event) => this.onStartSprint(event));
+    document.addEventListener('startSprint', (event: Event) => this.onRunSprintFromTxtBk(event));
   }
 
   initGameStatListener(): void {
@@ -53,18 +53,31 @@ class App {
     console.log('GameStat words: ', words);
   }
 
-  async onStartSprint(event: Event): Promise<void> {
-    const startFrom = <{ runFrom: string }>(<CustomEvent>event).detail;
-    console.log('startFrom: ', startFrom);
+  // TxtBkReference = { group: 0..6, page: 0..29 }
+  async onRunSprintFromTxtBk(event: Event): Promise<void> {
+    const { group, page } = <TxtBkReference>(<CustomEvent>event).detail;
     const dict: Word[] = [];
-    const promises = ([0, 1, 2].map(async (i) => {
-      const [words, error] = await this.model.api.getWords(0, i);
+    let pages: number[] = [];
+    if (group === 6) {
+      // TODO: get words for group 6: difficulty words
+    } else if (page < 3) {
+      pages = [0, 1, 2];
+      pages.length = page + 1;
+    } else {
+      // 2 random previous pages + current page
+      pages = [...Array(page)].map((_, idx) => idx).sort(() => Math.random() - 0.5);
+      pages.length = 2;
+      pages.push(page);
+    }
+    // get words for pages
+    const promises = (pages.map(async (i) => {
+      const [words, error] = await this.model.api.getWords(group, i);
       if (error) console.log(error);
       if (words) dict.push(...words);
     }));
     await Promise.all(promises);
     if (dict) {
-      this.view.gamesPage.drawSprint(dict);
+      this.view.renderPage(PAGE.PLAYSPRINT, dict);
     }
   }
 

@@ -25,4 +25,8 @@ interface CardOptions {
   isStudied: boolean;
 }
 
-export { Word, CardOptions, SprintWord };
+type TxtBkReference = Pick<Word, 'group' | 'page'>;
+
+export {
+  Word, CardOptions, SprintWord, TxtBkReference,
+};
