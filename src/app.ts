@@ -1,6 +1,7 @@
 import { TAuth } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
+import { englishLevels } from './shared/constants';
 
 class App {
   model: Model;
@@ -54,6 +55,7 @@ class App {
       if (error) console.log(error); // TODO: remake it
       if (words) {
         this.view.renderPage(hash, words, this.model.isRegisteredUser);
+        this.addListenersToBtns();
       }
     } else {
       // TODO: prepare some data if needed for page
@@ -65,22 +67,50 @@ class App {
     window.addEventListener('hashchange', () => this.onHashChange());
   }
 
-  // async changeWords(): Promise<void> {
-  //   const [words] = await this.model.api.getWords(
-  //     this.view.pagination.getGroupNr(),
-  //     this.view.pagination.getPageNr(),
-  //   );
-  //   if (words) {
-  //     this.view.textbookPage.drawCards(words, this.model.isRegisteredUser);
-  //     this.view.pagination.changeBcgColor();
-  //   }
-  // }
+  async changeWords(): Promise<void> {
+    const [words] = await this.model.api.getWords(
+      this.view.pagination.groupNr,
+      this.view.pagination.getPageNr(),
+    );
+    if (words) {
+      const cards = document.querySelector('.textbook__cards') as HTMLButtonElement;
+      cards.innerHTML = '';
+      this.view.textbookPage.drawCards(words, this.model.isRegisteredUser);
+      this.view.pagination.changeBcgColor();
+    }
+  }
 
-  // addNewWords(): void {
-  //   const cards = document.querySelector('.textbook__cards') as HTMLButtonElement;
-  //   cards.innerHTML = '';
-  //   this.changeWords();
-  // }
+  addListenersToBtns(): void {
+    const btnStart = document.querySelector('.button_start') as HTMLButtonElement;
+    const btnPrev = document.querySelector('.button_prev') as HTMLButtonElement;
+    const btnNext = document.querySelector('.button_next') as HTMLButtonElement;
+    const btnEnd = document.querySelector('.button_end') as HTMLButtonElement;
+    const levelBtns = document.querySelectorAll('.button_level');
+    levelBtns.forEach((el) => {
+      el.addEventListener('click', () => {
+        this.view.pagination.groupNr = englishLevels.indexOf(el.innerHTML);
+        this.changeWords();
+        levelBtns.forEach((elem) => elem.classList.remove('active'));
+        el.classList.add('active');
+      });
+    });
+    btnNext.addEventListener('click', () => {
+      this.view.pagination.goToNextPage();
+      this.changeWords();
+    });
+    btnPrev.addEventListener('click', () => {
+      this.view.pagination.goToPrevPage();
+      this.changeWords();
+    });
+    btnEnd.addEventListener('click', () => {
+      this.view.pagination.goToLastPage();
+      this.changeWords();
+    });
+    btnStart.addEventListener('click', () => {
+      this.view.pagination.goToFirstPage();
+      this.changeWords();
+    });
+  }
 }
 
 export default App;

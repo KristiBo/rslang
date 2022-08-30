@@ -57,7 +57,6 @@ class AppView {
         break;
       case 'textbook':
         this.textbookPage.create();
-        this.pagination.addListenersToBtns();
         if (data) {
           this.textbookPage.drawCards(data, userState);
         }
