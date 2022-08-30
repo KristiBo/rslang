@@ -114,10 +114,6 @@
 .window__question {
   font-size: 1.5rem;
 }
-.soft-click,
-.window__btns > .btn:active {
-  box-shadow: none !important;
-}
 .window__btns > .btn_right {
   border-color: #80c080;
   background-color: #90d09099;
@@ -193,6 +189,10 @@
 .header_right,
 .header_wrong {
   padding-top: .5rem;
+}
+.window__btns > .soft-click,
+.window__btns > .btn:active {
+  box-shadow: none;
 }
 @keyframes ring {
   0% {
