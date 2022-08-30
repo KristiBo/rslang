@@ -1,6 +1,6 @@
 import './sprint.css';
 import {
-  Word, SprintWord, ANSWER, ICON,
+  Word, SprintWord, ANSWER, ICON, Group,
 } from '../../shared/types';
 import NewElem from '../../shared/newelem';
 import Button from '../../shared/button';
@@ -45,13 +45,22 @@ class Sprint extends NewElem {
 
   private onPressKeyb: (e: KeyboardEvent) => void;
 
+  private sound: Group<Sound>;
+
   constructor(node: HTMLElement) {
     super(node, 'div', 'sprint');
     this.gameDiv = new NewElem(this.elem, 'div', 'game__window modal__window').elem;
-    this.drawStartCountdown();
     this.onClickLeft = () => { };
     this.onClickRight = () => { };
     this.onPressKeyb = () => { };
+    this.sound = {
+      click: new Sound(this.gameDiv, 'window__audio audio_click', './assets/audio/click.mp3'),
+      start: new Sound(this.gameDiv, 'window__audio audio_start', './assets/audio/start.mp3'),
+      right: new Sound(this.gameDiv, 'window__audio audio_right', './assets/audio/right.mp3'),
+      wrong: new Sound(this.gameDiv, 'window__audio audio_wrong', './assets/audio/wrong.mp3'),
+      end: new Sound(this.gameDiv, 'window__audio audio_end', './assets/audio/end.mp3'),
+    };
+    this.drawStartCountdown();
   }
 
   private countdown(node: HTMLElement, time: number, callback: () => void): void {
@@ -68,7 +77,7 @@ class Sprint extends NewElem {
     }, 1000);
   }
 
-  private progressRing(node: HTMLElement, current: number): void {
+  private progressRing(node: HTMLElement, current = 0): void {
     const addAngle = 6; // angle increment
     const maxAngle = (59 - 1) * addAngle; // max progress ring angle for 59 sec
     const next = current + addAngle;
@@ -84,7 +93,10 @@ class Sprint extends NewElem {
   }
 
   private initValues(): void {
-    this.gameDiv.innerHTML = '';
+    // remove non-audio content
+    for (let i = this.gameDiv.childNodes.length - 1; i >= 0; i -= 1) {
+      if (this.gameDiv.childNodes[i].nodeName !== 'AUDIO') this.gameDiv.childNodes[i].remove();
+    }
     this.wordIdx = 0;
     this.rightAnswers = 0;
     this.wrongAnswers = 0;
@@ -94,6 +106,7 @@ class Sprint extends NewElem {
 
   private drawStartCountdown(): void {
     const counter = new NewElem(this.gameDiv, 'p', 'window__counter counter_begin').elem;
+    this.sound.start.run();
     this.countdown(counter, 5, () => this.startGame()); // countdown for 5 sec
   }
 
@@ -119,7 +132,7 @@ class Sprint extends NewElem {
     this.btns.right = new Button(this.btns.self, 'Да ➝', 'window__btn btn btn_right').elem;
     const counterDiv = new NewElem(this.gameDiv, 'div', 'window__counter counter_wrapper').elem;
     this.counter = new NewElem(counterDiv, 'div', 'window__counter counter_game').elem;
-    this.progressRing(counterDiv, 0);
+    this.progressRing(counterDiv);
     this.countdown(this.counter, 59, () => this.setGameOver()); // countdown for 59 sec
     this.drawWord();
     this.updateScore();
@@ -156,6 +169,7 @@ class Sprint extends NewElem {
   }
 
   private endGame(): void {
+    this.sound.end.run();
     let _: HTMLElement;
     if (this.counter) {
       this.counter.parentElement?.remove();
@@ -214,6 +228,7 @@ class Sprint extends NewElem {
 
   private initReplayListener(elem: HTMLElement): void {
     elem.addEventListener('click', () => {
+      this.sound.click.run();
       const reWords = <Array<Omit<SprintWord, 'answer' | 'wrong'>>>(this.words);
       this.setWords(reWords);
       this.initValues();
@@ -227,6 +242,7 @@ class Sprint extends NewElem {
     this.words[this.wordIdx].answer = (answer === goodAnswer);
     const classForAnswer = this.words[this.wordIdx].answer ? 'green-shadow' : 'red-shadow';
     if (this.words[this.wordIdx].answer) {
+      this.sound.right.run();
       this.rightAnswers += 1;
       if (this.rightAnswers < 4) { // первые 3 ответа по 10 баллов
         this.score += 10;
@@ -239,6 +255,7 @@ class Sprint extends NewElem {
       }
       this.updateScore();
     } else {
+      this.sound.wrong.run();
       this.wrongAnswers += 1;
     }
     this.gameDiv.classList.add(classForAnswer);

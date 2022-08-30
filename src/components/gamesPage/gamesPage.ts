@@ -7,8 +7,8 @@ class GamesPage extends BaseComponent {
 
   inner = `<h2 class="main__title">Игры</h2>
     <div class="game__btns" >
-      <button class="game__btn btn btn_audiocall" id="btn-audiocall">AudioCall</button>
-      <button class="game__btn btn btn_sprint" id="btn-sprint">Sprint</button>
+      <a class="game__btn btn btn_audiocall" id="btn-audiocall" href="/#/games/audiocall">AudioCall</a>
+      <a class="game__btn btn btn_sprint" id="btn-sprint" href="/#/games/sprint">Sprint</a>
     </div>
     <div class="game__container"></div >
     `;
@@ -18,35 +18,11 @@ class GamesPage extends BaseComponent {
     this.userState = userState;
   }
 
-  initListeners(): void {
-    const btnAudioCall = <HTMLElement>document.querySelector('.btn_audiocall');
-    btnAudioCall.addEventListener('click', () => this.onAudioCallClick());
-    const btnSprint = <HTMLElement>document.querySelector('.btn_sprint');
-    btnSprint.addEventListener('click', () => this.onSprintClick());
-  }
-
-  onAudioCallClick(): void {
-    console.log('AudioCall click');
-  }
-
-  onSprintClick(): void {
-    console.log('Sprint click');
-    this.dispatchSprintStartEvent();
-  }
-
-  dispatchSprintStartEvent(): void {
-    const event = new CustomEvent('startSprint', { detail: { runFrom: 'games' } });
-    document.dispatchEvent(event);
-  }
-
   drawSprint(words: Word[]): void {
+    console.log('s');
     this.container.innerHTML = '';
     const sprint = new Sprint(this.container);
     sprint.setWords(words);
-  }
-
-  setUserState(userState: boolean): void {
-    this.userState = userState;
   }
 }
 

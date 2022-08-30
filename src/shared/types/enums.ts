@@ -3,10 +3,19 @@ enum ANSWER {
   RIGHT = 'RIGHT',
 }
 
+enum GAME {
+  SPRINT = 'sprint',
+  AUDIOCALL = 'audiocall',
+}
+
 enum PAGE {
   HOME = 'home',
   TEXTBOOK = 'textbook',
   GAMES = 'games',
+  GAMESPRINT = 'games/sprint',
+  GAMEAUDIOCALL = 'games/audiocall',
+  PLAYSPRINT = 'play/sprint',
+  PLAYAUDIOCALL = 'play/audiocall',
   STATISTIC = 'statistic',
 }
 
@@ -23,5 +32,5 @@ enum ICON {
 }
 
 export {
-  ANSWER, PAGE, METHOD, ICON,
+  ANSWER, GAME, PAGE, METHOD, ICON,
 };

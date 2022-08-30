@@ -133,7 +133,15 @@
   width: 100%;
   padding: 0 10px;
   background-color: #dfd6;
+  margin: 0 auto auto;
   box-shadow: 0 2px 5px #3336 inset, 0 -2px 5px #3336 inset;
+}
+.window__table::-webkit-scrollbar {
+  width: 5px;
+  background: #929292;
+}
+.window__table::-webkit-scrollbar-thumb {
+  background-color: #605872;
 }
 .window__header,
 .btn_replay {
@@ -180,6 +188,7 @@
 }
 .nogap {
   gap: 0;
+  justify-content: space-between;
 }
 .header_right,
 .header_wrong {
