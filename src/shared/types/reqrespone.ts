@@ -1,6 +1,6 @@
 import { Word } from './words';
+import { Maybe } from './common';
 
-type Maybe<T> = T | null;
 type ReqResponse<T> = [Maybe<T>, Maybe<unknown>];
 
 interface signinResponse {
@@ -71,5 +71,4 @@ export {
   TUser,
   TUserAuth,
   TAuth,
-  Maybe,
 };

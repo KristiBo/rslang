@@ -1,4 +1,4 @@
-import { Word } from '../../shared/types';
+import { Word, GAME } from '../../shared/types';
 import './basic.css';
 import AuthPage from '../authPage/authPage';
 import ErrorPage from '../errorPage/errorPage';
@@ -9,6 +9,7 @@ import HomePage from '../homePage/homePage';
 import StatisticPage from '../statisticPage/statisticPage';
 import TextbookPage from '../textbookPage/textbookPage';
 import BurgerMenu from '../header/burgerMenu';
+import GamesChooseLevel from '../gamesPage/gamesChooseLevel';
 import Pagination from '../textbookPage/pagination';
 
 class AppView {
@@ -30,18 +31,21 @@ class AppView {
 
   burgerMenu: BurgerMenu;
 
+  gamesChooseLevel: GamesChooseLevel;
+
   pagination: Pagination;
 
   constructor() {
     this.header = new Header();
     this.homePage = new HomePage();
     this.authPage = new AuthPage();
-    this.gamesPage = new GamesPage();
+    this.gamesPage = new GamesPage(false);
     this.textbookPage = new TextbookPage();
     this.statisticPage = new StatisticPage();
     this.errorPage = new ErrorPage();
     this.footer = new Footer();
     this.burgerMenu = new BurgerMenu();
+    this.gamesChooseLevel = new GamesChooseLevel();
     this.pagination = new Pagination();
   }
 
@@ -63,6 +67,19 @@ class AppView {
         break;
       case 'games':
         this.gamesPage.create();
+        // this.gamesPage.initListeners();
+        break;
+      case 'play/sprint':
+        if (data) {
+          this.gamesPage.create();
+          this.gamesPage.drawSprint(data);
+        }
+        break;
+      case 'games/sprint':
+        this.gamesChooseLevel.draw(GAME.SPRINT);
+        break;
+      case 'games/audiocall':
+        this.gamesChooseLevel.draw(GAME.AUDIOCALL);
         break;
       case 'statistic':
         this.statisticPage.create();
