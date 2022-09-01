@@ -29,6 +29,7 @@ enum METHOD {
 
 enum ICON {
   SPEAKER = 'speaker',
+  CLOSE = 'close',
 }
 
 export {
