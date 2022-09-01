@@ -1,24 +1,3 @@
-.levels {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    gap: 15px;
-}
-
-.levels__title {
-    font-size: 30px;
-}
-
-.levels__subtitle {
-    font-size: 26px;
-}
-
 .button-sm {
     cursor: pointer;
     color: #27262a;
@@ -33,11 +12,19 @@
 }
 
 .button-light {
-    padding: 10px;
+    padding: 10px 15px;
     background-color: transparent;
     border: 2px solid #8359ba;
     cursor: pointer;
-    width: 150px;
+    min-width: 100px;
+}
+
+.button-light.incorrect {
+    border: 2px solid #fa4141;
+}
+
+.button-light.correct {
+    border: 2px solid #57fa41;
 }
 
 .button-light:hover {
@@ -45,6 +32,42 @@
     filter: drop-shadow(0 0 3px #605872);
 }
 
+.button-light:disabled {
+    color: #000000;
+}
+
 .button-sm:hover {
     border: 1px solid #0f0343;
+}
+
+.audio-game__svg {
+    width: 100px;
+}
+
+.audio-game {
+    margin: 150px auto 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 25px;
+}
+.audio-game__buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.audio-game__close {
+    position: absolute;
+    top: 100px;
+    right: 50px;
+    cursor: pointer;
+}
+
+.audio-game__close svg {
+    width: 20px;
+    height: 20px;
 }
