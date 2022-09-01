@@ -20,6 +20,7 @@ class App {
     this.initOnHashChange();
     this.initLoginListener();
     this.initStartSprintListener();
+    this.initStartAudioListener();
     this.initGameStatListener();
   }
 
@@ -41,6 +42,10 @@ class App {
 
   initStartSprintListener(): void {
     document.addEventListener('startSprint', (event: Event) => this.onRunSprintFromTxtBk(event));
+  }
+
+  initStartAudioListener(): void {
+    document.addEventListener('startAudio', (event: Event) => this.onRunAudioFromTxtBk(event));
   }
 
   initGameStatListener(): void {
@@ -81,6 +86,33 @@ class App {
     }
   }
 
+  async onRunAudioFromTxtBk(event: Event): Promise<void> {
+    const { group, page } = <TxtBkReference>(<CustomEvent>event).detail;
+    const dict: Word[] = [];
+    let pages: number[] = [];
+    if (group === 6) {
+      // TODO: get words for group 6: difficulty words
+    } else if (page < 3) {
+      pages = [0, 1, 2];
+      pages.length = page + 1;
+    } else {
+      // 2 random previous pages + current page
+      pages = [...Array(page)].map((_, idx) => idx).sort(() => Math.random() - 0.5);
+      pages.length = 2;
+      pages.push(page);
+    }
+    // get words for pages
+    const promises = (pages.map(async (i) => {
+      const [words, error] = await this.model.api.getWords(group, i);
+      if (error) console.log(error);
+      if (words) dict.push(...words);
+    }));
+    await Promise.all(promises);
+    if (dict) {
+      this.view.renderPage(PAGE.PLAYAUDIOCALL, dict);
+    }
+  }
+
   async runSprintFromGames(level: number): Promise<void> {
     if (level > 0 && level < 7 && +level.toFixed(0) === level) {
       const dict: Word[] = [];
@@ -96,6 +128,28 @@ class App {
       await Promise.all(promises);
       if (dict) {
         this.view.renderPage(PAGE.PLAYSPRINT, dict);
+      }
+    } else {
+      window.location.hash = 'error';
+      // throw new Error(`Get wrong level number while starting Sprint game: ${level}`);
+    }
+  }
+
+  async runAudioFromGames(level: number): Promise<void> {
+    if (level > 0 && level < 7 && +level.toFixed(0) === level) {
+      const dict: Word[] = [];
+      const dbLevel = level - 1; // Levels in DB starts from 0
+      // generate array with 3 random numbers from range [0..29]
+      const trio = [...Array(30)].map((_, idx) => idx).sort(() => Math.random() - 0.5);
+      trio.length = 3;
+      const promises = (trio.map(async (i) => {
+        const [words, error] = await this.model.api.getWords(dbLevel, i);
+        if (error) console.log(error);
+        if (words) dict.push(...words);
+      }));
+      await Promise.all(promises);
+      if (dict) {
+        this.view.renderPage(PAGE.PLAYAUDIOCALL, dict);
       }
     } else {
       window.location.hash = 'error';
@@ -123,8 +177,10 @@ class App {
       if (words) {
         this.view.renderPage(hash, words, this.model.isRegisteredUser);
       }
-    } else if (hashPart === PAGE.GAMESPRINT || hashPart === PAGE.GAMEAUDIOCALL) {
+    } else if (hashPart === PAGE.GAMESPRINT) {
       this.runSprintFromGames(Number(hash.slice(-1)));
+    } else if (hashPart === PAGE.GAMEAUDIOCALL) {
+      this.runAudioFromGames(Number(hash.slice(-1)));
     } else {
       // TODO: prepare some data if needed for page
       this.view.renderPage(hash, [], this.model.isRegisteredUser);

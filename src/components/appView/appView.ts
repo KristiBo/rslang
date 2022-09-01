@@ -71,6 +71,12 @@ class AppView {
           this.gamesPage.drawSprint(data);
         }
         break;
+      case 'play/audiocall':
+        if (data) {
+          this.gamesPage.create();
+          this.gamesPage.drawAudio(data);
+        }
+        break;
       case 'games/sprint':
         this.gamesChooseLevel.draw(GAME.SPRINT);
         break;
