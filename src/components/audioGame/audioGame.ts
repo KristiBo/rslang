@@ -11,11 +11,15 @@ import SVG from '../../shared/svgLib';
 import URL from '../../shared/constants';
 
 class AudioGame extends NewElem {
+  private gameContainer: HTMLElement;
+
   private gameDiv: HTMLElement;
 
   private audioIcon: HTMLElement | null = null;
 
   private audioElem: Sound | null = null;
+
+  private counter: HTMLElement | null = null;
 
   private answerButtonsContainer: HTMLElement | null = null;
 
@@ -23,41 +27,20 @@ class AudioGame extends NewElem {
 
   private nextButton: HTMLButtonElement | null = null;
 
-  // private score = 0;
-
-  // private scoreDiv: HTMLElement | null = null;
-
-  // private questionDiv: HTMLElement | null = null;
-
-  // private btns: {
-  //   self: HTMLElement | null,
-  //   left: HTMLElement | null,
-  //   right: HTMLElement | null
-  // } = { self: null, left: null, right: null };
-
   private words: string[][] = [];
 
   private wordIdx = 0;
 
   private indexOfRightAnswer = 0;
 
-  // private rightAnswers = 0;
-
-  // private wrongAnswers = 0;
-
-  // private isGameNotOver = true;
-
-  // private onClickLeft: () => void;
-
-  // private onClickRight: () => void;
-
-  // private onPressKeyb: (e: KeyboardEvent) => void;
+  private counterNumber = 20;
 
   private sound: Group<Sound>;
 
   constructor(node: HTMLElement) {
     super(node, 'div', 'audiocall');
-    this.gameDiv = new NewElem(this.elem, 'div', 'audio-game').elem;
+    this.gameContainer = new NewElem(this.elem, 'div', 'audio-game-container').elem;
+    this.gameDiv = new NewElem(this.gameContainer, 'div', 'audio-game').elem;
     this.sound = {
       click: new Sound(this.gameDiv, 'window__audio audio_click', './assets/audio/click.mp3'),
       start: new Sound(this.gameDiv, 'window__audio audio_start', './assets/audio/start.mp3'),
@@ -76,6 +59,8 @@ class AudioGame extends NewElem {
     this.initAudioListener(this.audioIcon, this.audioElem);
     const audioSvg = new NewElem(this.audioIcon, 'div', 'audio-game__svg').elem;
     audioSvg.innerHTML = SVG(ICON.SPEAKER);
+    const counterDiv = new NewElem(this.gameDiv, 'div', 'audio-game__counter-wrapper').elem;
+    this.counter = new NewElem(counterDiv, 'div', 'audio-game__counter').elem;
     this.answerButtonsContainer = new NewElem(this.gameDiv, 'div', 'audio-game__buttons').elem;
     const amountOfAnswers = 5;
     for (let i = 0; i < amountOfAnswers; i += 1) {
@@ -109,26 +94,24 @@ class AudioGame extends NewElem {
     }, 1000);
   }
 
-  private initValues(): void {
-    // remove non-audio content
-    for (let i = this.gameDiv.childNodes.length - 1; i >= 0; i -= 1) {
-      if (this.gameDiv.childNodes[i].nodeName !== 'AUDIO') this.gameDiv.childNodes[i].remove();
-    }
-    this.wordIdx = 0;
-    // this.rightAnswers = 0;
-    // this.wrongAnswers = 0;
-    // this.score = 0;
-    // this.isGameNotOver = true;
-  }
+  // private initValues(): void {
+  //   // remove non-audio content
+  //   for (let i = this.gameDiv.childNodes.length - 1; i >= 0; i -= 1) {
+  //     if (this.gameDiv.childNodes[i].nodeName !== 'AUDIO') this.gameDiv.childNodes[i].remove();
+  //   }
+  //   this.wordIdx = 0;
+  // }
 
   private drawStartCountdown(): void {
     const counter = new NewElem(this.gameDiv, 'p', 'window__counter counter_begin').elem;
     this.sound.start.run();
-    this.countdown(counter, 1, () => this.startGame()); // countdown for 5 sec
+    this.countdown(counter, 1, () => this.startGame());
   }
 
   private drawWord(): void {
     this.initListenersAnswer();
+    (this.counter as HTMLElement).textContent = `${this.counterNumber}`;
+    this.counterNumber -= 1;
     (this.nextButton as HTMLButtonElement).textContent = "I don't know";
     const set = new Set();
     const amountOfAnswers = 5;
@@ -157,7 +140,6 @@ class AudioGame extends NewElem {
       });
     } else {
       console.log('game end');
-      // this.endGame();
     }
   }
 
@@ -177,6 +159,7 @@ class AudioGame extends NewElem {
       });
       (this.nextButton as HTMLButtonElement).textContent = 'Next word';
     };
+
     this.answerBtns?.forEach((btn) => {
       btn.addEventListener('click', answerBtnsHandler);
     });
@@ -187,13 +170,13 @@ class AudioGame extends NewElem {
       if (btn.textContent === this.words[this.wordIdx][0]) btn.classList.add('correct');
       btn.disabled = true;
     });
-    this.wordIdx += 1;
     (this.nextButton as HTMLButtonElement).textContent = 'Next word';
   }
 
   private nextButtonHandler(e: Event): void {
     const btn = e.target as HTMLButtonElement;
     if (btn.textContent === "I don't know") {
+      this.sound.click.run();
       this.showCorrectAnswer();
     } else {
       this.wordIdx += 1;

@@ -13,7 +13,7 @@
 
 .button-light {
     padding: 10px 15px;
-    background-color: transparent;
+    background-color: #ffffff;
     border: 2px solid #8359ba;
     cursor: pointer;
     min-width: 100px;
@@ -41,18 +41,43 @@
 }
 
 .audio-game__svg {
-    width: 100px;
+    width: 110px;
+    height: 110px;
+}
+
+.audio-game__svg svg {
+    width: 100%;
+    height: 100%;
+}
+
+.audiocall {
+    width: 100%;
+    height: 100%;
+}
+.audio-game-container {
+    background-image: url('/assets/images/sprint_bg_1.png');
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
 }
 
 .audio-game {
-    margin: 150px auto 0;
+    margin: 250px auto 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     gap: 25px;
+    background-color: #ffffffcc;
+    width: 670px;
+    height: 370px;
+    border-radius: 25px;
 }
+
 .audio-game__buttons {
     display: flex;
     flex-direction: row;
@@ -70,4 +95,22 @@
 .audio-game__close svg {
     width: 20px;
     height: 20px;
+}
+
+.audio-game__counter-wrapper {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff9;
+  border-radius: 50%;
+  top: 7rem;
+  left: 7rem;
+  width: 6rem;
+  height: 6rem;
+  z-index: 5;
+}
+
+.audio-game__counter {
+    font-size: 35px;
 }
