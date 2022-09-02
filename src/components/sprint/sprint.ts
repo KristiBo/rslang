@@ -6,7 +6,7 @@ import NewElem from '../../shared/newelem';
 import Button from '../../shared/button';
 import Sound from '../../shared/sound';
 import SVG from '../../shared/svgLib';
-import URL from '../../shared/constants';
+import { URL } from '../../shared/constants';
 
 class Sprint extends NewElem {
   private gameDiv: HTMLElement;

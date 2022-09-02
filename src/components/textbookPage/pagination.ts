@@ -1,5 +1,6 @@
 import TextbookPage from './textbookPage';
 import {
+  englishLevels,
   INITIAL_PAGE_NR,
   LAST_PAGE_NR,
   pageColors,
@@ -92,6 +93,38 @@ class Pagination {
       this.getDisabledPrevBtn();
     }
     this.getActiveNextBtn();
+  }
+
+  addListenersToBtns(callback: () => void): void {
+    const btnStart = document.querySelector('.button_start') as HTMLButtonElement;
+    const btnPrev = document.querySelector('.button_prev') as HTMLButtonElement;
+    const btnNext = document.querySelector('.button_next') as HTMLButtonElement;
+    const btnEnd = document.querySelector('.button_end') as HTMLButtonElement;
+    const levelBtns = document.querySelectorAll('.button_level');
+    levelBtns.forEach((el) => {
+      el.addEventListener('click', () => {
+        this.groupNr = englishLevels.indexOf(el.innerHTML);
+        callback();
+        levelBtns.forEach((elem) => elem.classList.remove('active'));
+        el.classList.add('active');
+      });
+    });
+    btnNext.addEventListener('click', () => {
+      this.goToNextPage();
+      callback();
+    });
+    btnPrev.addEventListener('click', () => {
+      this.goToPrevPage();
+      callback();
+    });
+    btnEnd.addEventListener('click', () => {
+      this.goToLastPage();
+      callback();
+    });
+    btnStart.addEventListener('click', () => {
+      this.goToFirstPage();
+      callback();
+    });
   }
 }
 

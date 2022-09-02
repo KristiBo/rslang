@@ -11,6 +11,7 @@ import TextbookPage from '../textbookPage/textbookPage';
 import BurgerMenu from '../header/burgerMenu';
 import GamesChooseLevel from '../gamesPage/gamesChooseLevel';
 import Pagination from '../textbookPage/pagination';
+import { INITIAL_PAGE_NR } from '../../shared/constants';
 
 class AppView {
   header: Header;
@@ -61,6 +62,8 @@ class AppView {
         break;
       case 'textbook':
         this.textbookPage.create();
+        this.pagination.groupNr = 0;
+        this.pagination.pageNr = INITIAL_PAGE_NR;
         if (data) {
           this.textbookPage.drawCards(data, userState);
         }

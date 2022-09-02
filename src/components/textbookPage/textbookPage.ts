@@ -7,11 +7,11 @@ class TextbookPage extends BaseComponent {
   inner = `
         <div class="container textbook">
           <div class="textbook__games">
-            <a href="" class="game-card game-card_audio">
+            <a href="#/games/audiocall" class="game-card game-card_audio">
               <img src="./assets/icons/audiochallenge.png" alt="audio-game" class="game-card__img">
               <span class="game-card__name">Аудиовызов</span>
             </a>
-            <a href="" class="game-card game-card_sprint">
+            <a href="#/games/sprint" class="game-card game-card_sprint">
               <img src="./assets/icons/sprint.png" alt="sprint-game" class="game-card__img">
               <span class="game-card__name">Спринт</span>
             </a>
