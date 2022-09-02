@@ -73,9 +73,13 @@
     text-align: center;
     gap: 25px;
     background-color: #ffffffcc;
-    width: 670px;
+    width: 700px;
     height: 370px;
     border-radius: 25px;
+}
+
+.audio-game__word {
+    height: 20px;
 }
 
 .audio-game__buttons {
