@@ -112,6 +112,7 @@ class App {
       linkAuth.classList.add('logged-in');
       linkAuth.textContent = 'Выйти';
     }
+    console.log(authData);
   }
 
   async onHashChange(): Promise<void> {
@@ -123,6 +124,7 @@ class App {
       if (words) {
         this.view.renderPage(hash, words, this.model.isRegisteredUser);
         this.view.pagination.addListenersToBtns(() => this.changeWords());
+        this.addListenersToCards();
       }
     } else if (hashPart === PAGE.GAMESPRINT || hashPart === PAGE.GAMEAUDIOCALL) {
       this.runSprintFromGames(Number(hash.slice(-1)));
@@ -141,12 +143,28 @@ class App {
       this.view.pagination.groupNr,
       this.view.pagination.getPageNr(),
     );
+    console.log([words]);
     if (words) {
       const cards = document.querySelector('.textbook__cards') as HTMLButtonElement;
       cards.innerHTML = '';
       this.view.textbookPage.drawCards(words, this.model.isRegisteredUser);
+      console.log(this.model.isRegisteredUser);
       this.view.pagination.changeBcgColor();
+      this.addListenersToCards();
     }
+  }
+
+  addListenersToCards(): void {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card) => card.addEventListener('click', (e) => {
+      if (((e.target) as HTMLElement).closest('.btn-difficult')) {
+        this.model.api.postUsersWord(card.id, { difficulty: 'hard' });
+        console.log('difficult');
+      }
+      if (((e.target) as HTMLElement).closest('.btn-studied')) {
+        console.log('studied');
+      }
+    }));
   }
 }
 

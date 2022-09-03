@@ -4,7 +4,7 @@ class NewElem<T extends HTMLElement = HTMLElement> {
   // node: parent node
   // tag: string type of new element
   // classes: class names (space divided) for new element
-  constructor(node: HTMLElement, tag: keyof HTMLElementTagNameMap = 'div', classes?: string, text?: string) {
+  constructor(node: HTMLElement, tag: keyof HTMLElementTagNameMap = 'div', classes?: string, text?: string, id?: string) {
     this.elem = <T>document.createElement(tag);
     if (classes) {
       let tempClass: string[] = [];
@@ -12,6 +12,7 @@ class NewElem<T extends HTMLElement = HTMLElement> {
       this.elem.classList.add(...(tempClass.length ? tempClass : [classes]));
     }
     if (text) this.elem.innerHTML = text;
+    if (id) this.elem.id = id;
     node.appendChild(this.elem);
   }
 }

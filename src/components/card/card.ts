@@ -35,7 +35,7 @@ class Card extends NewElem {
       cardStyle = `${options.isDifficult ? ' difficult' : ''}${options.isStudied ? ' studied' : ''}`;
     }
 
-    super(node, 'div', `card${cardStyle}`);
+    super(node, 'div', `card${cardStyle}`, '', `${word.id}`);
 
     const imgBlock = new NewElem(this.elem, 'div', 'card__img-wrapper');
     let _: Unused = new Img(imgBlock.elem, 'card__img', `${URL}${word.image}`, word.word);
