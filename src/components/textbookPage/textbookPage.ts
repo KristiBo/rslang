@@ -3,6 +3,7 @@ import { CardOptions, Word } from '../../shared/types';
 import BaseComponent from '../baseComponent/baseComponent';
 import Card from '../card/card';
 
+// TODO: show 7th group for known user
 class TextbookPage extends BaseComponent {
   inner = `
         <div class="container textbook">
@@ -40,6 +41,7 @@ class TextbookPage extends BaseComponent {
   }
 
   setPagination(grp: number, pg: number): void {
+    // in DB group and page start from 0
     const group = grp + 1;
     const page = pg + 1;
     // for elements created from html template
@@ -51,12 +53,10 @@ class TextbookPage extends BaseComponent {
 
     btnPgNum.textContent = `${page}`;
     if (page === 1) {
-      console.log(111);
       btnStart.classList.add('btn_disabled');
       btnPrev.classList.add('btn_disabled');
     }
     if (page === 30) {
-      console.log(3030);
       btnNext.classList.add('btn_disabled');
       btnEnd.classList.add('btn_disabled');
     }

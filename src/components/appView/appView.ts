@@ -71,7 +71,6 @@ class AppView {
         break;
       case PAGE.GAMES:
         this.gamesPage.create();
-        // this.gamesPage.initListeners();
         break;
       case PAGE.PLAYSPRINT:
         if (data) {
