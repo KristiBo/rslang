@@ -13,6 +13,7 @@ import {
   TUser,
   TAuth,
   TUserAuth,
+  METHOD,
 } from './types/index';
 
 class Api {
@@ -57,7 +58,7 @@ class Api {
   // return: [Word[20], null] | [null, Error]
   async getWords(group = 0, page = 0): Promise<ReqResponse<Array<Word>>> {
     const url = `${URL}words?page=${page}&group=${group}`;
-    const method = 'GET';
+    const method = METHOD.GET;
     const result = await this.request<Array<Word>>({ url, method });
     return result;
   }
@@ -67,7 +68,7 @@ class Api {
   // return: [Word, null] | [null, Error]
   async getWord(id: string): Promise<ReqResponse<Word>> {
     const url = `${URL}words/${id}`;
-    const method = 'GET';
+    const method = METHOD.GET;
     const result = await this.request<Word>({ url, method });
     return result;
   }
@@ -78,7 +79,7 @@ class Api {
   // return: [Word[], null] | [null, Error]
   async getUsersWords(): Promise<ReqResponse<Array<Word>>> {
     const url = `${URL}users/${this.userId}/words`;
-    const method = 'GET';
+    const method = METHOD.GET;
     const auth = true;
     const result = await this.request<Array<Word>>({ url, method, auth });
     return result;
@@ -95,7 +96,7 @@ class Api {
   // 417 - such user word already exists
   async postUsersWord(wordId: string, wordData: UsersWordData): Promise<ReqResponse<string>> {
     const url = `${URL}users/${this.userId}/words/${wordId}`;
-    const method = 'POST';
+    const method = METHOD.POST;
     const auth = true;
     const body = JSON.stringify(wordData);
     const result = await this.request<string>({
@@ -111,7 +112,7 @@ class Api {
   // return: [usersWordsResponse, null] | [null, Error]
   async getUsersWordById(wordId: string): Promise<ReqResponse<UsersWordsResponse>> {
     const url = `${URL}users/${this.userId}/words/${wordId}`;
-    const method = 'GET';
+    const method = METHOD.GET;
     const auth = true;
     const result = await this.request<UsersWordsResponse>({
       url, method, auth,
@@ -133,7 +134,7 @@ class Api {
   ):
     Promise<ReqResponse<UsersWordsResponse>> {
     const url = `${URL}users/${this.userId}/words/${wordId}`;
-    const method = 'PUT';
+    const method = METHOD.PUT;
     const auth = true;
     const body = JSON.stringify(wordData);
     const result = await this.request<UsersWordsResponse>({
@@ -149,7 +150,7 @@ class Api {
   // 401 - Access token is missing or invalid
   async deleteUsersWord(wordId: string): Promise<ReqResponse<null>> {
     const url = `${URL}users/${this.userId}/words/${wordId}`;
-    const method = 'DELETE';
+    const method = METHOD.DELETE;
     const auth = true;
     const result = await this.request<null>({
       url, method, auth,
@@ -176,7 +177,7 @@ class Api {
   // return: [UsersAggrWordsResponse, null] | [null, Error]
   async getUsrAggrWords(params: UsrAggrWrdsReq): Promise<ReqResponse<UsersAggrWordsResponse>> {
     const url = `${URL}users/${params.id}/aggregatedWords`;
-    const method = 'GET';
+    const method = METHOD.GET;
     const auth = true;
     const body = JSON.stringify(params);
     const result = await this.request<UsersAggrWordsResponse>({
@@ -190,7 +191,7 @@ class Api {
   // return: [UsersWordData, null] | [null, Error]
   async getUsrAggrWordById(wordId: string): Promise<ReqResponse<UsersWordData>> {
     const url = `${URL}users/${this.userId}/aggregatedWords/${wordId}`;
-    const method = 'GET';
+    const method = METHOD.GET;
     const auth = true;
     const result = await this.request<UsersWordData>({
       url, method, auth,
@@ -204,7 +205,7 @@ class Api {
   // return: [Statistics, null] | [null, Error]
   async getUsersStats(): Promise<ReqResponse<Statistics>> {
     const url = `${URL}users/${this.userId}/statistics`;
-    const method = 'GET';
+    const method = METHOD.GET;
     const auth = true;
     const result = await this.request<Statistics>({
       url, method, auth,
@@ -217,7 +218,7 @@ class Api {
   // return: [Statistics, null] | [null, Error]
   async updateUsersStats(stat: Statistics): Promise<ReqResponse<Statistics>> {
     const url = `${URL}users/${this.userId}/statistics`;
-    const method = 'PUT';
+    const method = METHOD.PUT;
     const auth = true;
     const body = JSON.stringify(stat);
     const result = await this.request<Statistics>({
@@ -232,7 +233,7 @@ class Api {
   // return: [Settings, null] | [null, Error]
   async getUsersSettings(): Promise<ReqResponse<Settings>> {
     const url = `${URL}users/${this.userId}/settings`;
-    const method = 'GET';
+    const method = METHOD.GET;
     const auth = true;
     const result = await this.request<Settings>({
       url, method, auth,
@@ -245,7 +246,7 @@ class Api {
   // return: [Settings, null] | [null, Error]
   async updateUsersSettings(data: Settings): Promise<ReqResponse<Settings>> {
     const url = `${URL}users/${this.userId}/settings`;
-    const method = 'PUT';
+    const method = METHOD.PUT;
     const auth = true;
     const body = JSON.stringify(data);
     const result = await this.request<Settings>({
@@ -261,7 +262,7 @@ class Api {
   // return: [signinResponse, null] | [null, Error]
   async signin(email: string, password: string): Promise<ReqResponse<signinResponse>> {
     const url = `${URL}signin`;
-    const method = 'POST';
+    const method = METHOD.POST;
     const body = JSON.stringify({ email, password });
     const result = await this.request<signinResponse>({ url, method, body });
     return result;
@@ -283,7 +284,7 @@ class Api {
     try {
       const { userId, token } = user;
       const rawResponse = await fetch(`${URL}users/${userId}`, {
-        method: 'GET',
+        method: METHOD.GET,
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`,
@@ -299,7 +300,7 @@ class Api {
   async createUser(user: TUser): Promise<TUserAuth | undefined> {
     try {
       const rawResponse = await fetch(`${URL}users`, {
-        method: 'POST',
+        method: METHOD.POST,
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -316,7 +317,7 @@ class Api {
   async loginUser(user: TUser): Promise<TAuth> {
     try {
       const rawResponse = await fetch(`${URL}signin`, {
-        method: 'POST',
+        method: METHOD.POST,
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -333,7 +334,7 @@ class Api {
   async getNewToken(userId?: string, refreshToken?: string): Promise<void> {
     try {
       const rawResponse = await fetch(`${URL}users/${userId}/tokens`, {
-        method: 'GET',
+        method: METHOD.GET,
         headers: {
           Authorization: `Bearer ${refreshToken}`,
           Accept: 'application/json',
