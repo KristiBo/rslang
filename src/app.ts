@@ -1,9 +1,9 @@
 import {
-  Word, TAuth, SprintWord, PAGE, TxtBkReference,
+  Word, TAuth, SprintWord, PAGE, TxtBkReference, GAME,
 } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
-import Pagination from './components/textbookPage/pagination';
+// import Pagination from './components/textbookPage/pagination';
 
 class App {
   model: Model;
@@ -112,22 +112,35 @@ class App {
     if (linkAuth) {
       linkAuth.classList.add('logged-in');
       linkAuth.textContent = 'Выйти';
+      this.onHashChange();
     }
   }
 
   async onHashChange(): Promise<void> {
     const hash = window.location.hash.substring(2);
-    const hashPart = hash.substring(0, hash.length - 2);
-    if (hash === PAGE.TEXTBOOK) {
-      const [words, error] = await this.model.api.getWords();
+    const hashParts = hash.split('/');
+    console.log(hashParts);
+    // const hashPart = hash.substring(0, hash.length - 2);
+    if (hashParts[0] === PAGE.TEXTBOOK) {
+      let group = +(hashParts[1] ?? 0);
+      if (group) group -= 1;
+      let page = +(hashParts[2] ?? 0);
+      if (page) page -= 1;
+      const [words, error] = await this.model.api.getWords(group, page); // for unregistered users
       if (error) console.log(error); // TODO: remake it
       if (words) {
-        this.view.renderPage(hash, words, this.model.isRegisteredUser);
-        const pagination = new Pagination();
-        pagination.addListenersToBtns();
+        this.view.renderPage(PAGE.TEXTBOOK, words, this.model.isRegisteredUser, group, page);
+        // const pagination = new Pagination();
+        // pagination.addListenersToBtns();
       }
-    } else if (hashPart === PAGE.GAMESPRINT || hashPart === PAGE.GAMEAUDIOCALL) {
-      this.runSprintFromGames(Number(hash.slice(-1)));
+    } else if (
+      hashParts.length === 3
+      && (
+        hashParts[1] === GAME.SPRINT
+        || hashParts[1] === GAME.AUDIOCALL
+      )
+    ) {
+      this.runSprintFromGames(Number(hashParts[2]));
     } else {
       // TODO: prepare some data if needed for page
       this.view.renderPage(hash, [], this.model.isRegisteredUser);

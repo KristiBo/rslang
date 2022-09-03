@@ -67,3 +67,7 @@
   border-color: #cdcdcd;
   pointer-events: none;
 }
+a.btn_disabled {
+  pointer-events: none;
+  color: #ccc;
+}

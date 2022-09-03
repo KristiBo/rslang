@@ -53,3 +53,6 @@ p {
   max-width: 1440px;
   width: 97%;
 }
+.hide {
+  display: none;
+}

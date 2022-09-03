@@ -8,21 +8,21 @@ class TextbookPage extends BaseComponent {
         <div class="container textbook">
           <div class="textbook__english-lvl">
             <h2>Уровень</h2>
-            <button class="textbook__button button_level">1</button>
-            <button class="textbook__button button_level">2</button>
-            <button class="textbook__button button_level">3</button>
-            <button class="textbook__button button_level">4</button>
-            <button class="textbook__button button_level">5</button>
-            <button class="textbook__button button_level">6</button>
-            <button class="textbook__button button_level">7</button>
-          </div>
+            <a class="textbook__button button_level btn" href="/#/textbook/1">1</a>
+            <a class="textbook__button button_level btn" href="/#/textbook/2">2</a>
+            <a class="textbook__button button_level btn" href="/#/textbook/3">3</a>
+            <a class="textbook__button button_level btn" href="/#/textbook/4">4</a>
+            <a class="textbook__button button_level btn" href="/#/textbook/5">5</a>
+            <a class="textbook__button button_level btn" href="/#/textbook/6">6</a>
+            <a class="textbook__button button_level btn hide" href="/#/textbook/7">7</a>
+            </div>
           <div class="textbook__cards"></div>
           <div class="textbook__pagination-buttons">
-            <button disabled class="textbook__button button_transparent button_start">&lt;&lt;</button>
-            <button disabled class="textbook__button button_transparent button_prev">&lt;</button>
-            <button class="textbook__button button_number">1</button>
-            <button class="textbook__button button_transparent button_next">&gt;</button>
-            <button class="textbook__button button_transparent button_end">&gt;&gt;</button>
+            <a class="textbook__button button_transparent button_start" href="/#/textbook/1/1">&lt;&lt;</a>
+            <a class="textbook__button button_transparent button_prev" href="/#/textbook/1/1">&lt;</a>
+            <a class="textbook__button button_number" onclick="return false;">1</a>
+            <a class="textbook__button button_transparent button_next" href="/#/textbook/1/2">&gt;</a>
+            <a class="textbook__button button_transparent button_end" href="/#/textbook/1/30">&gt;&gt;</a>
           </div>
         </div>`;
 
@@ -37,6 +37,33 @@ class TextbookPage extends BaseComponent {
     if (cards) {
       const _ = data.map((item) => new Card(cards, item, options));
     }
+  }
+
+  setPagination(grp: number, pg: number): void {
+    const group = grp + 1;
+    const page = pg + 1;
+    // for elements created from html template
+    const btnStart = <HTMLLinkElement>document.querySelector('.button_start');
+    const btnPrev = <HTMLLinkElement>document.querySelector('.button_prev');
+    const btnPgNum = <HTMLLinkElement>document.querySelector('.button_number');
+    const btnNext = <HTMLLinkElement>document.querySelector('.button_next');
+    const btnEnd = <HTMLLinkElement>document.querySelector('.button_end');
+
+    btnPgNum.textContent = `${page}`;
+    if (page === 1) {
+      console.log(111);
+      btnStart.classList.add('btn_disabled');
+      btnPrev.classList.add('btn_disabled');
+    }
+    if (page === 30) {
+      console.log(3030);
+      btnNext.classList.add('btn_disabled');
+      btnEnd.classList.add('btn_disabled');
+    }
+    btnStart.href = `/#/textbook/${group}/1`;
+    btnPrev.href = `/#/textbook/${group}/${page - 1}`;
+    btnNext.href = `/#/textbook/${group}/${page + 1}`;
+    btnEnd.href = `/#/textbook/${group}/30`;
   }
 }
 
