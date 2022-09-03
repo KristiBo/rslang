@@ -1,4 +1,4 @@
-import URL from './constants';
+import { URL, FOURHOURS } from './constants';
 import {
   Word,
   ReqResponse,
@@ -17,9 +17,11 @@ import {
 } from './types/index';
 
 class Api {
-  token = ''; // JWT token for requests with authorization
+  private token = ''; // JWT token for requests with authorization
 
-  userId = ''; // user id like '62ffed00299cea0016064168'
+  private userId = ''; // user id like '62ffed00299cea0016064168'
+
+  private expire = 0; // token expiration time
 
   // common request
   // req: ReqData - {url: str, method: 'GET' etc, auth?: bool, body?: str}
@@ -29,6 +31,9 @@ class Api {
     const headers: HeadersInit = { Accept: 'application/json' };
     if (req.auth) {
       // TODO: add token expire check and reget if needed
+      if (Math.floor(Date.now() / 1000) - this.expire > FOURHOURS) {
+        // 
+      }
       headers.Authorization = `Bearer ${this.token}`;
     }
     if (req.body) headers['Content-Type'] = 'application/json';
@@ -77,11 +82,11 @@ class Api {
 
   // get all user words
   // return: [Word[], null] | [null, Error]
-  async getUsersWords(): Promise<ReqResponse<Array<Word>>> {
+  async getUsersWords(): Promise<ReqResponse<Array<UsersWordsResponse>>> {
     const url = `${URL}users/${this.userId}/words`;
     const method = METHOD.GET;
     const auth = true;
-    const result = await this.request<Array<Word>>({ url, method, auth });
+    const result = await this.request<Array<UsersWordsResponse>>({ url, method, auth });
     return result;
   }
 
@@ -280,6 +285,11 @@ class Api {
     this.userId = id;
   }
 
+  // this.expire setter
+  setExpire(dt: number): void {
+    this.expire = Math.floor(dt / 1000); // ms to seconds
+  }
+  
   async getUser(user: TAuth): Promise<TUserAuth> {
     try {
       const { userId, token } = user;
@@ -324,7 +334,12 @@ class Api {
         },
         body: JSON.stringify(user),
       });
+      // if ok - set token expiration time
       const content = await rawResponse.json();
+      if (rawResponse.ok) {
+        this.setExpire(Date.now());
+        this.setToken(content.token);
+      }
       return content;
     } catch (err) {
       throw new Error(`${err}`);
@@ -341,6 +356,12 @@ class Api {
         },
       });
       const content = await rawResponse.json();
+      // if ok - set token and expiration time
+      if (rawResponse.ok) {
+        this.setExpire(Date.now());
+        this.setToken(content.token);
+      }
+      // TODO: move localStorage.setItem to upper level
       localStorage.setItem('token', JSON.stringify(content.token));
       localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
     } catch (err) {

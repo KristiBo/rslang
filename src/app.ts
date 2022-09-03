@@ -1,5 +1,5 @@
 import {
-  Word, TAuth, SprintWord, PAGE, TxtBkReference,
+  Word, TAuth, PAGE, TxtBkReference, GameStat,
 } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
@@ -48,7 +48,7 @@ class App {
   }
 
   async onGameStat(event: Event): Promise<void> {
-    const { game, words } = <{ game: string, words: SprintWord[] }>(<CustomEvent>event).detail;
+    const { game, words, succession } = <GameStat>(<CustomEvent>event).detail;
     console.log('GameStat from: ', game);
     console.log('GameStat words: ', words);
   }
@@ -61,7 +61,7 @@ class App {
     if (group === 6) {
       // TODO: get words for group 6: difficulty words
     } else if (page < 3) {
-      pages = [0, 1, 2];
+      pages = [0, 1, 2]; // first 3 pages
       pages.length = page + 1;
     } else {
       // 2 random previous pages + current page

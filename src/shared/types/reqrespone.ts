@@ -1,5 +1,6 @@
 import { Word } from './words';
 import { Maybe } from './common';
+import { GAME, DIFFICULTY } from './enums';
 
 type ReqResponse<T> = [Maybe<T>, Maybe<unknown>];
 
@@ -11,9 +12,13 @@ interface signinResponse {
   name: string;
 }
 
+type GameKeys = keyof typeof GAME; // 'sprint' | 'audiocall';
+
+type UWOptional = { [key: string]: number };
+
 interface UsersWordData {
-  difficulty: string;
-  optional?: object; // TODO: need to describe
+  difficulty: DIFFICULTY;
+  optional?: UWOptional;
 }
 
 interface UsersWordsResponse extends UsersWordData {
@@ -71,4 +76,6 @@ export {
   TUser,
   TUserAuth,
   TAuth,
+  UWOptional,
+  GameKeys,
 };
