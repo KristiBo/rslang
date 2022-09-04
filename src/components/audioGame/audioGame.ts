@@ -69,13 +69,15 @@ class AudioGame extends NewElem {
     this.answerButtonsContainer = new NewElem(this.gameDiv, 'div', 'audio-game__buttons').elem;
     const amountOfAnswers = 5;
     for (let i = 0; i < amountOfAnswers; i += 1) {
-      const btn = new Button(this.answerButtonsContainer, 'button', 'button-light').elem;
+      const btn = new Button(this.answerButtonsContainer, 'button', 'button-light audio-game__button').elem;
+      btn.id = `${i + 1}`;
       this.answerBtns?.push(btn);
     }
     this.nextButton = new Button(this.gameDiv, 'button', 'button').elem;
     this.nextButton.textContent = "I don't know";
     this.drawWord();
     this.initListenersAnswer();
+    this.initKeyboardListeners();
     this.initListenerNextBtn();
   }
 
@@ -108,6 +110,7 @@ class AudioGame extends NewElem {
 
   private drawWord(): void {
     this.initListenersAnswer();
+    this.initKeyboardListeners();
     (this.counter as HTMLElement).textContent = `${this.counterNumber}`;
     this.counterNumber -= 1;
     (this.nextButton as HTMLButtonElement).textContent = "I don't know";
@@ -128,14 +131,12 @@ class AudioGame extends NewElem {
         this.audioElem.run();
       }
       this.answerBtns.forEach((btn, index) => {
-        console.log(this.answerBtns);
         btn.disabled = false;
         btn.classList.remove('correct', 'incorrect');
         if (index === this.indexOfRightAnswer) {
           btn.textContent = this.words[this.wordIdx][0];
         } else {
           const indexOfIncorrectAnswer = arrayOfIncorrectIndexes.pop() as number;
-          console.log(indexOfIncorrectAnswer);
           btn.textContent = this.words[indexOfIncorrectAnswer][0];
         }
       });
@@ -144,29 +145,52 @@ class AudioGame extends NewElem {
     }
   }
 
+  private checkAnswer(btn: HTMLButtonElement): void {
+    if (btn.textContent === this.words[this.wordIdx][0]) {
+      btn.classList.add('correct');
+      this.sound.right.run();
+      this.words[this.wordIdx][3] = 'right';
+    } else {
+      btn.classList.add('incorrect');
+      this.answerBtns[this.indexOfRightAnswer].classList.add('correct');
+      this.sound.wrong.run();
+      this.words[this.wordIdx][3] = 'wrong';
+    }
+    this.answerBtns.forEach((button) => {
+      button.disabled = true;
+    });
+    window.removeEventListener('keyup', this.answerKeyboardHandler);
+    (this.nextButton as HTMLButtonElement).textContent = 'Next word';
+    (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx][2]}`;
+  }
+
   private initListenersAnswer(): void {
     const answerBtnsHandler = (e: Event) => {
       const btn = e.target as HTMLButtonElement;
-      if (btn.textContent === this.words[this.wordIdx][0]) {
-        btn.classList.add('correct');
-        this.sound.right.run();
-        this.words[this.wordIdx][3] = 'right';
-      } else {
-        btn.classList.add('incorrect');
-        this.answerBtns[this.indexOfRightAnswer].classList.add('correct');
-        this.sound.wrong.run();
-        this.words[this.wordIdx][3] = 'wrong';
-      }
-      this.answerBtns.forEach((button) => {
-        button.disabled = true;
-      });
-      (this.nextButton as HTMLButtonElement).textContent = 'Next word';
-      (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx][2]}`;
+      this.checkAnswer(btn);
     };
 
     this.answerBtns?.forEach((btn) => {
       btn.addEventListener('click', answerBtnsHandler);
     });
+  }
+
+  answerKeyboardHandler(e: KeyboardEvent): void {
+    const buttons = document.querySelectorAll('.audio-game__button');
+    for (let i = 1; i <= 5; i += 1) {
+      if (e.key === `${i}`) {
+        buttons.forEach((btn) => {
+          const button = btn as HTMLButtonElement;
+          if (btn.id === e.key) {
+            this.checkAnswer(button);
+          }
+        });
+      }
+    }
+  }
+
+  private initKeyboardListeners(): void {
+    window.addEventListener('keyup', this.answerKeyboardHandler.bind(this));
   }
 
   private showCorrectAnswer(): void {
