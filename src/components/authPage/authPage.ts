@@ -2,13 +2,23 @@ import Auth from '../auth/auth';
 import Modal from '../modal/modal';
 
 class AuthPage {
-  modal: Modal | undefined;
+  private modal: Modal | undefined;
+
+  private auth: Auth | undefined;
 
   create(): void {
     this.modal = new Modal();
-    const auth = new Auth();
-    this.modal.content.elem.innerHTML = auth.renderAuthPage();
-    auth.addListeners();
+    this.auth = new Auth();
+    this.modal.content.elem.innerHTML = this.auth.renderAuthPage();
+    this.auth.addListeners();
+  }
+
+  closeModal(): void {
+    this.modal?.destroy();
+  }
+
+  showErrorMsg(msg: string): void {
+    this.auth?.showErrMessage(msg);
   }
 }
 

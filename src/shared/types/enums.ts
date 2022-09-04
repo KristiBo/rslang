@@ -35,12 +35,12 @@ enum DIFFICULTY {
   NONE = '',
   NEW = 'new',
   HARD = 'hard',
-  LEARN = 'learn'
+  LEARN = 'learn',
 }
 
 enum WINSNEEDED {
   NEW = 3,
-  HARD = 5
+  HARD = 5,
 }
 
 export {

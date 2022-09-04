@@ -1,6 +1,6 @@
 import './sprint.css';
 import {
-  Word, SprintWord, ANSWER, ICON, Group,
+  Word, SprintWord, ANSWER, ICON, Group, GAME,
 } from '../../shared/types';
 import NewElem from '../../shared/newelem';
 import Button from '../../shared/button';
@@ -210,7 +210,7 @@ class Sprint extends NewElem {
   }
 
   private dispatchGameStatisticEvent(): void {
-    const game = 'sprint';
+    const game = GAME.SPRINT;
     const words = this.words.filter((item) => item.answer !== undefined);
     const succession = this.maxSuccession;
     const event = new CustomEvent('gameStatistic', { detail: { game, words, succession } });

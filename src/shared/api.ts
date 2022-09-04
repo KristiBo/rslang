@@ -30,9 +30,9 @@ class Api {
   async request<T>(req: ReqData): Promise<ReqResponse<T>> {
     const headers: HeadersInit = { Accept: 'application/json' };
     if (req.auth) {
-      // TODO: add token expire check and reget if needed
+      console.log('request uid:', this.userId);
       if (Math.floor(Date.now() / 1000) - this.expire > FOURHOURS) {
-        // 
+        // TODO: add refresh token
       }
       headers.Authorization = `Bearer ${this.token}`;
     }
@@ -83,6 +83,7 @@ class Api {
   // get all user words
   // return: [Word[], null] | [null, Error]
   async getUsersWords(): Promise<ReqResponse<Array<UsersWordsResponse>>> {
+    console.log(this.userId);
     const url = `${URL}users/${this.userId}/words`;
     const method = METHOD.GET;
     const auth = true;
@@ -270,6 +271,12 @@ class Api {
     const method = METHOD.POST;
     const body = JSON.stringify({ email, password });
     const result = await this.request<signinResponse>({ url, method, body });
+    if (result[0]) {
+      this.setExpire(Date.now());
+      this.setToken(result[0].token);
+      this.setUserId(result[0].userId);
+      console.log('signin uid:', this.userId);
+    }
     return result;
   }
 
@@ -289,7 +296,7 @@ class Api {
   setExpire(dt: number): void {
     this.expire = Math.floor(dt / 1000); // ms to seconds
   }
-  
+
   async getUser(user: TAuth): Promise<TUserAuth> {
     try {
       const { userId, token } = user;
@@ -307,7 +314,15 @@ class Api {
     }
   }
 
-  async createUser(user: TUser): Promise<TUserAuth | undefined> {
+  async createUser(user: TUser): Promise<ReqResponse<TUserAuth>> {
+    const url = `${URL}users`;
+    const method = METHOD.POST;
+    const body = JSON.stringify(user);
+    const result = await this.request<TUserAuth>({ url, method, body });
+    return result;
+  }
+
+  async recreateUser(user: TUser): Promise<TUserAuth | undefined> {
     try {
       const rawResponse = await fetch(`${URL}users`, {
         method: METHOD.POST,
@@ -339,6 +354,8 @@ class Api {
       if (rawResponse.ok) {
         this.setExpire(Date.now());
         this.setToken(content.token);
+        this.setUserId(content.userId);
+        console.log(this.userId);
       }
       return content;
     } catch (err) {

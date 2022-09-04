@@ -1,3 +1,5 @@
+import { DIFFICULTY } from './enums';
+
 interface Word {
   id: string;
   group: number;
@@ -21,12 +23,15 @@ type SprintWord = Word & {
 };
 
 interface CardOptions {
-  isDifficult: boolean;
-  isStudied: boolean;
+  difficulty: DIFFICULTY;
+  wins: number;
+  fails: number;
 }
+
+type TxtBkWord = Word & Partial<CardOptions>;
 
 type TxtBkReference = Pick<Word, 'group' | 'page'>;
 
 export {
-  Word, CardOptions, SprintWord, TxtBkReference,
+  Word, CardOptions, SprintWord, TxtBkReference, TxtBkWord,
 };

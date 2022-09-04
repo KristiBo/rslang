@@ -14,7 +14,7 @@ interface signinResponse {
 
 type GameKeys = keyof typeof GAME; // 'sprint' | 'audiocall';
 
-type UWOptional = { [key: string]: number };
+type UWOptional = { [key: string]: { wins: number, fails: number, count: number } };
 
 interface UsersWordData {
   difficulty: DIFFICULTY;
@@ -47,9 +47,10 @@ interface Settings {
 }
 
 type TUser = {
-  name?: string,
   email: string,
-  password?: string,
+  password: string,
+  create?: boolean,
+  name?: string,
 };
 
 type TUserAuth = {

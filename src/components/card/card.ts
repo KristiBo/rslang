@@ -1,8 +1,10 @@
 import './cards.css';
-import URL from '../../shared/constants';
+import { URL } from '../../shared/constants';
 import Img from '../../shared/img';
 import NewElem from '../../shared/newelem';
-import { Word, CardOptions, ICON } from '../../shared/types';
+import {
+  TxtBkWord, ICON, DIFFICULTY,
+} from '../../shared/types';
 import Button from '../../shared/button';
 import Sound from '../../shared/sound';
 import SVG from '../../shared/svgLib';
@@ -24,15 +26,13 @@ class Card extends NewElem {
   speaker: NewElem;
 
   // node: parent node
-  // word: Word object
-  // options: exist only for known users, contain bool flags
-  // -- isDifficult: for difficult word,
-  // -- isStudied: for studied word
-  constructor(node: HTMLElement, word: Word, options?: CardOptions) {
+  // word: TxtBkWord object
+  // userState: true for known user
+  constructor(node: HTMLElement, word: TxtBkWord, userState: boolean) {
     // known user, styling card according the options
     let cardStyle = '';
-    if (options) {
-      cardStyle = `${options.isDifficult ? ' difficult' : ''}${options.isStudied ? ' studied' : ''}`;
+    if (userState) {
+      cardStyle = `${word.difficulty === DIFFICULTY.HARD ? ' difficult' : ''}${word.difficulty === DIFFICULTY.LEARN ? ' studied' : ''}`;
     }
 
     super(node, 'div', `card${cardStyle}`);
@@ -65,17 +65,17 @@ class Card extends NewElem {
     _ = new NewElem(cardItemExample.elem, 'div', 'example__ru', word.textExampleTranslate);
 
     // known user, show buttons
-    if (options) {
+    if (userState) {
       const cardItemBtns = new NewElem(cardCont.elem, 'div', 'card__item card-btns');
       _ = new Button(
         cardItemBtns.elem,
         'Difficult',
-        `btn btn-difficult${options.isDifficult ? ' btn--yellow' : ''}`,
+        `btn btn-difficult${word.difficulty === DIFFICULTY.HARD ? ' btn--yellow' : ''}`,
       );
       _ = new Button(
         cardItemBtns.elem,
         'Studied',
-        `btn btn-studied${options.isStudied ? ' btn--yellow' : ''}`,
+        `btn btn-studied${word.difficulty === DIFFICULTY.LEARN ? ' btn--yellow' : ''}`,
       );
     } else {
       this.isPlaying = false;

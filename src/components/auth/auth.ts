@@ -1,17 +1,11 @@
 import './auth.css';
 import isEmail from 'validator/lib/isEmail';
 import isStrongPassword from 'validator/lib/isStrongPassword';
-import Api from '../../shared/api';
-import { TAuth } from '../../shared/types';
+// import Api from '../../shared/api';
+import { TUser } from '../../shared/types';
 
 class Auth {
-  api: Api;
-
-  isRegistrationPage = false;
-
-  constructor() {
-    this.api = new Api();
-  }
+  private isRegistrationPage = false;
 
   renderAuthPage(): string {
     const html = `
@@ -60,26 +54,35 @@ class Auth {
     }
     if (isEmail(email) && isStrongPassword(password)) {
       if (this.isRegistrationPage) {
-        this.api.createUser({ email, password })
-          .then(() => this.api.loginUser({ email, password })
-            .then((result) => this.dispatchLoginEvent(result)))
-          .catch((err) => {
-            this.showErrMessage('Error: User already exist');
-            throw new Error(`Create user: ${err}`);
-          });
+        // create user
+        this.dispatchLoginEvent({ email, password, create: true });
       } else {
-        this.api.loginUser({ email, password })
-          .then((result) => this.dispatchLoginEvent(result))
-          .catch((err) => {
-            this.showErrMessage('Error: Incorrect email or password');
-            throw new Error(`Login user: ${err}`);
-          });
+        // login
+        this.dispatchLoginEvent({ email, password, create: false });
       }
+      // if (this.isRegistrationPage) {
+      //   this.api.createUser({ email, password })
+      //     .then(() => this.api.loginUser({ email, password })
+      //       .then((result) => this.dispatchLoginEvent(result)))
+      //     .catch((err) => {
+      //       this.showErrMessage('Error: User already exist');
+      //       throw new Error(`Create user: ${err}`);
+      //     });
+      // } else {
+      //   this.api.loginUser({ email, password })
+      //     .then((result) => this.dispatchLoginEvent(result))
+      //     .catch((err) => {
+      //       this.showErrMessage('Error: Incorrect email or password');
+      //       throw new Error(`Login user: ${err}`);
+      //     });
+      // }
     }
   }
 
-  dispatchLoginEvent(authData: TAuth): void {
-    const event = new CustomEvent('userLogin', { detail: { authData } });
+  // create - true: add user, false: signin
+  dispatchLoginEvent(authData: TUser): void {
+    const { email, password, create } = authData;
+    const event = new CustomEvent('userLogin', { detail: { email, password, create } });
     document.dispatchEvent(event);
   }
 

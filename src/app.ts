@@ -1,5 +1,5 @@
 import {
-  Word, TAuth, PAGE, TxtBkReference, GameStat, GAME,
+  Word, PAGE, TxtBkReference, GameStat, GAME, TUser,
 } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
@@ -38,7 +38,7 @@ class App {
   }
 
   initLoginListener(): void {
-    document.addEventListener('userLogin', (event: Event) => this.onUserLogged(event));
+    document.addEventListener('userLogin', (event: Event) => this.onUserLogin(event));
   }
 
   initStartSprintListener(): void {
@@ -50,9 +50,11 @@ class App {
   }
 
   async onGameStat(event: Event): Promise<void> {
-    const { game, words, succession } = <GameStat>(<CustomEvent>event).detail;
-    console.log('GameStat from: ', game);
-    console.log('GameStat words: ', words);
+    const statistic = <GameStat>(<CustomEvent>event).detail;
+    console.log('GameStat from: ', statistic.game);
+    console.log('GameStat words: ', statistic.words);
+    console.log('GameStat succession: ', statistic.succession);
+    if (this.model.isRegisteredUser) this.model.saveStatFromGame(statistic);
   }
 
   // TxtBkReference = { group: 0..6, page: 0..29 }
@@ -83,6 +85,17 @@ class App {
     }
   }
 
+  // TODO: need to make it
+  async runGameFromTxtBk(game: GAME, group: number, page: number): Promise<void> {
+    if (group > 0 && group < 7 && +group.toFixed(0) === group) {
+      const dict = await this.model.getWordsFromTxtBk(game, group, page);
+      const pageId = game === GAME.SPRINT ? PAGE.PLAYSPRINT : PAGE.PLAYAUDIOCALL;
+      if (dict) this.view.renderPage(pageId, dict);
+    } else {
+      window.location.hash = 'error';
+    }
+  }
+
   async runGameFromGames(game: GAME, group: number): Promise<void> {
     if (group > 0 && group < 7 && +group.toFixed(0) === group) {
       const dict = await this.model.getWordsForGame(game, group);
@@ -94,15 +107,21 @@ class App {
     }
   }
 
-  onUserLogged(event: Event): void {
-    const authData = <TAuth>(<CustomEvent>event).detail;
-    this.view.authPage.modal?.destroy();
-    this.model.setToLocalStorage(authData);
-    const linkAuth = <HTMLAnchorElement>document.querySelector('.nav__link_auth');
-    if (linkAuth) {
-      linkAuth.classList.add('logged-in');
-      linkAuth.textContent = 'Выйти';
-      this.onHashChange();
+  async onUserLogin(event: Event): Promise<void> {
+    const userData = <TUser>(<CustomEvent>event).detail;
+    const [result, error] = await this.model.userLogin(userData);
+    if (error) {
+      this.view.authPage.showErrorMsg(error);
+    }
+    if (result) {
+      this.view.authPage.closeModal();
+      // this.model.setToLocalStorage(authData);
+      const linkAuth = <HTMLAnchorElement>document.querySelector('.nav__link_auth');
+      if (linkAuth) {
+        linkAuth.classList.add('logged-in');
+        linkAuth.textContent = 'Выйти';
+        this.onHashChange();
+      }
     }
   }
 
@@ -115,12 +134,14 @@ class App {
       if (group) group -= 1;
       let page = +(hashParts[2] ?? 0);
       if (page) page -= 1;
-      // TODO: make words request for known user
-      const [words, error] = await this.model.api.getWords(group, page); // ok for unregistered users
+      const [words, error] = await this.model.getWords({ group, page });
       if (error) console.log(error); // TODO: remake it
       if (words) {
         this.view.renderPage(PAGE.TEXTBOOK, words, this.model.isRegisteredUser, group, page);
       }
+    } else if (hashParts.length === 4 && hashParts[1] === GAME.SPRINT) {
+      // run sprint
+      this.runGameFromTxtBk(GAME.SPRINT, Number(hashParts[2]), Number(hashParts[3]));
     } else if (hashParts.length === 3 && hashParts[1] === GAME.SPRINT) {
       // run sprint
       this.runGameFromGames(GAME.SPRINT, Number(hashParts[2]));
