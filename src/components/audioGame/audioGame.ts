@@ -45,6 +45,8 @@ class AudioGame extends NewElem {
 
   private maxRightAnswerSeries = 0;
 
+  private percent = 0;
+
   private sound: Group<Sound>;
 
   constructor(node: HTMLElement) {
@@ -191,7 +193,11 @@ class AudioGame extends NewElem {
       button.disabled = true;
     });
 
-    (this.nextButton as HTMLButtonElement).textContent = 'Next word';
+    if (this.counterNumber >= 1) {
+      (this.nextButton as HTMLButtonElement).textContent = 'Next word';
+    } else {
+      (this.nextButton as HTMLButtonElement).textContent = 'Show results';
+    }
     (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
   }
 
@@ -230,7 +236,11 @@ class AudioGame extends NewElem {
       if (btn.textContent === this.words[this.wordIdx].wordTranslate) btn.classList.add('correct');
       btn.disabled = true;
     });
-    (this.nextButton as HTMLButtonElement).textContent = 'Next word';
+    if (this.counterNumber >= 1) {
+      (this.nextButton as HTMLButtonElement).textContent = 'Next word';
+    } else {
+      (this.nextButton as HTMLButtonElement).textContent = 'Show results';
+    }
   }
 
   private nextButtonHandler(e: Event): void {
@@ -251,6 +261,8 @@ class AudioGame extends NewElem {
   private endGame(): void {
     const rightAnswers = this.words.filter((item) => item.answer).length;
     const wrongAnswers = this.words.filter((item) => !item.answer).length;
+    const percentOfRightAnswers = (rightAnswers / 20) * 100;
+    this.percent = percentOfRightAnswers;
     this.sound.end.run();
     let _: HTMLElement;
     this.gameDiv.innerHTML = '';
@@ -284,7 +296,13 @@ class AudioGame extends NewElem {
     const game = GAME.AUDIOCALL;
     const words = this.words;
     const series = this.maxRightAnswerSeries;
-    const event = new CustomEvent('gameStatistic', { detail: { game, words, series } });
+    const percentOfRightAnswers = this.percent;
+    console.log(game, words, series, percentOfRightAnswers);
+    const event = new CustomEvent('gameStatistic', {
+      detail: {
+        game, words, series, percentOfRightAnswers,
+      },
+    });
     document.dispatchEvent(event);
   }
 
@@ -315,6 +333,7 @@ class AudioGame extends NewElem {
     this.rightAnswerSeries = 0;
     this.maxRightAnswerSeries = 0;
     this.gameStatus = 'waiting';
+    this.percent = 0;
   }
 
   private drawTableRow(node: HTMLElement, index: number, css: string): void {
