@@ -39,6 +39,8 @@ class AudioGame extends NewElem {
 
   private counterNumber = 20;
 
+  private gameStatus = 'waiting';
+
   private sound: Group<Sound>;
 
   constructor(node: HTMLElement) {
@@ -109,6 +111,7 @@ class AudioGame extends NewElem {
   }
 
   private drawWord(): void {
+    this.gameStatus = 'waiting';
     this.initListenersAnswer();
     this.initKeyboardListeners();
     (this.counter as HTMLElement).textContent = `${this.counterNumber}`;
@@ -146,6 +149,7 @@ class AudioGame extends NewElem {
   }
 
   private checkAnswer(btn: HTMLButtonElement): void {
+    this.gameStatus = 'done';
     if (btn.textContent === this.words[this.wordIdx][0]) {
       btn.classList.add('correct');
       this.sound.right.run();
@@ -176,15 +180,17 @@ class AudioGame extends NewElem {
   }
 
   answerKeyboardHandler(e: KeyboardEvent): void {
-    const buttons = document.querySelectorAll('.audio-game__button');
-    for (let i = 1; i <= 5; i += 1) {
-      if (e.key === `${i}`) {
-        buttons.forEach((btn) => {
-          const button = btn as HTMLButtonElement;
-          if (btn.id === e.key) {
-            this.checkAnswer(button);
-          }
-        });
+    if (this.gameStatus === 'waiting') {
+      const buttons = document.querySelectorAll('.audio-game__button');
+      for (let i = 1; i <= 5; i += 1) {
+        if (e.key === `${i}`) {
+          buttons.forEach((btn) => {
+            const button = btn as HTMLButtonElement;
+            if (btn.id === e.key) {
+              this.checkAnswer(button);
+            }
+          });
+        }
       }
     }
   }
@@ -204,6 +210,7 @@ class AudioGame extends NewElem {
   private nextButtonHandler(e: Event): void {
     const btn = e.target as HTMLButtonElement;
     if (btn.textContent === "I don't know") {
+      this.gameStatus = 'done';
       this.sound.click.run();
       (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx][2]}`;
       this.showCorrectAnswer();
