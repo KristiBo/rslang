@@ -47,6 +47,10 @@ class Sprint extends NewElem {
 
   private sound: Group<Sound>;
 
+  private succession = 0;
+
+  private maxSuccession = 0;
+
   constructor(node: HTMLElement) {
     super(node, 'div', 'sprint');
     this.gameDiv = new NewElem(this.elem, 'div', 'game__window modal__window').elem;
@@ -102,6 +106,8 @@ class Sprint extends NewElem {
     this.wrongAnswers = 0;
     this.score = 0;
     this.isGameNotOver = true;
+    this.succession = 0;
+    this.maxSuccession = 0;
   }
 
   private drawStartCountdown(): void {
@@ -206,7 +212,8 @@ class Sprint extends NewElem {
   private dispatchGameStatisticEvent(): void {
     const game = 'sprint';
     const words = this.words.filter((item) => item.answer !== undefined);
-    const event = new CustomEvent('gameStatistic', { detail: { game, words } });
+    const succession = this.maxSuccession;
+    const event = new CustomEvent('gameStatistic', { detail: { game, words, succession } });
     document.dispatchEvent(event);
   }
 
@@ -247,6 +254,8 @@ class Sprint extends NewElem {
     this.words[this.wordIdx].answer = (answer === goodAnswer);
     const classForAnswer = this.words[this.wordIdx].answer ? 'green-shadow' : 'red-shadow';
     if (this.words[this.wordIdx].answer) {
+      this.succession += 1;
+      if (this.maxSuccession < this.succession) this.maxSuccession = this.succession;
       this.sound.right.run();
       this.rightAnswers += 1;
       if (this.rightAnswers < 4) { // первые 3 ответа по 10 баллов
@@ -260,6 +269,7 @@ class Sprint extends NewElem {
       }
       this.updateScore();
     } else {
+      this.succession = 0;
       this.sound.wrong.run();
       this.wrongAnswers += 1;
     }
