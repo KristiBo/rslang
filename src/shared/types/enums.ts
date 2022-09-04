@@ -32,6 +32,25 @@ enum ICON {
   CLOSE = 'close',
 }
 
+enum CUSTOMEVENT {
+  GAMESTATISTIC = 'gameStatistic',
+}
+
+enum GAMESTATUS {
+  WAITING = 'waiting',
+  DONE = 'done',
+}
+
+enum AUDIOGAME {
+  NEXTWORD = 'Next word',
+  SHOWANSWER = "I don't know",
+  SHOWRESULTS = 'Show results',
+  AMOUNTOFWORDS = 20,
+  AMOUNTOFANSWERS = 5,
+  ENTER = 'Enter',
+  SPACE = 'Space',
+}
+
 export {
-  ANSWER, GAME, PAGE, METHOD, ICON,
+  ANSWER, GAME, PAGE, METHOD, ICON, GAMESTATUS, AUDIOGAME, CUSTOMEVENT,
 };

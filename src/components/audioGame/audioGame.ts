@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 import './audioGame.css';
 import {
-  Word, ICON, Group, SprintWord, GAME,
+  Word, ICON, Group, SprintWord, GAME, GAMESTATUS, AUDIOGAME, CUSTOMEVENT,
 } from '../../shared/types';
 import NewElem from '../../shared/newelem';
 import Button from '../../shared/button';
@@ -31,15 +31,13 @@ class AudioGame extends NewElem {
 
   private words: SprintWord[] = [];
 
-  private initialWords: Word[] = [];
-
   private wordIdx = 0;
 
   private indexOfRightAnswer = 0;
 
-  private counterNumber = 20;
+  private counterNumber: number = AUDIOGAME.AMOUNTOFWORDS;
 
-  private gameStatus = 'waiting';
+  private gameStatus = GAMESTATUS.WAITING;
 
   private rightAnswerSeries = 0;
 
@@ -60,7 +58,6 @@ class AudioGame extends NewElem {
       start: new Sound(this.gameDiv, 'window__audio audio_start', './assets/audio/start.mp3'),
       right: new Sound(this.gameDiv, 'window__audio audio_right', './assets/audio/right.mp3'),
       wrong: new Sound(this.gameDiv, 'window__audio audio_wrong', './assets/audio/wrong.mp3'),
-      end: new Sound(this.gameDiv, 'window__audio audio_end', './assets/audio/end.mp3'),
     };
 
     this.drawStartCountdown();
@@ -78,7 +75,7 @@ class AudioGame extends NewElem {
     this.counter = new NewElem(counterDiv, 'div', 'audio-game__counter').elem;
     this.answerButtonsContainer = new NewElem(this.gameDiv, 'div', 'audio-game__buttons').elem;
     this.nextButton = new Button(this.gameDiv, 'button', 'button').elem;
-    this.nextButton.textContent = "I don't know";
+    this.nextButton.textContent = AUDIOGAME.SHOWANSWER;
 
     const amountOfAnswers = 5;
     for (let i = 0; i < amountOfAnswers; i += 1) {
@@ -95,10 +92,10 @@ class AudioGame extends NewElem {
   }
 
   setWords(words: Word[]): void {
-    const wordsArray = words.map((item) => item.word);
-    wordsArray.sort(() => Math.random() - 0.5); // shuffle array
-    words.length = 20;
-    this.words = words.map((item, idx) => {
+    const wordsArray = words.map((item: Word): string => item.word);
+    wordsArray.sort(() => Math.random() - 0.5);
+    words.length = AUDIOGAME.AMOUNTOFWORDS;
+    this.words = words.map((item: Word, idx: number): SprintWord => {
       const result = <SprintWord>item;
       result.wrong = Math.round(Math.random()) && item.word !== wordsArray[idx]
         ? wordsArray[idx]
@@ -112,7 +109,7 @@ class AudioGame extends NewElem {
     elem.textContent = `${time}`;
     const nextTime = time - 1;
 
-    setTimeout(() => {
+    setTimeout((): void => {
       if (nextTime) {
         this.countdown(node, nextTime, callback);
       } else {
@@ -125,14 +122,14 @@ class AudioGame extends NewElem {
   private drawStartCountdown(): void {
     const counter = new NewElem(this.gameDiv, 'p', 'window__counter counter_begin').elem;
     this.sound.start.run();
-    this.countdown(counter, 1, () => this.startGame());
+    this.countdown(counter, 5, (): void => this.startGame());
   }
 
   private drawWord(): void {
-    this.gameStatus = 'waiting';
+    this.gameStatus = GAMESTATUS.WAITING;
     (this.counter as HTMLElement).textContent = `${this.counterNumber}`;
     this.counterNumber -= 1;
-    (this.nextButton as HTMLButtonElement).textContent = "I don't know";
+    (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.SHOWANSWER;
     (this.wordText as HTMLElement).innerText = '';
 
     const arrayOfIncorrectIndexes = this.getRandomIndexes();
@@ -142,7 +139,7 @@ class AudioGame extends NewElem {
         this.audioElem.run();
       }
 
-      this.answerBtns.forEach((btn, index) => {
+      this.answerBtns.forEach((btn: HTMLButtonElement, index: number): void => {
         btn.disabled = false;
         btn.classList.remove('correct', 'incorrect');
         if (index === this.indexOfRightAnswer) {
@@ -159,9 +156,8 @@ class AudioGame extends NewElem {
 
   private getRandomIndexes(): unknown[] {
     const set = new Set();
-    const amountOfAnswers = 5;
-    this.indexOfRightAnswer = Math.floor(Math.random() * (5 - 0)) + 0;
-    while (set.size < amountOfAnswers) {
+    this.indexOfRightAnswer = Math.floor(Math.random() * (AUDIOGAME.AMOUNTOFANSWERS - 0)) + 0;
+    while (set.size < AUDIOGAME.AMOUNTOFANSWERS) {
       const randomNumber = Math.floor(Math.random() * (this.words.length - 0)) + 0;
       if (randomNumber !== this.wordIdx) {
         set.add(randomNumber);
@@ -171,7 +167,7 @@ class AudioGame extends NewElem {
   }
 
   private checkAnswer(btn: HTMLButtonElement): void {
-    this.gameStatus = 'done';
+    this.gameStatus = GAMESTATUS.DONE;
 
     if (btn.textContent === this.words[this.wordIdx].wordTranslate) {
       this.rightAnswerSeries += 1;
@@ -189,21 +185,21 @@ class AudioGame extends NewElem {
       this.words[this.wordIdx].answer = false;
     }
 
-    this.answerBtns.forEach((button) => {
+    this.answerBtns.forEach((button: HTMLButtonElement): void => {
       button.disabled = true;
     });
 
     if (this.counterNumber >= 1) {
-      (this.nextButton as HTMLButtonElement).textContent = 'Next word';
+      (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.NEXTWORD;
     } else {
-      (this.nextButton as HTMLButtonElement).textContent = 'Show results';
+      (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.SHOWRESULTS;
     }
     (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
   }
 
   private initListenersAnswer(): void {
-    this.answerBtns?.forEach((btn) => {
-      btn.addEventListener('click', (e: Event) => this.checkAnswer(e.target as HTMLButtonElement));
+    this.answerBtns?.forEach((btn: HTMLButtonElement): void => {
+      btn.addEventListener('click', (e: Event): void => this.checkAnswer(e.target as HTMLButtonElement));
     });
   }
 
@@ -216,11 +212,17 @@ class AudioGame extends NewElem {
   }
 
   private initAudioListener(elem: HTMLElement, snd: Sound): void {
-    elem.addEventListener('click', () => snd.run());
+    elem.addEventListener('click', (): void => snd.run());
   }
 
   private answerKeyboardHandler(e: KeyboardEvent): void {
-    if (this.gameStatus === 'waiting') {
+    if (e.code === AUDIOGAME.SPACE) {
+      if (this.audioElem) this.audioElem.run();
+    }
+    if (e.code === AUDIOGAME.ENTER) {
+      this.nextButtonHandler();
+    }
+    if (this.gameStatus === GAMESTATUS.WAITING) {
       const buttons = document.querySelectorAll('.audio-game__button');
       buttons.forEach((btn) => {
         const button = btn as HTMLButtonElement;
@@ -237,17 +239,17 @@ class AudioGame extends NewElem {
       btn.disabled = true;
     });
     if (this.counterNumber >= 1) {
-      (this.nextButton as HTMLButtonElement).textContent = 'Next word';
+      (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.NEXTWORD;
     } else {
-      (this.nextButton as HTMLButtonElement).textContent = 'Show results';
+      (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.SHOWRESULTS;
     }
   }
 
-  private nextButtonHandler(e: Event): void {
-    const btn = e.target as HTMLButtonElement;
-    if (btn.textContent === "I don't know") {
+  private nextButtonHandler(): void {
+    const btn = this.nextButton as HTMLButtonElement;
+    if (btn.textContent === AUDIOGAME.SHOWANSWER) {
       this.rightAnswerSeries = 0;
-      this.gameStatus = 'done';
+      this.gameStatus = GAMESTATUS.DONE;
       this.sound.click.run();
       (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
       this.showCorrectAnswer();
@@ -261,9 +263,8 @@ class AudioGame extends NewElem {
   private endGame(): void {
     const rightAnswers = this.words.filter((item) => item.answer).length;
     const wrongAnswers = this.words.filter((item) => !item.answer).length;
-    const percentOfRightAnswers = (rightAnswers / 20) * 100;
+    const percentOfRightAnswers = (rightAnswers / AUDIOGAME.AMOUNTOFWORDS) * 100;
     this.percent = percentOfRightAnswers;
-    this.sound.end.run();
     let _: HTMLElement;
     this.gameDiv.innerHTML = '';
     this.gameDiv.classList.add('nogap');
@@ -297,8 +298,7 @@ class AudioGame extends NewElem {
     const words = this.words;
     const series = this.maxRightAnswerSeries;
     const percentOfRightAnswers = this.percent;
-    console.log(game, words, series, percentOfRightAnswers);
-    const event = new CustomEvent('gameStatistic', {
+    const event = new CustomEvent(CUSTOMEVENT.GAMESTATISTIC, {
       detail: {
         game, words, series, percentOfRightAnswers,
       },
@@ -307,9 +307,9 @@ class AudioGame extends NewElem {
   }
 
   private initReplayListener(elem: HTMLElement): void {
-    elem.addEventListener('click', () => {
+    elem.addEventListener('click', (): void => {
       this.sound.click.run();
-      const reWords = this.words.map((item) => {
+      const reWords = this.words.map((item: SprintWord): SprintWord => {
         const word = item;
         word.answer = undefined;
         word.wrong = undefined;
@@ -328,11 +328,11 @@ class AudioGame extends NewElem {
     }
     this.wordIdx = 0;
     this.indexOfRightAnswer = 0;
-    this.counterNumber = 20;
+    this.counterNumber = AUDIOGAME.AMOUNTOFWORDS;
     this.answerBtns = [];
     this.rightAnswerSeries = 0;
     this.maxRightAnswerSeries = 0;
-    this.gameStatus = 'waiting';
+    this.gameStatus = GAMESTATUS.WAITING;
     this.percent = 0;
   }
 
