@@ -8,7 +8,7 @@ class GamesChooseLevel extends BaseComponent {
   inner = '';
 
   constructor() {
-    super('main', ['main'], 'games');
+    super('main', 'main', 'games');
   }
 
   draw(game: GAME): void {

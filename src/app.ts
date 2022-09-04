@@ -125,7 +125,7 @@ class App {
       let page = +(hashParts[2] ?? 0);
       if (page) page -= 1;
       // TODO: make words request for known user
-      const [words, error] = await this.model.api.getWords(group, page); // ok for unregistered users
+      const [words, error] = await this.model.api.getWords(group, page); // ok for unregistered user
       if (error) console.log(error); // TODO: remake it
       if (words) {
         this.view.renderPage(PAGE.TEXTBOOK, words, this.model.isRegisteredUser, group, page);

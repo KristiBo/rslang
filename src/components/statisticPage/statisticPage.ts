@@ -4,7 +4,7 @@ class StatisticPage extends BaseComponent {
   inner = '<h2 class="main__title">Статистика</h2>';
 
   constructor() {
-    super('main', ['main'], 'statistic');
+    super('main', 'main', 'statistic');
   }
 }
 

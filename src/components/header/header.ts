@@ -35,7 +35,7 @@ class Header extends BaseComponent {
         </div>`;
 
   constructor() {
-    super('header', ['header'], 'header-container');
+    super('header', 'header', 'header-container');
   }
 
   create(): void {

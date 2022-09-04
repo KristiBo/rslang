@@ -64,7 +64,7 @@ class HomePage extends BaseComponent {
         </div>`;
 
   constructor() {
-    super('main', ['main'], 'home');
+    super('main', 'main', 'home');
   }
 }
 
