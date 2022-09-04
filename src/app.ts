@@ -27,9 +27,11 @@ class App {
   showAuth(): void {
     const linkAuth = <HTMLAnchorElement>document.querySelector('.nav__link_auth');
     if (linkAuth && this.model.isRegisteredUser) {
+      // logout
       linkAuth.classList.remove('logged-in');
       linkAuth.textContent = 'Войти';
       this.model.removeFromLocalStorage();
+      this.onHashChange(); // page refresh
     } else {
       this.view.authPage.create();
     }
@@ -81,10 +83,11 @@ class App {
     }
   }
 
-  async runSprintFromGames(group: number): Promise<void> {
+  async runGameFromGames(game: GAME, group: number): Promise<void> {
     if (group > 0 && group < 7 && +group.toFixed(0) === group) {
-      const dict = await this.model.getWordsForGame(GAME.SPRINT ,group);
-      if (dict) this.view.renderPage(PAGE.PLAYSPRINT, dict);
+      const dict = await this.model.getWordsForGame(game, group);
+      const page = game === GAME.SPRINT ? PAGE.PLAYSPRINT : PAGE.PLAYAUDIOCALL;
+      if (dict) this.view.renderPage(page, dict);
     } else {
       window.location.hash = 'error';
       // throw new Error(`Get wrong level number while starting Sprint game: ${level}`);
@@ -99,20 +102,31 @@ class App {
     if (linkAuth) {
       linkAuth.classList.add('logged-in');
       linkAuth.textContent = 'Выйти';
+      this.onHashChange();
     }
   }
 
   async onHashChange(): Promise<void> {
     const hash = window.location.hash.substring(2);
-    const hashPart = hash.substring(0, hash.length - 2);
-    if (hash === PAGE.TEXTBOOK) {
-      const [words, error] = await this.model.api.getWords();
+    const hashParts = hash.split('/');
+    if (hashParts[0] === PAGE.TEXTBOOK) {
+      // textbook
+      let group = +(hashParts[1] ?? 0);
+      if (group) group -= 1;
+      let page = +(hashParts[2] ?? 0);
+      if (page) page -= 1;
+      // TODO: make words request for known user
+      const [words, error] = await this.model.api.getWords(group, page); // ok for unregistered users
       if (error) console.log(error); // TODO: remake it
       if (words) {
-        this.view.renderPage(hash, words, this.model.isRegisteredUser);
+        this.view.renderPage(PAGE.TEXTBOOK, words, this.model.isRegisteredUser, group, page);
       }
-    } else if (hashPart === PAGE.GAMESPRINT || hashPart === PAGE.GAMEAUDIOCALL) {
-      this.runSprintFromGames(Number(hash.slice(-1)));
+    } else if (hashParts.length === 3 && hashParts[1] === GAME.SPRINT) {
+      // run sprint
+      this.runGameFromGames(GAME.SPRINT, Number(hashParts[2]));
+    } else if (hashParts.length === 3 && hashParts[1] === GAME.AUDIOCALL) {
+      // run audio call
+      this.runGameFromGames(GAME.SPRINT, Number(hashParts[2]));
     } else {
       // TODO: prepare some data if needed for page
       this.view.renderPage(hash, [], this.model.isRegisteredUser);

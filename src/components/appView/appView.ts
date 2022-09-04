@@ -1,4 +1,4 @@
-import { Word, GAME } from '../../shared/types';
+import { Word, GAME, PAGE } from '../../shared/types';
 import './basic.css';
 import AuthPage from '../authPage/authPage';
 import ErrorPage from '../errorPage/errorPage';
@@ -45,39 +45,46 @@ class AppView {
     this.gamesChooseLevel = new GamesChooseLevel();
   }
 
-  renderPage(pageId: string, data?: Word[], userState?: boolean): void {
+  renderPage(
+    pageId: string,
+    data?: Word[],
+    userState?: boolean,
+    group?: number,
+    page?: number,
+  ): void {
     const main: HTMLElement | null = document.querySelector('main');
     // don't remove main for auth
     if (main && pageId !== 'authorization') {
       main.remove();
     }
     switch (pageId) {
-      case 'home':
+      case PAGE.HOME:
         this.homePage.create();
         break;
-      case 'textbook':
+      case PAGE.TEXTBOOK:
         this.textbookPage.create();
         if (data) {
+          console.log('group:', group, ' page:', page);
           this.textbookPage.drawCards(data, userState);
+          this.textbookPage.setPagination(group ?? 0, page ?? 0);
         }
         break;
-      case 'games':
+      case PAGE.GAMES:
         this.gamesPage.create();
-        // this.gamesPage.initListeners();
         break;
-      case 'play/sprint':
+      case PAGE.PLAYSPRINT:
         if (data) {
           this.gamesPage.create();
           this.gamesPage.drawSprint(data);
         }
         break;
-      case 'games/sprint':
+      case PAGE.GAMESPRINT:
         this.gamesChooseLevel.draw(GAME.SPRINT);
         break;
-      case 'games/audiocall':
+      case PAGE.GAMEAUDIOCALL:
         this.gamesChooseLevel.draw(GAME.AUDIOCALL);
         break;
-      case 'statistic':
+      case PAGE.STATISTIC:
         this.statisticPage.create();
         break;
       default:
