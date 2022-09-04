@@ -1,5 +1,5 @@
 import {
-  Word, TAuth, PAGE, TxtBkReference, GameStat,
+  Word, TAuth, PAGE, TxtBkReference, GameStat, GAME,
 } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
@@ -81,22 +81,10 @@ class App {
     }
   }
 
-  async runSprintFromGames(level: number): Promise<void> {
-    if (level > 0 && level < 7 && +level.toFixed(0) === level) {
-      const dict: Word[] = [];
-      const dbLevel = level - 1; // Levels in DB starts from 0
-      // generate array with 3 random numbers from range [0..29]
-      const trio = [...Array(30)].map((_, idx) => idx).sort(() => Math.random() - 0.5);
-      trio.length = 3;
-      const promises = (trio.map(async (i) => {
-        const [words, error] = await this.model.api.getWords(dbLevel, i);
-        if (error) console.log(error);
-        if (words) dict.push(...words);
-      }));
-      await Promise.all(promises);
-      if (dict) {
-        this.view.renderPage(PAGE.PLAYSPRINT, dict);
-      }
+  async runSprintFromGames(group: number): Promise<void> {
+    if (group > 0 && group < 7 && +group.toFixed(0) === group) {
+      const dict = await this.model.getWordsForGame(GAME.SPRINT ,group);
+      if (dict) this.view.renderPage(PAGE.PLAYSPRINT, dict);
     } else {
       window.location.hash = 'error';
       // throw new Error(`Get wrong level number while starting Sprint game: ${level}`);
