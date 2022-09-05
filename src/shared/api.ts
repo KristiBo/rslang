@@ -17,9 +17,9 @@ import {
 } from './types/index';
 
 class Api {
-  private token = ''; // JWT token for requests with authorization
+  private token = localStorage.getItem('refreshToken')?.slice(1, -1) || ''; // JWT token for requests with authorization
 
-  private userId = ''; // user id like '62ffed00299cea0016064168'
+  private userId = localStorage.getItem('userId')?.slice(1, -1) || ''; // user id like '62ffed00299cea0016064168'
 
   private expire = 0; // token expiration time
 
@@ -31,7 +31,7 @@ class Api {
     const headers: HeadersInit = { Accept: 'application/json' };
     if (req.auth) {
       if (Math.floor(Date.now() / 1000) - this.expire > FOURHOURS) {
-        // TODO: add refresh token
+        await this.getNewToken(this.userId, this.token);
       }
       headers.Authorization = `Bearer ${this.token}`;
     }
@@ -334,14 +334,13 @@ class Api {
         },
       });
       const content = await rawResponse.json();
-      // if ok - set token and expiration time
       if (rawResponse.ok) {
         this.setExpire(Date.now());
         this.setToken(content.token);
       }
-      // TODO: move localStorage.setItem to upper level
       localStorage.setItem('token', JSON.stringify(content.token));
       localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
+      // TODO: move localStorage.setItem to upper level
     } catch (err) {
       throw new Error(`${err}`);
     }

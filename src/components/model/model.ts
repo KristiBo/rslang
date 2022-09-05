@@ -15,7 +15,7 @@ import {
 import Api from '../../shared/api';
 
 class Model {
-  private userState: boolean; // true for logged in
+  userState: boolean; // true for logged in
 
   private api: Api;
 
