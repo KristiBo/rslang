@@ -10,13 +10,14 @@ import {
   TxtBkWord,
   UsersWordsResponse,
   ReqResponse,
+  UsersWordData,
 } from '../../shared/types';
 import Api from '../../shared/api';
 
 class Model {
   private userState: boolean; // true for logged in
 
-  api: Api;
+  private api: Api;
 
   constructor() {
     this.userState = false;
@@ -24,9 +25,7 @@ class Model {
   }
 
   async userLogin(userData: TUser): Promise<[boolean, string]> {
-    console.log('M:userData:', userData);
     const { email, password } = userData;
-    console.log('M:email, password:', email, password);
     if (password) {
       if (userData.create) {
         // create before login
@@ -67,31 +66,63 @@ class Model {
 
   async getWords(ref: TxtBkReference): Promise<ReqResponse<Array<TxtBkWord>>> {
     const { group, page } = ref;
-    const [words, error] = await this.api.getWords(group, page);
     let result: TxtBkWord[] = [];
-    if (error) console.log(error);
-    if (words) {
-      let [usrWords, usrError]: ReqResponse<UsersWordsResponse[]> = [[], null];
-      if (this.userState) [usrWords, usrError] = await this.api.getUsersWords();
-      if (usrError) console.log(usrError);
-      result = words.map((item) => {
-        const userWord = usrWords?.find((dbItem) => dbItem.wordId === item.id);
-        let res: TxtBkWord = <TxtBkWord>item;
-        res.difficulty = userWord ? userWord.difficulty : DIFFICULTY.NONE;
-        res.wins = 0;
-        res.fails = 0;
-        if (userWord?.optional) {
-          const entries = Object.values(userWord.optional);
-          res = entries.reduce((acc, elem): TxtBkWord => {
-            acc.wins = elem.wins;
-            acc.fails = elem.fails;
-            return acc;
-          }, res);
-        }
-        return res;
+    let errorRes: unknown | null = null;
+    if (group === 6) {
+      const dashId = '_id';
+      const filter = '{"userWord.difficulty":"hard"}';
+      const wordsPerPage = '500';
+      const [words, error] = await this.api.getUsrAggrWords({
+        group: `${group}`, wordsPerPage, filter,
       });
+      if (error) errorRes = error;
+      if (words) {
+        if (words?.[0].paginatedResults && words[0].paginatedResults.length > 0) {
+          words[0].paginatedResults.forEach((item) => {
+            const tempRes = item;
+            tempRes.id = tempRes[dashId];
+            let res: TxtBkWord = <TxtBkWord>tempRes;
+            res.difficulty = tempRes.userWord ? tempRes.userWord.difficulty : DIFFICULTY.NONE;
+            res.wins = 0;
+            res.fails = 0;
+            if (tempRes.userWord?.optional) {
+              const entries = Object.values(tempRes.userWord.optional);
+              res = entries.reduce((acc, elem): TxtBkWord => {
+                acc.wins = elem.wins;
+                acc.fails = elem.fails;
+                return acc;
+              }, res);
+            }
+            result.push(res);
+          });
+        }
+      }
+    } else {
+      const [words, error] = await this.api.getWords(group, page);
+      if (error) errorRes = error;
+      if (words) {
+        let [usrWords, usrError]: ReqResponse<UsersWordsResponse[]> = [[], null];
+        if (this.userState) [usrWords, usrError] = await this.api.getUsersWords();
+        if (usrError) errorRes = usrError;
+        result = words.map((item) => {
+          const userWord = usrWords?.find((dbItem) => dbItem.wordId === item.id);
+          let res: TxtBkWord = <TxtBkWord>item;
+          res.difficulty = userWord ? userWord.difficulty : DIFFICULTY.NONE;
+          res.wins = 0;
+          res.fails = 0;
+          if (userWord?.optional) {
+            const entries = Object.values(userWord.optional);
+            res = entries.reduce((acc, elem): TxtBkWord => {
+              acc.wins = elem.wins;
+              acc.fails = elem.fails;
+              return acc;
+            }, res);
+          }
+          return res;
+        });
+      }
     }
-    return [result, error];
+    return [result, errorRes];
   }
 
   // group 1..6
@@ -110,23 +141,53 @@ class Model {
     return dict;
   }
 
-  async getWordsFromTxtBk(game: GAME, group: number, page: number): Promise<Word[]> {
-    console.log('getWordsFromTxtBk: game, group, page', game, group, page);
+  async getWordsFromTxtBk(game: GAME, grp: number, pg: number): Promise<Word[]> {
+    const group = `${grp - 1}`;
+    const page = `${pg - 1}`;
+    const dashId = '_id';
+    let filter = `{"$and":[{"userWord.difficulty":{"$ne":"learn"}},{"page": ${page}}]}`;
     const dict: Word[] = [];
-    // TODO: make it
+    let wordsPerPage = '20';
+    const wordsNeeded = game === GAME.SPRINT ? 60 : 20;
+    const [words, error] = await this.api.getUsrAggrWords({
+      group, wordsPerPage, filter,
+    });
+    if (error) console.log(error);
+    if (words?.[0].paginatedResults && words[0].paginatedResults.length > 0) {
+      words[0].paginatedResults.forEach((item) => {
+        const result = item;
+        result.id = result[dashId];
+        dict.push(result);
+      });
+    }
+    if (dict.length < wordsNeeded && page) {
+      wordsPerPage = `${wordsNeeded - dict.length}`;
+      filter = `{"$and":[{"userWord.difficulty":{"$ne":"learn"}},{"page":{"$lt": ${page}}}]}`;
+      const [moreWords, moreError] = await this.api.getUsrAggrWords({
+        group, wordsPerPage, filter,
+      });
+      if (moreError) console.log(error);
+      if (moreWords?.[0].paginatedResults && moreWords[0].paginatedResults.length > 0) {
+        moreWords[0].paginatedResults.forEach((item) => {
+          const result = item;
+          result.id = result[dashId];
+          dict.push(result);
+        });
+      }
+    }
     return dict;
   }
 
   async saveStatFromGame(stat: GameStat): Promise<void> {
     const [words, error] = await this.api.getUsersWords();
     const newUWOptData = { wins: 0, fails: 0, count: 0 };
-    console.log('---------\n', words);
     if (error) throw new Error('Error occured while getting users words');
     const promises = stat.words.map(async (item) => {
       const userWord = words?.find((dbItem) => dbItem.wordId === item.id);
       if (userWord) {
         // update
-        const result = userWord;
+        const { difficulty, optional } = userWord;
+        const result: UsersWordData = { difficulty, optional };
         if (result.optional && !result.optional[stat.game]) {
           result.optional[stat.game] = newUWOptData;
         }
@@ -139,8 +200,14 @@ class Model {
             result.optional[stat.game].count = 0;
             if (result.difficulty === DIFFICULTY.LEARN) result.difficulty = DIFFICULTY.NONE;
           }
-          const limit = (result.difficulty === DIFFICULTY.NEW) ? WINSNEEDED.NEW : WINSNEEDED.HARD;
-          if (result.optional[stat.game].count >= limit) result.difficulty = DIFFICULTY.LEARN;
+          const limit = (
+            result.difficulty === DIFFICULTY.NEW || result.difficulty === DIFFICULTY.NONE
+          )
+            ? WINSNEEDED.NEW
+            : WINSNEEDED.HARD;
+          if (result.optional[stat.game].count >= limit) {
+            result.difficulty = DIFFICULTY.LEARN;
+          }
           const [_, errorPut] = await this.api.updateUsersWord(item.id, result);
           if (errorPut) console.log(errorPut);
         }
@@ -162,7 +229,7 @@ class Model {
     await Promise.all(promises);
   }
 
-  setToLocalStorage(content: TAuth): void {
+  private setToLocalStorage(content: TAuth): void {
     this.userState = true;
     const time = new Date();
     localStorage.setItem('time', JSON.stringify(time));

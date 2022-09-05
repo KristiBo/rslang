@@ -70,6 +70,10 @@ a.btn_disabled {
   pointer-events: none;
   color: #ccc;
 }
+.textbook__game-btns {
+  display: flex;
+  gap:20px;
+}
 .hide {
   display: none;
 }

@@ -31,10 +31,11 @@ interface PaginatedResults extends Word {
   userWord?: UsersWordData;
 }
 
-interface UsersAggrWordsResponse {
+interface UsersAggrWordsEntry {
   paginatedResults: PaginatedResults[];
   totalCount: { count: number };
 }
+type UsersAggrWordsResponse = UsersAggrWordsEntry[];
 
 interface Statistics {
   learnedWords: number;

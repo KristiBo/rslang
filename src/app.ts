@@ -1,5 +1,5 @@
 import {
-  Word, PAGE, TxtBkReference, GameStat, GAME, TUser,
+  PAGE, GameStat, GAME, TUser,
 } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
@@ -19,7 +19,6 @@ class App {
     this.view.header.addListeners(() => this.showAuth());
     this.initOnHashChange();
     this.initLoginListener();
-    this.initStartSprintListener();
     this.initGameStatListener();
   }
 
@@ -41,51 +40,15 @@ class App {
     document.addEventListener('userLogin', (event: Event) => this.onUserLogin(event));
   }
 
-  initStartSprintListener(): void {
-    document.addEventListener('startSprint', (event: Event) => this.onRunSprintFromTxtBk(event));
-  }
-
   initGameStatListener(): void {
     document.addEventListener('gameStatistic', (event: Event) => this.onGameStat(event));
   }
 
   async onGameStat(event: Event): Promise<void> {
     const statistic = <GameStat>(<CustomEvent>event).detail;
-    console.log('GameStat from: ', statistic.game);
-    console.log('GameStat words: ', statistic.words);
-    console.log('GameStat succession: ', statistic.succession);
     if (this.model.isRegisteredUser) this.model.saveStatFromGame(statistic);
   }
 
-  // TxtBkReference = { group: 0..6, page: 0..29 }
-  async onRunSprintFromTxtBk(event: Event): Promise<void> {
-    const { group, page } = <TxtBkReference>(<CustomEvent>event).detail;
-    const dict: Word[] = [];
-    let pages: number[] = [];
-    if (group === 6) {
-      // TODO: get words for group 6: difficulty words
-    } else if (page < 3) {
-      pages = [0, 1, 2]; // first 3 pages
-      pages.length = page + 1;
-    } else {
-      // 2 random previous pages + current page
-      pages = [...Array(page)].map((_, idx) => idx).sort(() => Math.random() - 0.5);
-      pages.length = 2;
-      pages.push(page);
-    }
-    // get words for pages
-    const promises = (pages.map(async (i) => {
-      const [words, error] = await this.model.api.getWords(group, i);
-      if (error) console.log(error);
-      if (words) dict.push(...words);
-    }));
-    await Promise.all(promises);
-    if (dict) {
-      this.view.renderPage(PAGE.PLAYSPRINT, dict);
-    }
-  }
-
-  // TODO: need to make it
   async runGameFromTxtBk(game: GAME, group: number, page: number): Promise<void> {
     if (group > 0 && group < 7 && +group.toFixed(0) === group) {
       const dict = await this.model.getWordsFromTxtBk(game, group, page);
@@ -115,7 +78,6 @@ class App {
     }
     if (result) {
       this.view.authPage.closeModal();
-      // this.model.setToLocalStorage(authData);
       const linkAuth = <HTMLAnchorElement>document.querySelector('.nav__link_auth');
       if (linkAuth) {
         linkAuth.classList.add('logged-in');
@@ -126,7 +88,8 @@ class App {
   }
 
   async onHashChange(): Promise<void> {
-    const hash = window.location.hash.substring(2);
+    let hash = window.location.hash.substring(2);
+    if (hash === '') hash = PAGE.HOME;
     const hashParts = hash.split('/');
     if (hashParts[0] === PAGE.TEXTBOOK) {
       // textbook
