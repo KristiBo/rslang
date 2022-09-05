@@ -7,9 +7,15 @@ interface GameStat {
   succession: number;
 }
 
-interface StatQueue {
-  wordId: string;
-  difficulty: string;
+interface Statistic {
+  learnedWords: number;
+  optional: {
+    [key: string]: {
+      t: number,
+      s: number[],
+      a: number[],
+    }
+  };
 }
 
-export { GameStat, StatQueue };
+export { GameStat, Statistic };

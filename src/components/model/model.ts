@@ -141,6 +141,10 @@ class Model {
     return dict;
   }
 
+  async updateStatistic(game: GAME, grp: number, pg: number): Promise<void> {
+    //
+  }
+
   async getWordsFromTxtBk(game: GAME, grp: number, pg: number): Promise<Word[]> {
     const group = `${grp - 1}`;
     const page = `${pg - 1}`;
