@@ -258,15 +258,13 @@ class AudioGame extends NewElem {
   }
 
   private nextButtonHandler(): void {
-    (this.nextButton as HTMLButtonElement).blur();
+    this.nextButton?.blur();
     if ((this.nextButton as HTMLButtonElement).textContent === `${AUDIOGAME.SHOWANSWER} (enter)`) {
-      if ((this.nextButton as HTMLButtonElement).textContent === `${AUDIOGAME.SHOWANSWER} (enter)`) {
-        this.rightAnswerSeries = 0;
-        this.sound.click.run();
-        (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
-        this.showCorrectAnswer();
-        this.words[this.wordIdx].answer = false;
-      }
+      this.rightAnswerSeries = 0;
+      this.sound.click.run();
+      (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
+      this.showCorrectAnswer();
+      this.words[this.wordIdx].answer = false;
     } else {
       this.wordIdx += 1;
       this.drawWord();
