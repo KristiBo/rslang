@@ -49,7 +49,7 @@ enum AUDIOGAME {
 }
 
 enum DIFFICULTY {
-  NONE = '',
+  NONE = 'none',
   NEW = 'new',
   HARD = 'hard',
   LEARN = 'learn',

@@ -11,6 +11,9 @@ import {
   UsersWordsResponse,
   ReqResponse,
   UsersWordData,
+  StatData,
+  StatOptional,
+  Statistics,
 } from '../../shared/types';
 import Api from '../../shared/api';
 
@@ -45,23 +48,30 @@ class Model {
 
   async setWordDifficulty(wordId: string, difficulty: DIFFICULTY): Promise<void> {
     const [dataGet, errorGet] = await this.api.getUsersWordById(wordId);
-    if (difficulty !== DIFFICULTY.NONE) {
-      // save to UW
-      if (errorGet) console.log(errorGet);
-      if (dataGet) {
-        // update
-        const [_, error] = await this.api.updateUsersWord(wordId, { difficulty });
-        if (error) console.log(error);
-      } else {
-        // insert
-        const [_, error] = await this.api.postUsersWord(wordId, { difficulty });
-        if (error) console.log(error);
-      }
-    } else if (dataGet) {
-      // delete from UW
-      const [_, error] = await this.api.deleteUsersWord(wordId);
+    // if (difficulty !== DIFFICULTY.NONE) {
+    // save to UW
+    if (errorGet) console.log(errorGet);
+    if (dataGet) {
+      // update
+      const [_, error] = await this.api.updateUsersWord(wordId, { difficulty });
+      if (error) console.log(error);
+    } else {
+      // insert
+      const [_, error] = await this.api.postUsersWord(wordId, { difficulty });
       if (error) console.log(error);
     }
+    if (difficulty === DIFFICULTY.LEARN && !(dataGet?.difficulty === DIFFICULTY.LEARN)) {
+      this.updateStatistic({ t: 1 });
+    }
+    if (difficulty !== DIFFICULTY.LEARN && dataGet?.difficulty === DIFFICULTY.LEARN) {
+      this.updateStatistic({ t: -1 });
+    }
+    // }
+    // else if (dataGet) {
+    //   // delete from UW
+    //   const [_, error] = await this.api.deleteUsersWord(wordId);
+    //   if (error) console.log(error);
+    // }
   }
 
   async getWords(ref: TxtBkReference): Promise<ReqResponse<Array<TxtBkWord>>> {
@@ -141,7 +151,53 @@ class Model {
     return dict;
   }
 
-  // TODO: group 7
+  async getStatistic(): Promise<Statistics | null> {
+    const [stat, error] = await this.api.getUsersStats();
+    if (error) console.log(error);
+    return stat;
+  }
+
+  async updateStatistic(data: StatData): Promise<void> {
+    const today = (new Date()).toDateString().slice(4);
+    const statRes: StatData[] = [data];
+    const addData = (dt: StatData[]): StatData => {
+      const result = { t: 0, s: [0, 0, 0, 0], a: [0, 0, 0, 0] };
+      dt.forEach((item) => {
+        if (item.t) result.t += item.t;
+        if (item.s) {
+          item.s.forEach((elem, idx) => {
+            if (idx < 3) {
+              result.s[idx] += elem;
+            } else {
+              result.s[idx] = Math.max(elem, result.s[idx]);
+            }
+          });
+        }
+        if (item.a) {
+          item.a.forEach((elem, idx) => {
+            if (idx < 3) {
+              result.a[idx] += elem;
+            } else {
+              result.a[idx] = Math.max(elem, result.s[idx]);
+            }
+          });
+        }
+      });
+      return result;
+    };
+    const [stat, error] = await this.api.getUsersStats();
+    if (error) console.log(error);
+    if (stat?.optional) statRes.push((<StatOptional>stat.optional)[today]);
+    const result = addData(statRes);
+    let learnedWords = stat?.learnedWords ?? 0;
+    learnedWords += data.t ?? 0;
+    const [_, errorPut] = await this.api.updateUsersStats({
+      learnedWords,
+      optional: { [today]: result },
+    });
+    if (errorPut) console.log(errorPut);
+  }
+
   async getWordsFromTxtBk(game: GAME, grp: number, pg: number): Promise<Word[]> {
     const group = `${grp - 1}`;
     const page = `${pg - 1}`;
@@ -181,7 +237,9 @@ class Model {
 
   async saveStatFromGame(stat: GameStat): Promise<void> {
     const [words, error] = await this.api.getUsersWords();
+    const statData = { t: 0, s: [0, 0, 0, 0], a: [0, 0, 0, 0] };
     const newUWOptData = { wins: 0, fails: 0, count: 0 };
+    let newbe = 0;
     if (error) throw new Error('Error occured while getting users words');
     const promises = stat.words.map(async (item) => {
       const userWord = words?.find((dbItem) => dbItem.wordId === item.id);
@@ -208,7 +266,9 @@ class Model {
             : WINSNEEDED.HARD;
           if (result.optional[stat.game].count >= limit) {
             result.difficulty = DIFFICULTY.LEARN;
+            statData.t += 1;
           }
+
           const [_, errorPut] = await this.api.updateUsersWord(item.id, result);
           if (errorPut) console.log(errorPut);
         }
@@ -224,10 +284,22 @@ class Model {
           difficulty: DIFFICULTY.NEW,
           optional: { [stat.game]: newUWOptData },
         });
+        newbe += 1;
         if (errorPost) console.log(errorPost);
       }
     });
     await Promise.all(promises);
+    const rightAnswers = stat.words.reduce((acc, elem) => {
+      const result = acc + (elem.answer ? 1 : 0);
+      return result;
+    }, 0);
+    const arr: number[] = [newbe, rightAnswers, stat.words.length, stat.succession];
+    if (<GAME>stat.game === GAME.SPRINT) {
+      statData.s = arr;
+    } else {
+      statData.a = arr;
+    }
+    this.updateStatistic(statData);
   }
 
   private setToLocalStorage(content: TAuth): void {
@@ -239,8 +311,11 @@ class Model {
     localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
   }
 
-  removeFromLocalStorage(): void {
+  logout(): void {
     this.userState = false;
+    this.api.setExpire(0);
+    this.api.setUserId('');
+    this.api.setToken('');
     localStorage.setItem('time', '');
     localStorage.setItem('token', '');
     localStorage.setItem('userId', '');

@@ -226,6 +226,7 @@ class Api {
   // stat: Statistics <- { "learnedWords": number, "optional": {} }
   // return: [Statistics, null] | [null, Error]
   async updateUsersStats(stat: Statistics): Promise<ReqResponse<Statistics>> {
+    console.log(stat);
     const url = `${URL}users/${this.userId}/statistics`;
     const method = METHOD.PUT;
     const auth = true;
