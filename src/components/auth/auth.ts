@@ -1,7 +1,6 @@
 import './auth.css';
 import isEmail from 'validator/lib/isEmail';
 import isStrongPassword from 'validator/lib/isStrongPassword';
-// import Api from '../../shared/api';
 import { TUser } from '../../shared/types';
 
 class Auth {
@@ -60,22 +59,6 @@ class Auth {
         // login
         this.dispatchLoginEvent({ email, password, create: false });
       }
-      // if (this.isRegistrationPage) {
-      //   this.api.createUser({ email, password })
-      //     .then(() => this.api.loginUser({ email, password })
-      //       .then((result) => this.dispatchLoginEvent(result)))
-      //     .catch((err) => {
-      //       this.showErrMessage('Error: User already exist');
-      //       throw new Error(`Create user: ${err}`);
-      //     });
-      // } else {
-      //   this.api.loginUser({ email, password })
-      //     .then((result) => this.dispatchLoginEvent(result))
-      //     .catch((err) => {
-      //       this.showErrMessage('Error: Incorrect email or password');
-      //       throw new Error(`Login user: ${err}`);
-      //     });
-      // }
     }
   }
 

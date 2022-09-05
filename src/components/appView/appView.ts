@@ -66,7 +66,6 @@ class AppView {
       case PAGE.TEXTBOOK:
         this.textbookPage.create();
         if (data) {
-          console.log('group:', group, ' page:', page);
           this.textbookPage.drawCards(<TxtBkWord[]>data, userState ?? false);
           this.textbookPage.setPagination(group ?? 0, page ?? 0);
         }

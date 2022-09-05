@@ -27,7 +27,7 @@ class Api {
   // req: ReqData - {url: str, method: 'GET' etc, auth?: bool, body?: str}
   // T: type of result
   // return: [T, null] | [null, Error]
-  async request<T>(req: ReqData): Promise<ReqResponse<T>> {
+  private async request<T>(req: ReqData): Promise<ReqResponse<T>> {
     const headers: HeadersInit = { Accept: 'application/json' };
     if (req.auth) {
       if (Math.floor(Date.now() / 1000) - this.expire > FOURHOURS) {

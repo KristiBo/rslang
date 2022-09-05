@@ -3,7 +3,6 @@ import { TxtBkWord, PAGE } from '../../shared/types';
 import BaseComponent from '../baseComponent/baseComponent';
 import Card from '../card/card';
 
-// TODO: show 7th group for known user
 class TextbookPage extends BaseComponent {
   inner = `
         <div class="container textbook">
@@ -36,7 +35,6 @@ class TextbookPage extends BaseComponent {
   }
 
   drawCards(data: TxtBkWord[], userState: boolean): void {
-    console.log(data);
     const cards: HTMLElement | null = document.querySelector('.textbook__cards');
     const btnSeven: HTMLElement | null = document.querySelector('.btn_seven');
     const btnsGame: HTMLElement | null = document.querySelector('.textbook__game-btns');
