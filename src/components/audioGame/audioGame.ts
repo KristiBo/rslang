@@ -2,13 +2,13 @@
 /* eslint-disable no-param-reassign */
 import './audioGame.css';
 import {
-  Word, ICON, Group, SprintWord, GAME, GAMESTATUS, AUDIOGAME, CUSTOMEVENT,
+  Word, ICON, Group, SprintWord, GAME, AUDIOGAME, CUSTOMEVENT,
 } from '../../shared/types';
 import NewElem from '../../shared/newelem';
 import Button from '../../shared/button';
 import Sound from '../../shared/sound';
 import SVG from '../../shared/svgLib';
-import URL from '../../shared/constants';
+import { URL } from '../../shared/constants';
 
 class AudioGame extends NewElem {
   private gameContainer: HTMLElement;
@@ -37,7 +37,7 @@ class AudioGame extends NewElem {
 
   private counterNumber: number = AUDIOGAME.AMOUNTOFWORDS;
 
-  private gameStatus = GAMESTATUS.WAITING;
+  private gameStatus = AUDIOGAME.STATUSWAITING;
 
   private rightAnswerSeries = 0;
 
@@ -126,7 +126,7 @@ class AudioGame extends NewElem {
   }
 
   private drawWord(): void {
-    this.gameStatus = GAMESTATUS.WAITING;
+    this.gameStatus = AUDIOGAME.STATUSWAITING;
     (this.counter as HTMLElement).textContent = `${this.counterNumber}`;
     this.counterNumber -= 1;
     (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.SHOWANSWER;
@@ -167,7 +167,7 @@ class AudioGame extends NewElem {
   }
 
   private checkAnswer(btn: HTMLButtonElement): void {
-    this.gameStatus = GAMESTATUS.DONE;
+    this.gameStatus = AUDIOGAME.STATUSDONE;
 
     if (btn.textContent === this.words[this.wordIdx].wordTranslate) {
       this.rightAnswerSeries += 1;
@@ -189,10 +189,10 @@ class AudioGame extends NewElem {
       button.disabled = true;
     });
 
-    if (this.counterNumber >= 1) {
-      (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.NEXTWORD;
-    } else {
+    if (this.counterNumber === 1) {
       (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.SHOWRESULTS;
+    } else {
+      (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.NEXTWORD;
     }
     (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
   }
@@ -216,40 +216,64 @@ class AudioGame extends NewElem {
   }
 
   private answerKeyboardHandler(e: KeyboardEvent): void {
-    if (e.code === AUDIOGAME.SPACE) {
-      if (this.audioElem) this.audioElem.run();
-    }
-    if (e.code === AUDIOGAME.ENTER) {
-      this.nextButtonHandler();
-    }
-    if (this.gameStatus === GAMESTATUS.WAITING) {
-      const buttons = document.querySelectorAll('.audio-game__button');
-      buttons.forEach((btn) => {
-        const button = btn as HTMLButtonElement;
-        if (btn.id === e.key) {
-          this.checkAnswer(button);
+    e.preventDefault();
+    switch (e.code) {
+      case AUDIOGAME.SPACE: {
+        if (this.audioElem) this.audioElem.run();
+        break;
+      }
+      case AUDIOGAME.ENTER: {
+        console.log('enter');
+        this.enterKeyHandler();
+        break;
+      }
+      default: {
+        if (this.gameStatus === AUDIOGAME.STATUSWAITING) {
+          const buttons = document.querySelectorAll('.audio-game__button');
+          buttons.forEach((btn) => {
+            const button = btn as HTMLButtonElement;
+            if (`Digit${btn.id}` === e.code) {
+              this.checkAnswer(button);
+            }
+          });
         }
-      });
+      }
     }
   }
 
   private showCorrectAnswer(): void {
+    this.gameStatus = AUDIOGAME.STATUSDONE;
     this.answerBtns.forEach((btn) => {
       if (btn.textContent === this.words[this.wordIdx].wordTranslate) btn.classList.add('correct');
       btn.disabled = true;
     });
-    if (this.counterNumber >= 1) {
-      (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.NEXTWORD;
-    } else {
+    if (this.counterNumber === 1) {
       (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.SHOWRESULTS;
+    } else {
+      (this.nextButton as HTMLButtonElement).textContent = AUDIOGAME.NEXTWORD;
     }
   }
 
   private nextButtonHandler(): void {
     const btn = this.nextButton as HTMLButtonElement;
+    console.log(btn.textContent);
     if (btn.textContent === AUDIOGAME.SHOWANSWER) {
       this.rightAnswerSeries = 0;
-      this.gameStatus = GAMESTATUS.DONE;
+      this.sound.click.run();
+      (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
+      this.showCorrectAnswer();
+      this.words[this.wordIdx].answer = false;
+    } else {
+      this.wordIdx += 1;
+      this.drawWord();
+    }
+  }
+
+  private enterKeyHandler(): void {
+    const btn = this.nextButton as HTMLButtonElement;
+    console.log(btn.textContent);
+    if (btn.textContent === AUDIOGAME.SHOWANSWER) {
+      this.rightAnswerSeries = 0;
       this.sound.click.run();
       (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
       this.showCorrectAnswer();
@@ -332,7 +356,7 @@ class AudioGame extends NewElem {
     this.answerBtns = [];
     this.rightAnswerSeries = 0;
     this.maxRightAnswerSeries = 0;
-    this.gameStatus = GAMESTATUS.WAITING;
+    this.gameStatus = AUDIOGAME.STATUSWAITING;
     this.percent = 0;
   }
 

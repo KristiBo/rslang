@@ -40,10 +40,6 @@ class App {
     document.addEventListener('userLogin', (event: Event) => this.onUserLogin(event));
   }
 
-  initStartAudioListener(): void {
-    document.addEventListener('startAudio', (event: Event) => this.onRunAudioFromTxtBk(event));
-  }
-
   initGameStatListener(): void {
     document.addEventListener('gameStatistic', (event: Event) => this.onGameStat(event));
   }
@@ -109,12 +105,15 @@ class App {
     } else if (hashParts.length === 4 && hashParts[1] === GAME.SPRINT) {
       // run sprint
       this.runGameFromTxtBk(GAME.SPRINT, Number(hashParts[2]), Number(hashParts[3]));
+    } else if (hashParts.length === 4 && hashParts[1] === GAME.AUDIOCALL) {
+      // run audio call
+      this.runGameFromTxtBk(GAME.AUDIOCALL, Number(hashParts[2]), Number(hashParts[3]));
     } else if (hashParts.length === 3 && hashParts[1] === GAME.SPRINT) {
       // run sprint
       this.runGameFromGames(GAME.SPRINT, Number(hashParts[2]));
     } else if (hashParts.length === 3 && hashParts[1] === GAME.AUDIOCALL) {
       // run audio call
-      this.runGameFromGames(GAME.SPRINT, Number(hashParts[2]));
+      this.runGameFromGames(GAME.AUDIOCALL, Number(hashParts[2]));
     } else {
       // TODO: prepare some data if needed for page
       this.view.renderPage(hash, [], this.model.isRegisteredUser);

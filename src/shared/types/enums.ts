@@ -36,11 +36,6 @@ enum CUSTOMEVENT {
   GAMESTATISTIC = 'gameStatistic',
 }
 
-enum GAMESTATUS {
-  WAITING = 'waiting',
-  DONE = 'done',
-}
-
 enum AUDIOGAME {
   NEXTWORD = 'Next word',
   SHOWANSWER = "I don't know",
@@ -49,6 +44,8 @@ enum AUDIOGAME {
   AMOUNTOFANSWERS = 5,
   ENTER = 'Enter',
   SPACE = 'Space',
+  STATUSWAITING = 'waiting',
+  STATUSDONE = 'done',
 }
 
 enum DIFFICULTY {
@@ -64,5 +61,5 @@ enum WINSNEEDED {
 }
 
 export {
-  ANSWER, GAME, PAGE, METHOD, ICON, DIFFICULTY, WINSNEEDED,
+  ANSWER, GAME, PAGE, METHOD, ICON, DIFFICULTY, WINSNEEDED, CUSTOMEVENT, AUDIOGAME,
 };
