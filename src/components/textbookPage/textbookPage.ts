@@ -84,16 +84,16 @@ class TextbookPage extends BaseComponent {
         btnNext.classList.add('button_disabled');
         btnEnd.classList.add('button_disabled');
       }
-      btnStart.href = `/#/textbook/${group}/1`;
-      btnPrev.href = `/#/textbook/${group}/${page - 1}`;
-      btnNext.href = `/#/textbook/${group}/${page + 1}`;
-      btnEnd.href = `/#/textbook/${group}/30`;
+      btnStart.href = `/#/${PAGE.TEXTBOOK}/${group}/1`;
+      btnPrev.href = `/#/${PAGE.TEXTBOOK}/${group}/${page - 1}`;
+      btnNext.href = `/#/${PAGE.TEXTBOOK}/${group}/${page + 1}`;
+      btnEnd.href = `/#/${PAGE.TEXTBOOK}/${group}/30`;
       btnSprint.href = `/#/${PAGE.PLAYSPRINT}/${group}/${page}`;
       btnAudiocall.href = `/#/${PAGE.PLAYAUDIOCALL}/${group}/${page}`;
     }
   }
 
-  changeBcgColor(grp: number) {
+  changeBcgColor(grp: number): void {
     const textbook = document.getElementById('textbook') as HTMLElement;
     const color = pageColors[grp];
     textbook.style.backgroundColor = color;

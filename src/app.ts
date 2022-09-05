@@ -51,7 +51,6 @@ class App {
 
   async onSetDifficulty(event: Event): Promise<void> {
     const { id, difficulty } = <WordDifficulty>(<CustomEvent>event).detail;
-    console.log('id, difficulty:', id, difficulty);
     if (this.model.isRegisteredUser) await this.model.setWordDifficulty(id, difficulty);
   }
 
