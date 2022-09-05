@@ -15,9 +15,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 10px;
   background-color: #fff;
   border-radius: 10px;
-  width: 450px;
-  height: 450px;
+  max-width: 500px;
+  width: 97%;
+  height: 70vh;
   box-shadow: 10px 10px 10px #3333;
+}
+@media (max-width: 768px) {
+  .modal__window {
+    height: 65vh;
+  }
 }

@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     margin: 0 auto;
+    padding: 10px 0;
     width: 380px;
 }
 
@@ -59,4 +60,13 @@
 
 .button:hover {
     border: 1px solid #4b3683;
+}
+
+@media (max-width: 768px) {
+    .form__title {
+        font-size: 26px;
+    }
+    .form__label {
+        font-size: 20px;
+    }
 }
