@@ -1,4 +1,4 @@
-import URL from './constants';
+import { URL, FOURHOURS } from './constants';
 import {
   Word,
   ReqResponse,
@@ -17,18 +17,22 @@ import {
 } from './types/index';
 
 class Api {
-  token = ''; // JWT token for requests with authorization
+  private token = ''; // JWT token for requests with authorization
 
-  userId = ''; // user id like '62ffed00299cea0016064168'
+  private userId = ''; // user id like '62ffed00299cea0016064168'
+
+  private expire = 0; // token expiration time
 
   // common request
   // req: ReqData - {url: str, method: 'GET' etc, auth?: bool, body?: str}
   // T: type of result
   // return: [T, null] | [null, Error]
-  async request<T>(req: ReqData): Promise<ReqResponse<T>> {
+  private async request<T>(req: ReqData): Promise<ReqResponse<T>> {
     const headers: HeadersInit = { Accept: 'application/json' };
     if (req.auth) {
-      // TODO: add token expire check and reget if needed
+      if (Math.floor(Date.now() / 1000) - this.expire > FOURHOURS) {
+        // TODO: add refresh token
+      }
       headers.Authorization = `Bearer ${this.token}`;
     }
     if (req.body) headers['Content-Type'] = 'application/json';
@@ -77,11 +81,11 @@ class Api {
 
   // get all user words
   // return: [Word[], null] | [null, Error]
-  async getUsersWords(): Promise<ReqResponse<Array<Word>>> {
+  async getUsersWords(): Promise<ReqResponse<Array<UsersWordsResponse>>> {
     const url = `${URL}users/${this.userId}/words`;
     const method = METHOD.GET;
     const auth = true;
-    const result = await this.request<Array<Word>>({ url, method, auth });
+    const result = await this.request<Array<UsersWordsResponse>>({ url, method, auth });
     return result;
   }
 
@@ -123,7 +127,7 @@ class Api {
   // update word in user words
   // wordId: word id like '5e9f5ee35eb9e72bc21af4a0'
   // difficulty: word difficulty like 'hard', 'weak' etc
-  // optional: object with additional caustom data // TODO: need to describe
+  // optional: UsersWordData
   // return: [usersWordsResponse, null] | [null, Error]
   // Errors:
   // 400 - Bad request
@@ -176,12 +180,16 @@ class Api {
   // ===
   // return: [UsersAggrWordsResponse, null] | [null, Error]
   async getUsrAggrWords(params: UsrAggrWrdsReq): Promise<ReqResponse<UsersAggrWordsResponse>> {
-    const url = `${URL}users/${params.id}/aggregatedWords`;
+    const {
+      group, page, wordsPerPage, filter,
+    } = params;
+    let url = `${URL}users/${this.userId}/aggregatedWords?group=${group}&wordsPerPage=${wordsPerPage}&filter=${filter}`;
+    if (page) url = `${url}&page=${page}`;
+    url = encodeURI(url);
     const method = METHOD.GET;
     const auth = true;
-    const body = JSON.stringify(params);
     const result = await this.request<UsersAggrWordsResponse>({
-      url, method, auth, body,
+      url, method, auth,
     });
     return result;
   }
@@ -265,6 +273,11 @@ class Api {
     const method = METHOD.POST;
     const body = JSON.stringify({ email, password });
     const result = await this.request<signinResponse>({ url, method, body });
+    if (result[0]) {
+      this.setExpire(Date.now());
+      this.setToken(result[0].token);
+      this.setUserId(result[0].userId);
+    }
     return result;
   }
 
@@ -278,6 +291,11 @@ class Api {
   // this.userId setter
   setUserId(id: string): void {
     this.userId = id;
+  }
+
+  // this.expire setter
+  setExpire(dt: number): void {
+    this.expire = Math.floor(dt / 1000); // ms to seconds
   }
 
   async getUser(user: TAuth): Promise<TUserAuth> {
@@ -297,38 +315,12 @@ class Api {
     }
   }
 
-  async createUser(user: TUser): Promise<TUserAuth | undefined> {
-    try {
-      const rawResponse = await fetch(`${URL}users`, {
-        method: METHOD.POST,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-      });
-      const content = await rawResponse.json();
-      return content;
-    } catch (err: unknown) {
-      throw new Error(`Error: ${err}`);
-    }
-  }
-
-  async loginUser(user: TUser): Promise<TAuth> {
-    try {
-      const rawResponse = await fetch(`${URL}signin`, {
-        method: METHOD.POST,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-      });
-      const content = await rawResponse.json();
-      return content;
-    } catch (err) {
-      throw new Error(`${err}`);
-    }
+  async createUser(user: TUser): Promise<ReqResponse<TUserAuth>> {
+    const url = `${URL}users`;
+    const method = METHOD.POST;
+    const body = JSON.stringify(user);
+    const result = await this.request<TUserAuth>({ url, method, body });
+    return result;
   }
 
   async getNewToken(userId?: string, refreshToken?: string): Promise<void> {
@@ -341,6 +333,12 @@ class Api {
         },
       });
       const content = await rawResponse.json();
+      // if ok - set token and expiration time
+      if (rawResponse.ok) {
+        this.setExpire(Date.now());
+        this.setToken(content.token);
+      }
+      // TODO: move localStorage.setItem to upper level
       localStorage.setItem('token', JSON.stringify(content.token));
       localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
     } catch (err) {

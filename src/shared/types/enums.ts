@@ -31,6 +31,18 @@ enum ICON {
   SPEAKER = 'speaker',
 }
 
+enum DIFFICULTY {
+  NONE = '',
+  NEW = 'new',
+  HARD = 'hard',
+  LEARN = 'learn',
+}
+
+enum WINSNEEDED {
+  NEW = 3,
+  HARD = 5,
+}
+
 export {
-  ANSWER, GAME, PAGE, METHOD, ICON,
+  ANSWER, GAME, PAGE, METHOD, ICON, DIFFICULTY, WINSNEEDED,
 };
