@@ -69,12 +69,12 @@ class Card extends NewElem {
       const cardItemBtns = new NewElem(cardCont.elem, 'div', 'card__item card-btns');
       _ = new Button(
         cardItemBtns.elem,
-        'Difficult',
+        'Сложное',
         `btn btn-difficult${word.difficulty === DIFFICULTY.HARD ? ' btn--yellow' : ''}`,
       );
       _ = new Button(
         cardItemBtns.elem,
-        'Studied',
+        'Изученное',
         `btn btn-studied${word.difficulty === DIFFICULTY.LEARN ? ' btn--yellow' : ''}`,
       );
     } else {

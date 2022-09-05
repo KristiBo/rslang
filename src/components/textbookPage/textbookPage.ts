@@ -7,7 +7,7 @@ import Card from '../card/card';
 class TextbookPage extends BaseComponent {
   inner = `
         <div class="container textbook">
-        <div class="textbook__games">
+        <div class="textbook__games hide">
             <a href="#/games/audiocall" class="game-card game-card_audio">
               <img src="./assets/icons/audiochallenge.png" alt="audio-game" class="game-card__img">
               <span class="game-card__name">Аудиовызов</span>
@@ -40,13 +40,13 @@ class TextbookPage extends BaseComponent {
         </div>`;
 
   constructor() {
-    super('main', ['main'], 'textbook');
+    super('main', 'main main-textbook', 'textbook');
   }
 
   drawCards(data: TxtBkWord[], userState: boolean): void {
     const cards: HTMLElement | null = document.querySelector('.textbook__cards');
-    const btnSeven: HTMLElement | null = document.querySelector('.btn_seven');
-    const btnsGame: HTMLElement | null = document.querySelector('.textbook__game-btns');
+    const btnSeven: HTMLElement | null = document.querySelector('.button_difficult');
+    const btnsGame: HTMLElement | null = document.querySelector('.textbook__games');
     if (userState) {
       btnSeven?.classList.remove('hide');
       btnsGame?.classList.remove('hide');
@@ -63,8 +63,8 @@ class TextbookPage extends BaseComponent {
     const group = grp + 1;
     const page = pg + 1;
     // for elements created from html template
-    const btnSprint = <HTMLLinkElement>document.querySelector('.btn_sprint');
-    const btnAudiocall = <HTMLLinkElement>document.querySelector('.btn_audiocall');
+    const btnSprint = <HTMLLinkElement>document.querySelector('.game-card_sprint');
+    const btnAudiocall = <HTMLLinkElement>document.querySelector('.game-card_audio');
     if (group === 7) {
       const pgnDiv = document.querySelector('.textbook__pagination-buttons');
       pgnDiv?.remove();
@@ -80,12 +80,12 @@ class TextbookPage extends BaseComponent {
 
       btnPgNum.textContent = `${page}`;
       if (page === 1) {
-        btnStart.classList.add('btn_disabled');
-        btnPrev.classList.add('btn_disabled');
+        btnStart.classList.add('button_disabled');
+        btnPrev.classList.add('button_disabled');
       }
       if (page === 30) {
-        btnNext.classList.add('btn_disabled');
-        btnEnd.classList.add('btn_disabled');
+        btnNext.classList.add('button_disabled');
+        btnEnd.classList.add('button_disabled');
       }
       btnStart.href = `/#/textbook/${group}/1`;
       btnPrev.href = `/#/textbook/${group}/${page - 1}`;
