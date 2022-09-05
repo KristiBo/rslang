@@ -104,6 +104,25 @@
 .card__icon:hover .icon--yellow {
   fill:#E5AA17; 
 }
+.card-btns-progress {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+.progress {
+  padding: 5px 10px;
+  font-weight: 700;
+  border-radius: 10px;
+  box-shadow: 0 5px 5px #33333333;
+}
+.progress__wins {
+  color: #37b868;
+}
+.progress__fails {
+  color: #e44545;
+}
 @media (max-width: 768px) {
   .card {
     width: 100%;
@@ -119,12 +138,15 @@
     padding-bottom: 30%;
   }
   .card__content {
-    max-width: 90%;
-    width: 90%;
+    max-width: 100%;
+    width: 100%;
     justify-content: center;
   }
   .word-content {
     align-self: stretch;
+  }
+  .word-wrapper__transcription {
+    font-size: 1.2rem;
   }
   .card-btns {
     justify-content: center;
@@ -137,5 +159,8 @@
   .word-wrapper {
     flex-direction: column;
     gap: 2px;
+  }
+  .card-btns-progress {
+    justify-content: center;
   }
 }

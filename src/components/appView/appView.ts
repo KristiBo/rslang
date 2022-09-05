@@ -68,6 +68,7 @@ class AppView {
         if (data) {
           this.textbookPage.drawCards(<TxtBkWord[]>data, userState ?? false);
           this.textbookPage.setPagination(group ?? 0, page ?? 0);
+          this.textbookPage.changeBcgColor(group ?? 0);
         }
         break;
       case PAGE.GAMES:

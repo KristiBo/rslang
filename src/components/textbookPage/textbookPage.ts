@@ -2,12 +2,13 @@ import './textbookPage.css';
 import { TxtBkWord, PAGE } from '../../shared/types';
 import BaseComponent from '../baseComponent/baseComponent';
 import Card from '../card/card';
+import { pageColors } from '../../shared/constants';
 
 // TODO: show 7th group for known user
 class TextbookPage extends BaseComponent {
   inner = `
         <div class="container textbook">
-        <div class="textbook__games hide">
+        <div class="textbook__games">
             <a href="#/games/audiocall" class="game-card game-card_audio">
               <img src="./assets/icons/audiochallenge.png" alt="audio-game" class="game-card__img">
               <span class="game-card__name">Аудиовызов</span>
@@ -46,12 +47,8 @@ class TextbookPage extends BaseComponent {
   drawCards(data: TxtBkWord[], userState: boolean): void {
     const cards: HTMLElement | null = document.querySelector('.textbook__cards');
     const btnSeven: HTMLElement | null = document.querySelector('.button_difficult');
-    const btnsGame: HTMLElement | null = document.querySelector('.textbook__games');
     if (userState) {
       btnSeven?.classList.remove('hide');
-      btnsGame?.classList.remove('hide');
-    } else {
-      btnsGame?.remove();
     }
     if (cards) {
       const _ = data.map((item) => new Card(cards, item, userState));
@@ -94,6 +91,12 @@ class TextbookPage extends BaseComponent {
       btnSprint.href = `/#/${PAGE.PLAYSPRINT}/${group}/${page}`;
       btnAudiocall.href = `/#/${PAGE.PLAYAUDIOCALL}/${group}/${page}`;
     }
+  }
+
+  changeBcgColor(grp: number) {
+    const textbook = document.getElementById('textbook') as HTMLElement;
+    const color = pageColors[grp];
+    textbook.style.backgroundColor = color;
   }
 }
 

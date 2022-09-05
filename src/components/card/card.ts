@@ -72,20 +72,24 @@ class Card extends NewElem {
     _ = new NewElem(cardItemExample.elem, 'div', 'example__en', word.textExample);
     _ = new NewElem(cardItemExample.elem, 'div', 'example__ru', word.textExampleTranslate);
 
-    // known user, show buttons
+    // known user, show buttons, show progress
     if (userState) {
-      const cardItemBtns = new NewElem(cardCont.elem, 'div', 'card__item card-btns');
+      const cardItemBtnsProgress = new NewElem(cardCont.elem, 'div', 'card__item card-btns-progress');
+      const cardBtns = new NewElem(cardItemBtnsProgress.elem, 'div', 'card-btns');
       this.btnDifficult = new Button(
-        cardItemBtns.elem,
+        cardBtns.elem,
         'Сложное',
         `btn btn-difficult${word.difficulty === DIFFICULTY.HARD ? ' btn--yellow' : ''}`,
       ).elem;
       this.btnLearn = new Button(
-        cardItemBtns.elem,
+        cardBtns.elem,
         'Изученное',
         `btn btn-studied${word.difficulty === DIFFICULTY.LEARN ? ' btn--yellow' : ''}`,
       ).elem;
       this.addBtnListeners();
+      const cardProgress = new NewElem(cardItemBtnsProgress.elem, 'div', 'progress');
+      _ = new NewElem(cardProgress.elem, 'div', 'progress__wins', `Угадано: ${word.wins}`);
+      _ = new NewElem(cardProgress.elem, 'div', 'progress__fails', `Ошибки: ${word.fails}`);
     } else {
       this.isPlaying = false;
     }
