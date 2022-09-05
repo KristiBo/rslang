@@ -1,5 +1,5 @@
 import {
-  PAGE, GameStat, GAME, TUser,
+  PAGE, GameStat, GAME, TUser, WordDifficulty,
 } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
@@ -20,6 +20,7 @@ class App {
     this.initOnHashChange();
     this.initLoginListener();
     this.initGameStatListener();
+    this.initSetDifficultyListener();
   }
 
   // show auth form
@@ -42,6 +43,16 @@ class App {
 
   initGameStatListener(): void {
     document.addEventListener('gameStatistic', (event: Event) => this.onGameStat(event));
+  }
+
+  initSetDifficultyListener(): void {
+    document.addEventListener('setDifficulty', (event: Event) => this.onSetDifficulty(event));
+  }
+
+  async onSetDifficulty(event: Event): Promise<void> {
+    const { id, difficulty } = <WordDifficulty>(<CustomEvent>event).detail;
+    console.log('id, difficulty:', id, difficulty);
+    if (this.model.isRegisteredUser) await this.model.setWordDifficulty(id, difficulty);
   }
 
   async onGameStat(event: Event): Promise<void> {
