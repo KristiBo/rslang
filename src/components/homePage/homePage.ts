@@ -42,21 +42,24 @@ class HomePage extends BaseComponent {
                 <img src="./assets/img/avatar-stas.jpg" alt="avatar" class="team__card-img">
                 <div class="team__card-description">
                   <a class="team__card-link" href="https://github.com/HamSilver" target="_blank" rel="noopener noreferrer">Cтанислав</a>            
-                  <p class="team__card-text">Что сделано</p>
+                  <span class="team__card-role">Тимлид</span>
+                  <p class="team__card-text">Настройка бэкенда, разработка архитектуры приложения, карточек слов, мини-игры "Спринт", статистики и части учебника</p>
                 </div>
               </div>
               <div class="team__card">
                 <img src="./assets/img/avatar-uiguuna.jpg" alt="avatar" class="team__card-img">
                 <div class="team__card-description">
                   <a class="team__card-link" href="https://github.com/UiguunaMikhailova" target="_blank" rel="noopener noreferrer">Уйгууна</a>
-                  <p class="team__card-text">Что сделано</p>
+                  <span class="team__card-role">Разработчик</span>
+                  <p class="team__card-text">Реализация авторизации и регистрации пользователя, разработка мини-игры "Аудиовызов"</p>
                 </div>
               </div>
               <div class="team__card">
                 <img src="./assets/img/avatar-kris.jpg" alt="avatar" class="team__card-img">
                 <div class="team__card-description">
                   <a class="team__card-link" href="https://github.com/KristiBo" target="_blank" rel="noopener noreferrer">Кристина</a>
-                  <p class="team__card-text">Что сделано</p>
+                  <span class="team__card-role">Разработчик</span>
+                  <p class="team__card-text">Реализация роутинга, главной страницы приложения с header и footer, части учебника, адаптивный дизайн приложения</p>
                 </div>
               </div>
             </div>

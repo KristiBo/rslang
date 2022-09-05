@@ -85,10 +85,13 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   padding: 10px;
   gap: 10px;
-  min-width: 31%;
+  max-width: 31%;
+  min-width: 290px;
+  min-height: 360px;
+  text-align: center;
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0px 0px 5px 5px #33333333;
@@ -101,10 +104,12 @@
   flex-direction: column;
   gap: 5px;
 }
-.team__card-link {
+.team__card-role {
+  font-style: italic;
+}
+.team__card-link {  
   font-weight: 700;
   font-size: 22px;
-  padding-right: 30px;
   background-position: center right;
   background-repeat: no-repeat;
   background-size: auto 20px;
@@ -119,5 +124,14 @@
   }
   .advantages {
     font-size: 16px;
+  }
+  .advantages__card {
+    height: 250px;
+  }
+  .team__card {
+    min-height: 300px;
+  }
+  .team__card-img {
+    height: 150px;
   }
 }    

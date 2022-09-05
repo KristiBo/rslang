@@ -9,16 +9,16 @@ class Auth {
   renderAuthPage(): string {
     const html = `
   <div class="sign-in">
-        <h3 class="form__title" id="form__title">Login</h3>
+        <h3 class="form__title" id="form__title">Войти</h3>
         <form class="sign-in__form form" id="form">
-            <label for="email" class="form__label">Email Address</label>
+            <label for="email" class="form__label">Введите E-mail</label>
             <input type="email" class="form__input" name="email" placeholder="E-mail..." id="form__email" autocomplete="off">
-            <label for="password" class="form__label">Password</label>
-            <input type="password" class="form__input" name="password" placeholder="Password..." id="form__password" autocomplete="off">
-            <div class="form__error-message" id="form__error">Password must contain at least 8 characters, at least one uppercase letter, one uppercase letter, one number and one special character from "+-_@$!%*?&amp;#.,;:[]{}]."</div>
+            <label for="password" class="form__label">Введите пароль</label>
+            <input type="password" class="form__input" name="password" placeholder="Пароль..." id="form__password" autocomplete="off">
+            <div class="form__error-message" id="form__error">Пароль должен содержать не менее 8 символов, как минимум одну заглавную букву, одну прописную букву, одну цифру и один специальный символ "+-_@$!%*?&amp;#.,;:[]{}]</div>
             <input type="submit" class="button" value="Sign in" id="form__submit">
         </form>
-        <button class="button button-small" id="form__change-btn">Don't have an account? Sign up</button>
+        <button class="button button-small" id="form__change-btn">У вас нет аккаунта? Зарегистрируйтесь</button>
     </div>`;
     return html;
   }
@@ -46,10 +46,10 @@ class Auth {
     });
 
     if (!isStrongPassword(password)) {
-      this.showErrMessage('Password must contain at least 8 characters, at least one uppercase letter, one uppercase letter, one number and one special character from "+-_@$!%*?&amp;#.,;:[]{}].');
+      this.showErrMessage('Пароль должен содержать не менее 8 символов, как минимум одну заглавную букву, одну прописную букву, одну цифру и один специальный символ "+-_@$!%*?&amp;#.,;:[]{}]');
     }
     if (!isEmail(email)) {
-      this.showErrMessage('Incorrect Email');
+      this.showErrMessage('Некорректный E-mail');
     }
     if (isEmail(email) && isStrongPassword(password)) {
       if (this.isRegistrationPage) {
@@ -78,13 +78,13 @@ class Auth {
     const button = document.getElementById('form__submit') as HTMLInputElement;
     const changeFormBtn = document.getElementById('form__change-btn') as HTMLButtonElement;
     if (this.isRegistrationPage) {
-      title.innerText = 'Registration';
-      button.value = 'Sign up';
-      changeFormBtn.innerText = 'Do you have an account? Sign In';
+      title.innerText = 'Регистрация';
+      button.value = 'Зарегистрироваться';
+      changeFormBtn.innerText = 'У вас есть аккаунт? Войдите';
     } else {
-      title.innerText = 'Login';
-      button.value = 'Sign in';
-      changeFormBtn.innerText = "Don't have an account? Sign Up";
+      title.innerText = 'Авторизация';
+      button.value = 'Войти';
+      changeFormBtn.innerText = 'У вас нет аккаунта? Зарегистрируйтесь';
     }
   }
 
