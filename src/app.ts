@@ -30,7 +30,7 @@ class App {
       // logout
       linkAuth.classList.remove('logged-in');
       linkAuth.textContent = 'Войти';
-      this.model.removeFromLocalStorage();
+      this.model.logout();
       this.onHashChange(); // page refresh
     } else {
       this.view.authPage.create();

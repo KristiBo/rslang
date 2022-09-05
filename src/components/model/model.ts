@@ -242,8 +242,11 @@ class Model {
     localStorage.setItem('refreshToken', JSON.stringify(content.refreshToken));
   }
 
-  removeFromLocalStorage(): void {
+  logout(): void {
     this.userState = false;
+    this.api.setExpire(0);
+    this.api.setUserId('');
+    this.api.setToken('');
     localStorage.setItem('time', '');
     localStorage.setItem('token', '');
     localStorage.setItem('userId', '');
