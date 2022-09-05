@@ -14,16 +14,22 @@ type Unused = NewElem | Img | Button;
 
 class Card extends NewElem {
   // current audio id
-  audioId: number;
+  private audioId: number;
 
   // audio playing state
-  isPlaying: boolean;
+  private isPlaying: boolean;
 
   // storage for audio
-  allAudio: Sound[];
+  private allAudio: Sound[];
 
   // click event place for audio
-  speaker: NewElem;
+  private speaker: NewElem;
+
+  private btnDifficult: HTMLButtonElement | null = null;
+
+  private btnLearn: HTMLButtonElement | null = null;
+
+  private word: TxtBkWord;
 
   // node: parent node
   // word: TxtBkWord object
@@ -36,6 +42,8 @@ class Card extends NewElem {
     }
 
     super(node, 'div', `card${cardStyle}`);
+
+    this.word = word;
 
     const imgBlock = new NewElem(this.elem, 'div', 'card__img-wrapper');
     let _: Unused = new Img(imgBlock.elem, 'card__img', `${URL}${word.image}`, word.word);
@@ -64,19 +72,24 @@ class Card extends NewElem {
     _ = new NewElem(cardItemExample.elem, 'div', 'example__en', word.textExample);
     _ = new NewElem(cardItemExample.elem, 'div', 'example__ru', word.textExampleTranslate);
 
-    // known user, show buttons
+    // known user, show buttons, show progress
     if (userState) {
-      const cardItemBtns = new NewElem(cardCont.elem, 'div', 'card__item card-btns');
-      _ = new Button(
-        cardItemBtns.elem,
-        'Difficult',
+      const cardItemBtnsProgress = new NewElem(cardCont.elem, 'div', 'card__item card-btns-progress');
+      const cardBtns = new NewElem(cardItemBtnsProgress.elem, 'div', 'card-btns');
+      this.btnDifficult = new Button(
+        cardBtns.elem,
+        'Сложное',
         `btn btn-difficult${word.difficulty === DIFFICULTY.HARD ? ' btn--yellow' : ''}`,
-      );
-      _ = new Button(
-        cardItemBtns.elem,
-        'Studied',
+      ).elem;
+      this.btnLearn = new Button(
+        cardBtns.elem,
+        'Изученное',
         `btn btn-studied${word.difficulty === DIFFICULTY.LEARN ? ' btn--yellow' : ''}`,
-      );
+      ).elem;
+      this.addBtnListeners();
+      const cardProgress = new NewElem(cardItemBtnsProgress.elem, 'div', 'progress');
+      _ = new NewElem(cardProgress.elem, 'div', 'progress__wins', `Угадано: ${word.wins}`);
+      _ = new NewElem(cardProgress.elem, 'div', 'progress__fails', `Ошибки: ${word.fails}`);
     } else {
       this.isPlaying = false;
     }
@@ -88,13 +101,35 @@ class Card extends NewElem {
     this.addSpeakerClickListener();
   }
 
+  addBtnListeners(): void {
+    this.btnDifficult?.addEventListener('click', () => this.dispatchClickOnBtns(DIFFICULTY.HARD));
+    this.btnLearn?.addEventListener('click', () => this.dispatchClickOnBtns(DIFFICULTY.LEARN));
+  }
+
+  dispatchClickOnBtns(diffToSet: DIFFICULTY): void {
+    const { id } = this.word;
+    const difficulty = this.word.difficulty === diffToSet ? DIFFICULTY.NONE : diffToSet;
+    const event = new CustomEvent('setDifficulty', { detail: { id, difficulty } });
+    if (difficulty === DIFFICULTY.HARD) {
+      this.btnDifficult?.classList.add('btn--yellow');
+    } else {
+      this.btnDifficult?.classList.remove('btn--yellow');
+    }
+    if (difficulty === DIFFICULTY.LEARN) {
+      this.btnLearn?.classList.add('btn--yellow');
+    } else {
+      this.btnLearn?.classList.remove('btn--yellow');
+    }
+    document.dispatchEvent(event);
+  }
+
   // Add click listener on speaker icon
-  addSpeakerClickListener(): void {
+  private addSpeakerClickListener(): void {
     this.speaker.elem.addEventListener('click', () => this.audioPlay());
   }
 
   // play audio
-  audioPlay(): void {
+  private audioPlay(): void {
     if (!this.isPlaying) {
       this.isPlaying = true;
       this.allAudio[this.audioId].elem.addEventListener('ended', () => this.audioPrepareNext(), { once: true });
@@ -103,17 +138,17 @@ class Card extends NewElem {
   }
 
   // cycling audio id 0>1>2>0...
-  audioPrepareNext(): void {
+  private audioPrepareNext(): void {
     this.isPlaying = false;
     this.audioId = (this.audioId === 2 ? 0 : this.audioId + 1);
   }
 
-  removeSpeakerClickListener(): void {
+  private removeSpeakerClickListener(): void {
     this.speaker.elem.removeEventListener('click', () => this.audioPlay());
   }
 
   // return: speaker svg
-  speakerSVG(): string {
+  private speakerSVG(): string {
     const result = SVG(ICON.SPEAKER);
     return result;
   }

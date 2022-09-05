@@ -183,7 +183,8 @@ class Api {
     const {
       group, page, wordsPerPage, filter,
     } = params;
-    let url = `${URL}users/${this.userId}/aggregatedWords?group=${group}&wordsPerPage=${wordsPerPage}&filter=${filter}`;
+    let url = `${URL}users/${this.userId}/aggregatedWords?wordsPerPage=${wordsPerPage}&filter=${filter}`;
+    if (group) url = `${url}&group=${group}`;
     if (page) url = `${url}&page=${page}`;
     url = encodeURI(url);
     const method = METHOD.GET;

@@ -15,7 +15,7 @@ class GamesPage extends BaseComponent {
     `;
 
   constructor(userState: boolean) {
-    super('main', ['main'], 'games');
+    super('main', 'main', 'games');
     this.userState = userState;
   }
 
