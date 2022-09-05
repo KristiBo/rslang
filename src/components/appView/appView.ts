@@ -79,6 +79,12 @@ class AppView {
           this.gamesPage.drawSprint(<Word[]>data);
         }
         break;
+      case PAGE.PLAYAUDIOCALL:
+        if (data) {
+          this.gamesPage.create();
+          this.gamesPage.drawAudio(<Word[]>data);
+        }
+        break;
       case PAGE.GAMESPRINT:
         this.gamesChooseLevel.draw(GAME.SPRINT);
         break;

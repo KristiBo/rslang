@@ -1,6 +1,7 @@
 import BaseComponent from '../baseComponent/baseComponent';
 import Sprint from '../sprint/sprint';
 import { Word } from '../../shared/types';
+import AudioGame from '../audioGame/audioGame';
 
 class GamesPage extends BaseComponent {
   private userState = false;
@@ -22,6 +23,12 @@ class GamesPage extends BaseComponent {
     this.container.innerHTML = '';
     const sprint = new Sprint(this.container);
     sprint.setWords(words);
+  }
+
+  drawAudio(words: Word[]): void {
+    this.container.innerHTML = '';
+    const audio = new AudioGame(this.container);
+    audio.setWords(words);
   }
 }
 
