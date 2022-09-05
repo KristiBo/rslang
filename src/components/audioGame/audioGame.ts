@@ -61,6 +61,7 @@ class AudioGame extends NewElem {
     };
 
     this.drawStartCountdown();
+    this.initKeyboardListeners();
   }
 
   private startGame(): void {
@@ -87,7 +88,6 @@ class AudioGame extends NewElem {
     this.initAudioListener(this.audioIcon, this.audioElem);
     this.drawWord();
     this.initListenersAnswer();
-    this.initKeyboardListeners();
     this.initListenerNextBtn();
   }
 
