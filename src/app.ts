@@ -16,6 +16,7 @@ class App {
 
   start(): void {
     this.view.create();
+    this.getUserAuth();
     this.view.header.addListeners(() => this.showAuth());
     this.initOnHashChange();
     this.initLoginListener();
@@ -47,6 +48,18 @@ class App {
 
   initSetDifficultyListener(): void {
     document.addEventListener('setDifficulty', (event: Event) => this.onSetDifficulty(event));
+  }
+
+  getUserAuth(): void {
+    if (localStorage.getItem('userId')) {
+      this.model.userState = true;
+      const linkAuth = <HTMLAnchorElement>document.querySelector('.nav__link_auth');
+      if (linkAuth) {
+        linkAuth.classList.add('logged-in');
+        linkAuth.textContent = 'Выйти';
+        this.onHashChange();
+      }
+    }
   }
 
   async onSetDifficulty(event: Event): Promise<void> {
