@@ -47,8 +47,12 @@ class AudioGame extends NewElem {
 
   private sound: Group<Sound>;
 
+  private onPressKeyb: (e: KeyboardEvent) => void;
+
   constructor(node: HTMLElement) {
     super(node, 'div', 'audiocall');
+
+    this.onPressKeyb = () => { };
 
     this.gameContainer = new NewElem(this.elem, 'div', 'audio-game-container').elem;
     this.gameDiv = new NewElem(this.gameContainer, 'div', 'audio-game').elem;
@@ -61,7 +65,6 @@ class AudioGame extends NewElem {
     };
 
     this.drawStartCountdown();
-    this.initKeyboardListeners();
   }
 
   private startGame(): void {
@@ -87,6 +90,8 @@ class AudioGame extends NewElem {
 
     this.initAudioListener(this.audioIcon, this.audioElem);
     this.drawWord();
+    this.onPressKeyb = (e: KeyboardEvent) => this.answerKeyboardHandler(e);
+    this.initKeyboardListeners();
     this.initListenersAnswer();
     this.initListenerNextBtn();
   }
@@ -204,7 +209,7 @@ class AudioGame extends NewElem {
   }
 
   private initKeyboardListeners(): void {
-    window.addEventListener('keyup', this.answerKeyboardHandler.bind(this));
+    window.addEventListener('keyup', this.onPressKeyb);
   }
 
   private initListenerNextBtn(): void {
@@ -255,9 +260,8 @@ class AudioGame extends NewElem {
   }
 
   private nextButtonHandler(): void {
-    const btn = this.nextButton as HTMLButtonElement;
-    console.log(btn.textContent);
-    if (btn.textContent === AUDIOGAME.SHOWANSWER) {
+    this.nextButton?.blur();
+    if (this.nextButton?.textContent === AUDIOGAME.SHOWANSWER) {
       this.rightAnswerSeries = 0;
       this.sound.click.run();
       (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
