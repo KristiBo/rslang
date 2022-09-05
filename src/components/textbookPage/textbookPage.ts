@@ -1,5 +1,5 @@
 import './textbookPage.css';
-import { CardOptions, Word } from '../../shared/types';
+import { TxtBkWord, PAGE } from '../../shared/types';
 import BaseComponent from '../baseComponent/baseComponent';
 import Card from '../card/card';
 
@@ -40,15 +40,21 @@ class TextbookPage extends BaseComponent {
         </div>`;
 
   constructor() {
-    super('main', 'main main-textbook', 'textbook');
+    super('main', ['main'], 'textbook');
   }
 
-  drawCards(data: Word[], userState?: boolean): void {
+  drawCards(data: TxtBkWord[], userState: boolean): void {
     const cards: HTMLElement | null = document.querySelector('.textbook__cards');
-    let options: CardOptions;
-    if (userState) options = { isDifficult: false, isStudied: false };
+    const btnSeven: HTMLElement | null = document.querySelector('.btn_seven');
+    const btnsGame: HTMLElement | null = document.querySelector('.textbook__game-btns');
+    if (userState) {
+      btnSeven?.classList.remove('hide');
+      btnsGame?.classList.remove('hide');
+    } else {
+      btnsGame?.remove();
+    }
     if (cards) {
-      const _ = data.map((item) => new Card(cards, item, options));
+      const _ = data.map((item) => new Card(cards, item, userState));
     }
   }
 
@@ -57,40 +63,37 @@ class TextbookPage extends BaseComponent {
     const group = grp + 1;
     const page = pg + 1;
     // for elements created from html template
-    const btnStart = <HTMLLinkElement>document.querySelector('.button_start');
-    const btnPrev = <HTMLLinkElement>document.querySelector('.button_prev');
-    const btnPgNum = <HTMLLinkElement>document.querySelector('.button_number');
-    const btnNext = <HTMLLinkElement>document.querySelector('.button_next');
-    const btnEnd = <HTMLLinkElement>document.querySelector('.button_end');
-    const levelBtns = document.querySelectorAll('.button_level');
+    const btnSprint = <HTMLLinkElement>document.querySelector('.btn_sprint');
+    const btnAudiocall = <HTMLLinkElement>document.querySelector('.btn_audiocall');
+    if (group === 7) {
+      const pgnDiv = document.querySelector('.textbook__pagination-buttons');
+      pgnDiv?.remove();
+      // pgnDiv?.classList.add('hide');
+      btnSprint.href = `/#/${PAGE.PLAYSPRINT}/7`;
+      btnAudiocall.href = `/#/${PAGE.PLAYAUDIOCALL}/7`;
+    } else {
+      const btnStart = <HTMLLinkElement>document.querySelector('.button_start');
+      const btnPrev = <HTMLLinkElement>document.querySelector('.button_prev');
+      const btnPgNum = <HTMLLinkElement>document.querySelector('.button_number');
+      const btnNext = <HTMLLinkElement>document.querySelector('.button_next');
+      const btnEnd = <HTMLLinkElement>document.querySelector('.button_end');
 
-    btnPgNum.textContent = `${page}`;
-    if (page === 1) {
-      btnStart.classList.add('button_disabled');
-      btnPrev.classList.add('button_disabled');
-    }
-    if (page === 30) {
-      btnNext.classList.add('button_disabled');
-      btnEnd.classList.add('button_disabled');
-    }
-    btnStart.href = `/#/textbook/${group}/1`;
-    btnPrev.href = `/#/textbook/${group}/${page - 1}`;
-    btnNext.href = `/#/textbook/${group}/${page + 1}`;
-    btnEnd.href = `/#/textbook/${group}/30`;
-    this.goToGame(group);
-    levelBtns.forEach((elem) => {
-      elem.classList.remove('active');
-      if (elem.innerHTML === `${group}`) {
-        elem.classList.add('active');
+      btnPgNum.textContent = `${page}`;
+      if (page === 1) {
+        btnStart.classList.add('btn_disabled');
+        btnPrev.classList.add('btn_disabled');
       }
-    });
-  }
-
-  goToGame(grp: number): void {
-    const audiocall = <HTMLLinkElement>document.querySelector('.game-card_audio');
-    const sprint = <HTMLLinkElement>document.querySelector('.game-card_sprint');
-    audiocall.href = `#/games/audiocall/${grp}`;
-    sprint.href = `#/games/sprint/${grp}`;
+      if (page === 30) {
+        btnNext.classList.add('btn_disabled');
+        btnEnd.classList.add('btn_disabled');
+      }
+      btnStart.href = `/#/textbook/${group}/1`;
+      btnPrev.href = `/#/textbook/${group}/${page - 1}`;
+      btnNext.href = `/#/textbook/${group}/${page + 1}`;
+      btnEnd.href = `/#/textbook/${group}/30`;
+      btnSprint.href = `/#/${PAGE.PLAYSPRINT}/${group}/${page}`;
+      btnAudiocall.href = `/#/${PAGE.PLAYAUDIOCALL}/${group}/${page}`;
+    }
   }
 }
 

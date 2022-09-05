@@ -1,4 +1,6 @@
-import { Word, GAME, PAGE } from '../../shared/types';
+import {
+  Word, GAME, PAGE, TxtBkWord,
+} from '../../shared/types';
 import './basic.css';
 import AuthPage from '../authPage/authPage';
 import ErrorPage from '../errorPage/errorPage';
@@ -47,7 +49,7 @@ class AppView {
 
   renderPage(
     pageId: string,
-    data?: Word[],
+    data?: Word[] | TxtBkWord[],
     userState?: boolean,
     group?: number,
     page?: number,
@@ -64,8 +66,7 @@ class AppView {
       case PAGE.TEXTBOOK:
         this.textbookPage.create();
         if (data) {
-          console.log('group:', group, ' page:', page);
-          this.textbookPage.drawCards(data, userState);
+          this.textbookPage.drawCards(<TxtBkWord[]>data, userState ?? false);
           this.textbookPage.setPagination(group ?? 0, page ?? 0);
         }
         break;
@@ -75,7 +76,7 @@ class AppView {
       case PAGE.PLAYSPRINT:
         if (data) {
           this.gamesPage.create();
-          this.gamesPage.drawSprint(data);
+          this.gamesPage.drawSprint(<Word[]>data);
         }
         break;
       case PAGE.GAMESPRINT:
