@@ -174,7 +174,7 @@ class AudioGame extends NewElem {
   private checkAnswer(btn: HTMLButtonElement): void {
     this.gameStatus = AUDIOGAME.STATUSDONE;
 
-    if (btn.textContent?.split(' ').join() === this.words[this.wordIdx].wordTranslate) {
+    if (btn.textContent?.split(' ').slice(1).join() === this.words[this.wordIdx].wordTranslate) {
       this.rightAnswerSeries += 1;
       if (this.rightAnswerSeries > this.maxRightAnswerSeries) {
         this.maxRightAnswerSeries = this.rightAnswerSeries;
@@ -248,7 +248,7 @@ class AudioGame extends NewElem {
   private showCorrectAnswer(): void {
     this.gameStatus = AUDIOGAME.STATUSDONE;
     this.answerBtns.forEach((btn) => {
-      if (btn.textContent?.split(' ').join() === this.words[this.wordIdx].wordTranslate) btn.classList.add('correct');
+      if (btn.textContent?.split(' ').slice(1).join() === this.words[this.wordIdx].wordTranslate) btn.classList.add('correct');
       btn.disabled = true;
     });
     if (this.counterNumber === 1) {
@@ -259,8 +259,8 @@ class AudioGame extends NewElem {
   }
 
   private nextButtonHandler(): void {
-    this.nextButton?.blur();
-    if (this.nextButton?.textContent === AUDIOGAME.SHOWANSWER) {
+    const btn = this.nextButton as HTMLButtonElement;
+    if (btn.textContent === `${AUDIOGAME.SHOWANSWER} (enter)`) {
       this.rightAnswerSeries = 0;
       this.sound.click.run();
       (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
@@ -274,8 +274,7 @@ class AudioGame extends NewElem {
 
   private enterKeyHandler(): void {
     const btn = this.nextButton as HTMLButtonElement;
-    console.log(btn.textContent);
-    if (btn.textContent === AUDIOGAME.SHOWANSWER) {
+    if (btn.textContent === `${AUDIOGAME.SHOWANSWER} (enter)`) {
       this.rightAnswerSeries = 0;
       this.sound.click.run();
       (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
