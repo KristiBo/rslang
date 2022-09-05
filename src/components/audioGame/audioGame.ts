@@ -156,9 +156,9 @@ class AudioGame extends NewElem {
 
   private getRandomIndexes(): unknown[] {
     const set = new Set();
-    this.indexOfRightAnswer = Math.floor(Math.random() * (AUDIOGAME.AMOUNTOFANSWERS - 0)) + 0;
+    this.indexOfRightAnswer = Math.floor(Math.random() * (AUDIOGAME.AMOUNTOFANSWERS - 0));
     while (set.size < AUDIOGAME.AMOUNTOFANSWERS) {
-      const randomNumber = Math.floor(Math.random() * (this.words.length - 0)) + 0;
+      const randomNumber = Math.floor(Math.random() * (this.words.length - 0));
       if (randomNumber !== this.wordIdx) {
         set.add(randomNumber);
       }

@@ -51,6 +51,18 @@ enum AUDIOGAME {
   SPACE = 'Space',
 }
 
+enum DIFFICULTY {
+  NONE = '',
+  NEW = 'new',
+  HARD = 'hard',
+  LEARN = 'learn',
+}
+
+enum WINSNEEDED {
+  NEW = 3,
+  HARD = 5,
+}
+
 export {
-  ANSWER, GAME, PAGE, METHOD, ICON, GAMESTATUS, AUDIOGAME, CUSTOMEVENT,
+  ANSWER, GAME, PAGE, METHOD, ICON, DIFFICULTY, WINSNEEDED,
 };
