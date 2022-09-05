@@ -43,7 +43,7 @@ enum AUDIOGAME {
   AMOUNTOFWORDS = 20,
   AMOUNTOFANSWERS = 5,
   ENTER = 'Enter',
-  SPACE = 'Space',
+  SPACE = ' ',
   STATUSWAITING = 'waiting',
   STATUSDONE = 'done',
 }

@@ -81,8 +81,7 @@ class AudioGame extends NewElem {
     this.nextButton = new Button(this.gameDiv, 'button', 'button').elem;
     this.nextButton.textContent = `${AUDIOGAME.SHOWANSWER} (enter)`;
 
-    const amountOfAnswers = 5;
-    for (let i = 0; i < amountOfAnswers; i += 1) {
+    for (let i = 0; i < AUDIOGAME.AMOUNTOFANSWERS; i += 1) {
       const btn = new Button(this.answerButtonsContainer, 'button', 'button-light audio-game__button').elem;
       btn.id = `${i + 1}`;
       this.answerBtns?.push(btn);
@@ -222,21 +221,21 @@ class AudioGame extends NewElem {
 
   private answerKeyboardHandler(e: KeyboardEvent): void {
     e.preventDefault();
-    switch (e.code) {
+    switch (e.key) {
       case AUDIOGAME.SPACE: {
         if (this.audioElem) this.audioElem.run();
         break;
       }
       case AUDIOGAME.ENTER: {
-        this.nextButtonHandler.call(this);
+        console.log('enter');
+        this.nextButtonHandler();
         break;
       }
       default: {
         if (this.gameStatus === AUDIOGAME.STATUSWAITING) {
-          const buttons = document.querySelectorAll('.audio-game__button');
-          buttons.forEach((btn) => {
+          this.answerBtns.forEach((btn) => {
             const button = btn as HTMLButtonElement;
-            if (`Digit${btn.id}` === e.code) {
+            if (btn.id === e.key) {
               this.checkAnswer(button);
             }
           });
@@ -259,10 +258,9 @@ class AudioGame extends NewElem {
   }
 
   private nextButtonHandler(): void {
-    const btn = this.nextButton as HTMLButtonElement;
-    if (btn.textContent === `${AUDIOGAME.SHOWANSWER} (enter)`) {
-      this.nextButton?.blur();
-      if (this.nextButton?.textContent === `${AUDIOGAME.SHOWANSWER} (enter)`) {
+    (this.nextButton as HTMLButtonElement).blur();
+    if ((this.nextButton as HTMLButtonElement).textContent === `${AUDIOGAME.SHOWANSWER} (enter)`) {
+      if ((this.nextButton as HTMLButtonElement).textContent === `${AUDIOGAME.SHOWANSWER} (enter)`) {
         this.rightAnswerSeries = 0;
         this.sound.click.run();
         (this.wordText as HTMLElement).innerText = `${this.words[this.wordIdx].word}`;
@@ -284,6 +282,8 @@ class AudioGame extends NewElem {
     this.gameDiv.innerHTML = '';
     this.gameDiv.classList.add('nogap');
     const resTable = new NewElem(this.gameDiv, 'div', 'window__table').elem;
+
+    window.removeEventListener('keyup', this.onPressKeyb);
 
     if (rightAnswers) {
       _ = new NewElem(resTable, 'div', 'table__header header_right', `Правильных ответов: ${rightAnswers}`).elem;
