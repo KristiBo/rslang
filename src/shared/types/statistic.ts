@@ -7,15 +7,21 @@ interface GameStat {
   succession: number;
 }
 
-interface Statistic {
-  learnedWords: number;
-  optional: {
-    [key: string]: {
-      t: number,
-      s: number[],
-      a: number[],
-    }
-  };
+interface StatData {
+  t?: number;
+  s?: number[];
+  a?: number[];
 }
 
-export { GameStat, Statistic };
+interface StatOptional {
+  [key: string]: StatData;
+}
+
+interface Statistic {
+  learnedWords: number;
+  optional: StatOptional;
+}
+
+export {
+  GameStat, Statistic, StatData, StatOptional,
+};

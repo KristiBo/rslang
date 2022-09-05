@@ -88,8 +88,8 @@ class Card extends NewElem {
       ).elem;
       this.addBtnListeners();
       const cardProgress = new NewElem(cardItemBtnsProgress.elem, 'div', 'progress');
-      _ = new NewElem(cardProgress.elem, 'div', 'progress__wins', `Угадано: ${word.wins}`);
-      _ = new NewElem(cardProgress.elem, 'div', 'progress__fails', `Ошибки: ${word.fails}`);
+      _ = new NewElem(cardProgress.elem, 'div', 'progress__wins', `Угадано: ${word.wins ?? 0}`);
+      _ = new NewElem(cardProgress.elem, 'div', 'progress__fails', `Ошибки: ${word.fails ?? 0}`);
     } else {
       this.isPlaying = false;
     }
