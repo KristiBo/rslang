@@ -1,5 +1,5 @@
 import {
-  PAGE, GameStat, GAME, TUser,
+  PAGE, GameStat, GAME, TUser, WordDifficulty,
 } from './shared/types';
 import AppView from './components/appView/appView';
 import Model from './components/model/model';
@@ -20,6 +20,7 @@ class App {
     this.initOnHashChange();
     this.initLoginListener();
     this.initGameStatListener();
+    this.initSetDifficultyListener();
   }
 
   // show auth form
@@ -42,6 +43,15 @@ class App {
 
   initGameStatListener(): void {
     document.addEventListener('gameStatistic', (event: Event) => this.onGameStat(event));
+  }
+
+  initSetDifficultyListener(): void {
+    document.addEventListener('setDifficulty', (event: Event) => this.onSetDifficulty(event));
+  }
+
+  async onSetDifficulty(event: Event): Promise<void> {
+    const { id, difficulty } = <WordDifficulty>(<CustomEvent>event).detail;
+    if (this.model.isRegisteredUser) await this.model.setWordDifficulty(id, difficulty);
   }
 
   async onGameStat(event: Event): Promise<void> {
@@ -105,12 +115,15 @@ class App {
     } else if (hashParts.length === 4 && hashParts[1] === GAME.SPRINT) {
       // run sprint
       this.runGameFromTxtBk(GAME.SPRINT, Number(hashParts[2]), Number(hashParts[3]));
+    } else if (hashParts.length === 4 && hashParts[1] === GAME.AUDIOCALL) {
+      // run audio call
+      this.runGameFromTxtBk(GAME.AUDIOCALL, Number(hashParts[2]), Number(hashParts[3]));
     } else if (hashParts.length === 3 && hashParts[1] === GAME.SPRINT) {
       // run sprint
       this.runGameFromGames(GAME.SPRINT, Number(hashParts[2]));
     } else if (hashParts.length === 3 && hashParts[1] === GAME.AUDIOCALL) {
       // run audio call
-      this.runGameFromGames(GAME.SPRINT, Number(hashParts[2]));
+      this.runGameFromGames(GAME.AUDIOCALL, Number(hashParts[2]));
     } else {
       // TODO: prepare some data if needed for page
       this.view.renderPage(hash, [], this.model.isRegisteredUser);

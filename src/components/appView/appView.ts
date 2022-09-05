@@ -68,6 +68,7 @@ class AppView {
         if (data) {
           this.textbookPage.drawCards(<TxtBkWord[]>data, userState ?? false);
           this.textbookPage.setPagination(group ?? 0, page ?? 0);
+          this.textbookPage.changeBcgColor(group ?? 0);
         }
         break;
       case PAGE.GAMES:
@@ -77,6 +78,12 @@ class AppView {
         if (data) {
           this.gamesPage.create();
           this.gamesPage.drawSprint(<Word[]>data);
+        }
+        break;
+      case PAGE.PLAYAUDIOCALL:
+        if (data) {
+          this.gamesPage.create();
+          this.gamesPage.drawAudio(<Word[]>data);
         }
         break;
       case PAGE.GAMESPRINT:

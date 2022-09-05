@@ -30,8 +30,13 @@ interface CardOptions {
 
 type TxtBkWord = Word & Partial<CardOptions>;
 
+interface WordDifficulty {
+  id: string;
+  difficulty: DIFFICULTY;
+}
+
 type TxtBkReference = Pick<Word, 'group' | 'page'>;
 
 export {
-  Word, CardOptions, SprintWord, TxtBkReference, TxtBkWord,
+  Word, CardOptions, SprintWord, TxtBkReference, TxtBkWord, WordDifficulty,
 };

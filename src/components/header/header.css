@@ -2,7 +2,7 @@
   position: fixed;
   width: 100%;
   z-index: 5;
-  background-color: #ebebeb;
+  background-color: #ffffff;
   box-shadow: 0 5px 10px 0 #c7c7c7;
 }
 .header__container {
@@ -22,7 +22,7 @@
   transition: 0.5s;
 }
 .logo__img:hover {
-  filter: drop-shadow(0 0 3px #605872);
+  filter: brightness(1.2);
 }
 .nav__list {
   display: flex;
@@ -45,13 +45,12 @@
   color: #4b3683;
 }
 .header__button {
-  padding: 3px 5px 3px 40px;
+  padding: 3px 5px 3px 35px;
   width: 95px;
   font-size: 20px;
   text-align: end;
   background-image: url(../../assets/icons/login.png);
   background-size: auto 30px;
-  border: 2px solid #8359ba;
   border-radius: 10px;
 }
 .logged-in {
@@ -114,7 +113,7 @@
     right: -100%;
     width: 320px;
     height: 100%;
-    background-color: #ebebeb;
+    background-color: #ffffff;
     transition: 0.5s ease-in-out;
     overflow: auto;
   }
@@ -148,8 +147,5 @@
     display: block;
     position: relative;
     z-index: 10;
-  }
-  .header__button {
-    border: none;
   }
 }

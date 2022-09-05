@@ -1,4 +1,4 @@
-import './ErrorPage.css';
+import './errorPage.css';
 import BaseComponent from '../baseComponent/baseComponent';
 
 class ErrorPage extends BaseComponent {
@@ -7,7 +7,7 @@ class ErrorPage extends BaseComponent {
             </div>`;
 
   constructor() {
-    super('main', ['main'], 'error');
+    super('main', 'main', 'error');
   }
 }
 

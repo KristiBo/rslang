@@ -29,6 +29,23 @@ enum METHOD {
 
 enum ICON {
   SPEAKER = 'speaker',
+  CLOSE = 'close',
+}
+
+enum CUSTOMEVENT {
+  GAMESTATISTIC = 'gameStatistic',
+}
+
+enum AUDIOGAME {
+  NEXTWORD = 'Next word',
+  SHOWANSWER = "I don't know",
+  SHOWRESULTS = 'Show results',
+  AMOUNTOFWORDS = 20,
+  AMOUNTOFANSWERS = 5,
+  ENTER = 'Enter',
+  SPACE = ' ',
+  STATUSWAITING = 'waiting',
+  STATUSDONE = 'done',
 }
 
 enum DIFFICULTY {
@@ -44,5 +61,5 @@ enum WINSNEEDED {
 }
 
 export {
-  ANSWER, GAME, PAGE, METHOD, ICON, DIFFICULTY, WINSNEEDED,
+  ANSWER, GAME, PAGE, METHOD, ICON, DIFFICULTY, WINSNEEDED, CUSTOMEVENT, AUDIOGAME,
 };

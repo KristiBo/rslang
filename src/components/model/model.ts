@@ -71,9 +71,9 @@ class Model {
     if (group === 6) {
       const dashId = '_id';
       const filter = '{"userWord.difficulty":"hard"}';
-      const wordsPerPage = '500';
+      const wordsPerPage = '3600';
       const [words, error] = await this.api.getUsrAggrWords({
-        group: `${group}`, wordsPerPage, filter,
+        wordsPerPage, filter,
       });
       if (error) errorRes = error;
       if (words) {
