@@ -9,14 +9,14 @@ class Auth {
   renderAuthPage(): string {
     const html = `
   <div class="sign-in">
-        <h3 class="form__title" id="form__title">Войти</h3>
+        <h3 class="form__title" id="form__title">Авторизация</h3>
         <form class="sign-in__form form" id="form">
             <label for="email" class="form__label">Введите E-mail</label>
             <input type="email" class="form__input" name="email" placeholder="E-mail..." id="form__email" autocomplete="off">
             <label for="password" class="form__label">Введите пароль</label>
             <input type="password" class="form__input" name="password" placeholder="Пароль..." id="form__password" autocomplete="off">
             <div class="form__error-message" id="form__error">Пароль должен содержать не менее 8 символов, как минимум одну заглавную букву, одну прописную букву, одну цифру и один специальный символ "+-_@$!%*?&amp;#.,;:[]{}]</div>
-            <input type="submit" class="button" value="Sign in" id="form__submit">
+            <input type="submit" class="button" value="Войти" id="form__submit">
         </form>
         <button class="button button-small" id="form__change-btn">У вас нет аккаунта? Зарегистрируйтесь</button>
     </div>`;
