@@ -1,7 +1,7 @@
 .card {
   width: 70%;
   border-radius: 10px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   padding: 20px;
   box-shadow: 10px 10px 10px #33333333;
   display: flex;
@@ -24,7 +24,7 @@
   color:#000000;
 }
 .word-content {
-  border-left: 5px dotted #E5AA17;
+  border-left: 5px dotted #e5aa17;
   padding-left: 10px;
   position: relative;
 }
@@ -76,9 +76,9 @@
   gap: 15px;
 }
 .btn {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   padding: 7px 15px;
-  border: 1px solid #E5AA17;
+  border: 1px solid #e5aa17;
   border-radius: 10px;
   min-width: 60px;
   color: #999999;
@@ -88,21 +88,21 @@
   transition: .3s;
 }
 .btn--yellow {
-  background-color: #E5AA17;
-  color: #FFECB9;
-  border: 1px solid #A37C1990;
-  box-shadow: 3px 3px 5px #C49B3590, 2px 2px 6px #FFFFFF33 inset;
+  background-color: #e5aa17;
+  color: #ffecb9;
+  border: 1px solid #a37c1990;
+  box-shadow: 3px 3px 5px #c49b3590, 2px 2px 6px #ffffff33 inset;
 }
 .btn:hover {
-  box-shadow: 6px 6px 6px #3333, 2px 2px 6px #FFE924D7 inset;
+  box-shadow: 6px 6px 6px #3333, 2px 2px 6px #ffe924d7 inset;
   color: #000000;
 }
 .icon--yellow {
-  fill:#CCCCCC; 
+  fill:#cccccc; 
   transition: .3s;
 }
 .card__icon:hover .icon--yellow {
-  fill:#E5AA17; 
+  fill:#e5aa17; 
 }
 .card-btns-progress {
   display: flex;

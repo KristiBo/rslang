@@ -37,9 +37,9 @@ enum CUSTOMEVENT {
 }
 
 enum AUDIOGAME {
-  NEXTWORD = 'Next word',
-  SHOWANSWER = "I don't know",
-  SHOWRESULTS = 'Show results',
+  NEXTWORD = 'Следующее слово',
+  SHOWANSWER = 'Я не знаю',
+  SHOWRESULTS = 'Показать результаты',
   AMOUNTOFWORDS = 20,
   AMOUNTOFANSWERS = 5,
   ENTER = 'Enter',

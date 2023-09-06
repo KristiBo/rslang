@@ -227,7 +227,6 @@ class AudioGame extends NewElem {
         break;
       }
       case AUDIOGAME.ENTER: {
-        console.log('enter');
         this.nextButtonHandler();
         break;
       }
