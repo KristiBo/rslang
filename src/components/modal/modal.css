@@ -8,7 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #9905;
+  background-color: #99990055;
 }
 .modal__window {
   position: relative;
@@ -16,12 +16,12 @@
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 10px;
   max-width: 500px;
-  width: 97%;
+  width: 95%;
   height: 70vh;
-  box-shadow: 10px 10px 10px #3333;
+  box-shadow: 10px 10px 10px #33333333;
 }
 @media (max-width: 768px) {
   .modal__window {
