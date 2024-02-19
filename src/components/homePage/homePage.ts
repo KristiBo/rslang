@@ -32,9 +32,6 @@ class HomePage extends BaseComponent {
               <p class="advantages__text">Вам доступна краткосрочная статистика по мини-играм и по словам за каждый день изучения: количество новых слов, количество изученных слов, самая длинная серия правильных ответов, процент правильных ответов.</p>
             </div>
           </section>
-          <section class="section video">
-            <h2 class="video__section-title">Возможности приложения (будет видео)</h2>            
-          </section>
           <section class="section team">
             <h2 class="team__section-title">Наша команда</h2>
             <div class="team__cards">

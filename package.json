@@ -5,7 +5,9 @@
   "name": "rslang",
   "scripts": {
     "start": "webpack serve --env development",
-    "build": "webpack"
+    "build": "webpack",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint --fix ."
   },
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",
